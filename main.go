@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"site/handler"
+	"site/pkg"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -25,9 +26,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// load and parse markdown files
+	posts, err := pkg.LoadMarkdownPosts("./content/posts")
+	if err != nil {
+		log.Fatal(err) // i think this fatal is ok
+	}
+
+	postsHandler := handler.NewPostsHandler(posts)
+
 	router := chi.NewMux()
 	router.Handle("/*", public())
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
+	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
 
 	port := os.Getenv("HTTP_LISTEN_ADDR")
 	slog.Info("application running", "port", port)

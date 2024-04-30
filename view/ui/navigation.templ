@@ -1,23 +1,22 @@
 package ui
 
-import (
-	// "site/view"
-)
-
 templ Navigation() {
 	<div class="navbar bg-base-100 border-b border-gray-700">
 		<div class="flex-1">
 			<a href="/" class="text-2xl font-black text-primary">Welcome!</a>
+		</div>
+		<div class="flex-1">
+			<a href="/" class="text-2xl font-black text-primary">Blog</a>
+		</div>
+		<div class="flex-1">
+			<a href="/" class="text-2xl font-black text-primary">Images</a>
+		</div>
+		<div class="flex-1">
+			<a href="/" class="text-2xl font-black text-primary">About me</a>
 		</div>
 		<div class="flex-none">
 			<ul class="menu menu-horizontal px-1">
 			</ul>
 		</div>
 	</div>
-}
-
-templ LogoutForm() {
-	<form method="POST" action="/logout">
-		<li><button type="submit" class="btn btn-link">Logout</button></li>
-	</form>
 }

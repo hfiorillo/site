@@ -3,7 +3,7 @@ tmp_dir = ".build"
 
 [build]
   bin = "./.build/main"
-  cmd = "templ generate && go build -o ./.build/main main.go"
+  cmd = "templ generate && tailwindcss -i view/css/app.css -o public/styles.css && go build -o ./.build/main main.go"
   delay = 1000
   exclude_dir = ["assets", ".build", "vendor"]
   exclude_file = []

@@ -3,16 +3,5 @@ package home
 import "site/view/layout"
 
 templ Index() {
-	@layout.App(true) {
-		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-			<h1 class="text-5xl font-black leading-[1.2] mb-2">
-				Do whatever you want
-			</h1>
-			<h2 class="text-xl font-semibold mb-6">The start of something good!</h2>
-			<a href="/generate" class="btn btn-primary mb-10">Please proceed<i class="fa-solid fa-arrow-right"></i></a>
-			<div hx-get="/long-process" hx-trigger="load" hx-indicator="#spinner" class="mt-22 text-5xl">
-				<span id="spinner" class="loading loading-ring loading-lg htmx-indicator"></span>
-			</div>
-		</div>
-	}
+	@layout.App(true)
 }

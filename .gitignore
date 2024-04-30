@@ -26,3 +26,5 @@ go.work
 .env
 public/styles.css
 node_modules
+
+*_templ.go
