@@ -41,7 +41,6 @@ func main() {
 
 	port := os.Getenv("HTTP_LISTEN_ADDR")
 	slog.Info("application running", "port", port)
-	// log.Fatal(http.ListenAndServe(port, router))
 
 	server := &http.Server{
 		Addr:         port,
