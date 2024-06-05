@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/hfiorillo/site/view/home"
+	home "github.com/hfiorillo/site/view/home"
 )
 
 // func HandleLongProcess(w http.ResponseWriter, r *http.Request) error {
