@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"embed"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -11,8 +10,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/caarlos0/env"
 	"github.com/hfiorillo/site/handler"
 	"github.com/hfiorillo/site/pkg"
+	"github.com/hfiorillo/site/utils/logging"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -21,15 +22,28 @@ import (
 //go:embed public
 var publicFS embed.FS
 
+// define env vars
+type config struct {
+	Port string `env:"HTTP_LISTEN_ADDR" envDefault:":3001"`
+}
+
 func main() {
+
+	logger := logging.NewJsonLogger()
+
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		slog.Info("no .env file found.")
+	}
+
+	cfg := config{}
+	if err := env.Parse(&cfg); err != nil {
+		logger.Error(err.Error())
 	}
 
 	// load and parse markdown files
 	posts, err := pkg.LoadMarkdownPosts("./content/posts")
 	if err != nil {
-		log.Fatal(err)
+		logger.Error("error loading posts.")
 	}
 
 	postsHandler := handler.NewPostsHandler(posts)
@@ -40,17 +54,15 @@ func main() {
 	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
 	router.Get("/blog", handler.Make(postsHandler.ListBlogPosts))
 
-	port := os.Getenv("HTTP_LISTEN_ADDR")
-
 	server := &http.Server{
-		Addr:         port,
+		Addr:         cfg.Port,
 		Handler:      router,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 
 	go func() {
-		slog.Info("application running", "link: http://localhost"+port)
+		slog.Info("application running", "link: http://localhost"+cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Failed to start server", err)
 		}
