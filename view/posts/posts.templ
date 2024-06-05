@@ -3,21 +3,20 @@ package posts
 import "site/models"
 import "site/view/layout"
 
-templ Posts(blogPosts []models.BlogPost) {
-    @layout.App(true) {}
-        for _, blog := range blogPosts{
-            @BlogCards(blog)
-        }
+templ Posts(posts []models.BlogPost) {
+    @layout.App(true, BlogCards(posts)) {}
 }
 
-templ BlogCards(post models.BlogPost) {
-	<div class="collapse bg-base-200">
-	<input type="radio" name="my-accordion-1" checked="checked" /> 
-	<div class="collapse-title text-xl font-medium">
-		{ post.Title }
-	</div>
-		<div class="collapse-content"> 
-			<p>{ post.Description }</p>
+templ BlogCards(posts []models.BlogPost) {
+		for _, post := range posts{
+		<div class="collapse bg-base-200">
+		<input type="radio" name="my-accordion-1" checked="checked" /> 
+		<div class="collapse-title text-xl font-medium">
+			{ post.Title }
 		</div>
-	</div>
+			<div class="collapse-content"> 
+				<p>{ post.Description }</p>
+			</div>
+		</div>
+	}
 }

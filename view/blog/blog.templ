@@ -1,0 +1,23 @@
+package blog
+
+import "site/view/layout"
+import "site/view/ui"
+import "site/view/posts"
+import "site/models"
+
+
+templ Blog(nav bool) {
+	<!DOCTYPE html>
+	@layout.Header()
+	<html lang="en" data-theme="dark">
+		<body class="antialiased">
+			if nav {
+				@ui.Navigation()
+			}
+			{ children... }
+			<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+            @posts.Posts([]models.BlogPost{})
+			</div>
+		</body>
+	</html>
+}

@@ -29,7 +29,7 @@ func main() {
 	// load and parse markdown files
 	posts, err := pkg.LoadMarkdownPosts("./content/posts")
 	if err != nil {
-		log.Fatal(err) // i think this fatal is ok
+		log.Fatal(err)
 	}
 
 	postsHandler := handler.NewPostsHandler(posts)
@@ -38,9 +38,9 @@ func main() {
 	router.Handle("/*", public())
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
 	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
+	router.Get("/blog", handler.Make(postsHandler.ListBlogPosts))
 
 	port := os.Getenv("HTTP_LISTEN_ADDR")
-	slog.Info("application running", "port", port)
 
 	server := &http.Server{
 		Addr:         port,
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	go func() {
-		slog.Info("application running", "port", port)
+		slog.Info("application running", "link: http://localhost"+port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Failed to start server", err)
 		}

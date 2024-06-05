@@ -17,6 +17,11 @@ func NewPostsHandler(blogPosts []models.BlogPost) PostsHandler {
 	}
 }
 
+// Returns a list of blog posts
 func (p PostsHandler) ListBlogPosts(w http.ResponseWriter, r *http.Request) error {
+	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
+}
+
+func (p PostsHandler) DisplayBlogPosts(w http.ResponseWriter, r *http.Request) error {
 	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
 }

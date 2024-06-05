@@ -3,5 +3,8 @@ package home
 import "site/view/layout"
 
 templ Index() {
-	@layout.App(true)
+	@layout.App(true, Empty())
+}
+
+templ Empty(){
 }
