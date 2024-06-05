@@ -2,8 +2,10 @@ package handler
 
 import (
 	"net/http"
-	"site/models"
-	"site/view/posts"
+
+	"github.com/hfiorillo/site/view/posts"
+
+	"github.com/hfiorillo/site/models"
 )
 
 // Handles things

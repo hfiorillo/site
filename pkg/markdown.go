@@ -5,9 +5,10 @@ import (
 	"html/template"
 	"os"
 	"regexp"
-	"site/models"
 	"strconv"
 	"strings"
+
+	"github.com/hfiorillo/site/models"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"

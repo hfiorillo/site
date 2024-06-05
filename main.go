@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"site/handler"
-	"site/pkg"
+	"github.com/hfiorillo/site/handler"
+	"github.com/hfiorillo/site/pkg"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"

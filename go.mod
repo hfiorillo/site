@@ -1,4 +1,4 @@
-module site
+module github.com/hfiorillo/site
 
 go 1.22.0
 

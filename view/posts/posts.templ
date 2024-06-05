@@ -1,7 +1,7 @@
 package posts
 
-import "site/models"
-import "site/view/layout"
+import "github.com/hfiorillo/site/models"
+import "github.com/hfiorillo/site/view/layout"
 
 templ Posts(posts []models.BlogPost) {
     @layout.App(true, BlogCards(posts)) {}
