@@ -1,12 +1,15 @@
 package models
 
-import "html/template"
+import (
+	"html/template"
+)
 
 type BlogPost struct {
 	Title                   string
 	Slug                    string
 	Parent                  string
 	Content                 template.HTML
+	Main                    string
 	Description             string
 	Order                   int
 	Headers                 []string // for page h2's

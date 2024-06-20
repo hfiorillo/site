@@ -69,6 +69,7 @@ func ParseMarkdownFile(file []byte) (models.BlogPost, error) {
 		Parent:                  parent,
 		Description:             description,
 		Content:                 template.HTML(htmlContent),
+		Main:                    mdContent,
 		Headers:                 headers,
 		Order:                   order,
 		MetaDescription:         metaDescriptionStr,

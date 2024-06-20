@@ -51,7 +51,7 @@ func BlogCards(posts []models.BlogPost) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		for _, post := range posts {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"collapse bg-base-200\"><input type=\"radio\" name=\"my-accordion-1\" checked=\"checked\"><div class=\"collapse-title text-xl font-medium\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"collapse collapse-arrow bg-base-200 flex-1\"><input type=\"radio\" name=\"my-accordion-2\" checked=\"checked\"><div class=\"collapse-title text-2xl font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -64,20 +64,20 @@ func BlogCards(posts []models.BlogPost) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"collapse-content\"><p>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h3 class=\"text-xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Description)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/posts/posts.templ`, Line: 18, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/posts/posts.templ`, Line: 16, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h3></div><div class=\"collapse-content flex-2\"><body><p></p></body></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

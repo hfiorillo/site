@@ -9,13 +9,18 @@ templ Posts(posts []models.BlogPost) {
 
 templ BlogCards(posts []models.BlogPost) {
 		for _, post := range posts{
-		<div class="collapse bg-base-200">
-		<input type="radio" name="my-accordion-1" checked="checked" /> 
-		<div class="collapse-title text-xl font-medium">
+		<div class="collapse collapse-arrow bg-base-200 flex-1">
+		<input type="radio" name="my-accordion-2" checked="checked" /> 
+		<div class="collapse-title text-2xl font-medium">
 			{ post.Title }
+			<h3 class="text-xl">{ post.Description }</h3>
 		</div>
-			<div class="collapse-content"> 
-				<p>{ post.Description }</p>
+			<div class="collapse-content flex-2"> 
+				<body>
+					<p>
+					// TODO: render md content here
+					</p>
+				</body>
 			</div>
 		</div>
 	}

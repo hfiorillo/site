@@ -53,6 +53,8 @@ func main() {
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
 	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
 	router.Get("/blog", handler.Make(postsHandler.ListBlogPosts))
+	router.Get("/images", handler.Make(postsHandler.ListBlogPosts))
+	router.Get("/aboutme", handler.Make(handler.HandleAboutMe))
 
 	server := &http.Server{
 		Addr:         cfg.Port,

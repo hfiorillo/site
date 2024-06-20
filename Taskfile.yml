@@ -5,10 +5,12 @@ tasks:
     - go mod tidy
     - go install github.com/a-h/templ/cmd/templ@latest
     - go install github.com/air-verse/air@latest
-    # need rust/cargo for this, find alternatives?
+    - go get ./...
+    - go mod tidy
+    - go mod download
     - cargo install sleek
-    # - brew install tailwindcss
-    # - pnpm i
+    - npm install -D tailwindcss
+    - npm install -D daisyui@latest
   run:
     cmds:
     - air
