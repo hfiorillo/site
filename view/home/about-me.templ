@@ -1,19 +1,20 @@
 package home
 
 import "github.com/hfiorillo/site/view/layout"
+import "github.com/hfiorillo/site/models"
+import "html/template"
 
-templ AboutMe() {
-	@layout.App(true, Empty())
-    // Avatar
+templ AboutMe(content models.BlogPost) {
+    <div class="bg-base-200 text-base-content">
+	    @layout.App(true, AboutMeMain(content))
+    </div>
+}
 
-    // Contact details
-
-    // Where I work
-
-    // What areas of work i'm interested in
-
-    // Projects i've worked on
-
-    // Places you can find me
-    
+templ AboutMeMain(content models.BlogPost) {
+    <div class="w-full max-w-screen-xl mx-auto py-12 bg-base-200 text-base-content">
+        <h1 class="header">About me</h1>
+        <p>
+            @templ.FromGoHTML(template.Must(template.New("example").Parse(string(content.Content))), "Hello, World!")
+        </p>
+    </div>
 }

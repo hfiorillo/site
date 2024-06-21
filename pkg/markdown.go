@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"errors"
+	"fmt"
 	"html/template"
 	"os"
 	"regexp"
@@ -32,7 +33,7 @@ func LoadMarkdownPosts(dir string) ([]models.BlogPost, error) {
 
 			post, err := ParseMarkdownFile(content)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed parsing markdown file: %w", err)
 			}
 
 			posts = append(posts, post)
@@ -69,7 +70,7 @@ func ParseMarkdownFile(file []byte) (models.BlogPost, error) {
 		Parent:                  parent,
 		Description:             description,
 		Content:                 template.HTML(htmlContent),
-		Main:                    mdContent,
+		HtmlContent:             htmlContent,
 		Headers:                 headers,
 		Order:                   order,
 		MetaDescription:         metaDescriptionStr,

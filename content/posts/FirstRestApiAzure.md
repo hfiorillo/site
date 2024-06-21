@@ -62,7 +62,7 @@ You will need to add the parameters listed below:
 - `clientId : <input your clientId from the Service Principal you created>`
 - `clientSecret: <input your clientSecret from the Service Principal you created>`
 - `subscriptionId : <input your subscriptionId from the Service Principal you created>`
-- `accessTokenURL :  [https://login.microsoftonline.com/{{tenantId}}](https://login.microsoftonline.com/%7B%7BtenantId%7D)}/oauth2/v2.0/token`
+- `accessTokenURL :  [https://login.microsoftonline.com/tenantId](https://login.microsoftonline.com/%7B%7BtenantId%7D)}/oauth2/v2.0/token`
 - `scope : [https://management.azure.com/.default](https://management.azure.com/.default)`
 
 Once done, you can save and call it **Azure** or something similar.

@@ -11,11 +11,10 @@ import "io"
 import "bytes"
 
 import "github.com/hfiorillo/site/view/layout"
-import "github.com/hfiorillo/site/view/ui"
 import "github.com/hfiorillo/site/view/posts"
 import "github.com/hfiorillo/site/models"
 
-func Blog(nav bool) templ.Component {
+func Blog(nav bool, post models.BlogPost) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -39,12 +38,6 @@ func Blog(nav bool) templ.Component {
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\" data-theme=\"dark\"><body class=\"antialiased\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
-		}
-		if nav {
-			templ_7745c5c3_Err = ui.Navigation().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
 		}
 		templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

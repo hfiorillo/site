@@ -1,23 +1,19 @@
 package layout
 
-import "github.com/hfiorillo/site/view/ui"
-
-
 templ App(nav bool, content templ.Component) {
 	<!DOCTYPE html>
 	@Header()
-	// @ui.Sidebar()
+	@Sidebar(MainApp(nav,content))
+}
+
+templ MainApp(nav bool, content templ.Component) {
 	<html lang="en" data-theme="lofi">
-		<body class="antialiased">
-			if nav {
-				@ui.Navigation()
-			}
+		// <body class="antialiased">
 			{ children... }
-			// <div class="w-full max-w-screen-xl mx-auto text-center py-12">
-			<div>
-					@content
+			<div class="w-full max-w-screen-xl mx-auto py-12 bg-base-200 text-base-content">
+				@content
+				@Footer()
 			</div>
-		</body>
+		// </body>
 	</html>
-	@Footer()
 }

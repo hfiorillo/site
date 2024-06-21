@@ -1,19 +1,15 @@
 package blog
 
 import "github.com/hfiorillo/site/view/layout"
-import "github.com/hfiorillo/site/view/ui"
 import "github.com/hfiorillo/site/view/posts"
 import "github.com/hfiorillo/site/models"
 
 
-templ Blog(nav bool) {
+templ Blog(nav bool, post models.BlogPost) {
 	<!DOCTYPE html>
 	@layout.Header()
 	<html lang="en" data-theme="dark">
 		<body class="antialiased">
-			if nav {
-				@ui.Navigation()
-			}
 			{ children... }
 			<div class="w-full max-w-screen-xl mx-auto text-center py-12">
             @posts.Posts([]models.BlogPost{})

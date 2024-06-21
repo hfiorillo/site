@@ -12,7 +12,6 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/hfiorillo/site/handler"
-	"github.com/hfiorillo/site/pkg"
 	"github.com/hfiorillo/site/utils/logging"
 
 	"github.com/go-chi/chi/v5"
@@ -41,12 +40,9 @@ func main() {
 	}
 
 	// load and parse markdown files
-	posts, err := pkg.LoadMarkdownPosts("./content/posts")
-	if err != nil {
-		logger.Error("error loading posts.")
-	}
 
-	postsHandler := handler.NewPostsHandler(posts)
+	postsHandler := handler.NewPostsHandler(logger)
+	generalHandler := handler.NewGeneralHandler(logger)
 
 	router := chi.NewMux()
 	router.Handle("/*", public())
@@ -54,7 +50,7 @@ func main() {
 	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
 	router.Get("/blog", handler.Make(postsHandler.ListBlogPosts))
 	router.Get("/images", handler.Make(postsHandler.ListBlogPosts))
-	router.Get("/aboutme", handler.Make(handler.HandleAboutMe))
+	router.Get("/aboutme", handler.Make(generalHandler.HandleAboutMe))
 
 	server := &http.Server{
 		Addr:         cfg.Port,

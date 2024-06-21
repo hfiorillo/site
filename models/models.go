@@ -9,7 +9,7 @@ type BlogPost struct {
 	Slug                    string
 	Parent                  string
 	Content                 template.HTML
-	Main                    string
+	HtmlContent             []byte
 	Description             string
 	Order                   int
 	Headers                 []string // for page h2's
