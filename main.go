@@ -40,7 +40,6 @@ func main() {
 	}
 
 	// load and parse markdown files
-
 	postsHandler := handler.NewPostsHandler(logger)
 	generalHandler := handler.NewGeneralHandler(logger)
 

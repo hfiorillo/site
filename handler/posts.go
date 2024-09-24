@@ -12,7 +12,6 @@ import (
 
 const postsPath = "./content/posts"
 
-// Handles things
 type PostsHandler struct {
 	BlogPosts []models.BlogPost
 }
