@@ -1,0 +1,21 @@
+package pages
+
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+)
+
+templ AboutMe(content models.BlogPost) {
+	<div class="bg-base-200 text-base-content">
+		@layout.Base()
+	</div>
+}
+
+templ AboutMeMain(content models.BlogPost) {
+	<div class="w-full max-w-screen-xl mx-auto py-12 bg-base-200 text-base-content">
+		<h1 class="header">About me</h1>
+		<div>
+			<p class="">Helloooooo there</p>
+		</div>
+	</div>
+}

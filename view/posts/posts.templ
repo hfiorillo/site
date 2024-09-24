@@ -7,7 +7,7 @@ import (
 )
 
 templ Posts(posts []models.BlogPost) {
-	@layout.App(true, BlogCards(posts))
+	@layout.Base()
 }
 
 templ BlogCards(posts []models.BlogPost) {

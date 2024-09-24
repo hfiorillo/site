@@ -1,9 +1,10 @@
-package blog
+package pages
 
-import "github.com/hfiorillo/site/view/layout"
-import "github.com/hfiorillo/site/view/posts"
-import "github.com/hfiorillo/site/models"
-
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+	"github.com/hfiorillo/site/view/posts"
+)
 
 templ Blog(nav bool, post models.BlogPost) {
 	<!DOCTYPE html>
@@ -12,7 +13,7 @@ templ Blog(nav bool, post models.BlogPost) {
 		<body class="antialiased">
 			{ children... }
 			<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-            @posts.Posts([]models.BlogPost{})
+				@posts.Posts([]models.BlogPost{})
 			</div>
 		</body>
 	</html>

@@ -21,6 +21,9 @@ import (
 //go:embed public
 var publicFS embed.FS
 
+// go:embed content
+var contentFS embed.FS
+
 // define env vars
 type config struct {
 	Port string `env:"HTTP_LISTEN_ADDR" envDefault:":3001"`

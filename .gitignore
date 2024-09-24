@@ -28,3 +28,4 @@ public/styles.css
 node_modules
 
 *_templ.go
+*_templ.**

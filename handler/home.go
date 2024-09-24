@@ -6,7 +6,7 @@ import (
 
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/pkg"
-	"github.com/hfiorillo/site/view/home"
+	"github.com/hfiorillo/site/view/pages"
 )
 
 // func HandleLongProcess(w http.ResponseWriter, r *http.Request) error {
@@ -25,7 +25,7 @@ func NewGeneralHandler(logger *slog.Logger) GeneralHandler {
 
 	aboutMe, err := pkg.LoadMarkdownPosts(aboutMePath)
 	if err != nil {
-		logger.Error("error loading aboutme dir: %s", postsPath)
+		logger.Error("error loading aboutme dir: %s")
 	}
 
 	return GeneralHandler{
@@ -34,9 +34,9 @@ func NewGeneralHandler(logger *slog.Logger) GeneralHandler {
 }
 
 func (h GeneralHandler) HandleAboutMe(w http.ResponseWriter, r *http.Request) error {
-	return home.AboutMe(h.AboutMe).Render(r.Context(), w)
+	return pages.AboutMe(h.AboutMe).Render(r.Context(), w)
 }
 
 func HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
-	return home.Index().Render(r.Context(), w)
+	return pages.Index().Render(r.Context(), w)
 }
