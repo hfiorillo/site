@@ -1,5 +1,5 @@
 title: Kubernetes Pi - Monitoring Pt. 1
-date: 2020-01-24 00:00:00 +0000
+date: 2020-01-24
 categories: 
 - raspberrypi
 tags:
@@ -11,8 +11,7 @@ tags:
 - EFK
 - Prometheus
 published: true
-Description: Discussion of monitoring in Kubernetes clusters, best practices and tooling choices.
-
+description: Discussion of monitoring in Kubernetes clusters, best practices and tooling choices.
 ---
 
 ## Monitoring in Kubernetes

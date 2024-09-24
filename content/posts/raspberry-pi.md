@@ -1,5 +1,5 @@
 title: Raspberry Pi
-date: 2020-01-09 00:00:00 +0000
+date: 2020-01-09
 categories: 
 - raspberrypi
 tags:

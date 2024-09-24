@@ -5,16 +5,20 @@ import (
 	"github.com/hfiorillo/site/view/layout"
 )
 
-templ AboutMe() {
+templ AboutMe(post *models.BlogPost) {
 	@layout.Base() {
-		@AboutMeInner(models.BlogPost{})
+		@AboutMeInner(post)
 	}
 }
 
-// TODO:
-// - Takes input from Markdown file
-templ AboutMeInner(blogPost models.BlogPost) {
-	<div class="bg-base-200 text-base-content">
-		// { blogPost.Content }
+templ AboutMeInner(post *models.BlogPost) {
+	<div id="about-me" class="prose max-w-4xl mx-auto py-10 px-5 bg-base-100 rounded-lg">
+		<div class="text-center mb-8">
+			<h1 class="text-4xl font-bold text-gray-900">{ post.Title }</h1>
+			<p class="text-lg text-gray-600 mt-2">{ post.Description }</p>
+		</div>
+		<div class="text-left">
+			@templ.Raw(post.Content)
+		</div>
 	</div>
 }

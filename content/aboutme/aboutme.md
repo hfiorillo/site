@@ -1,5 +1,5 @@
-Title: About Me
-date:   2024-06-21 00:00:00 +0000
+title: About Me
+date: 2024-06-21
 categories: 
 - aboutme
 tags:
@@ -9,7 +9,7 @@ header:
     overlay_image: 
     overlay_filter: rgba(0, 0, 0, 0.4)
 published: true
-Description: A description about myself.
+description: A description about myself.
 ---
 
 # Bio

@@ -5,10 +5,12 @@ import (
 )
 
 type BlogPost struct {
+	Filename    string
 	Title       string
 	Slug        string
 	Parent      string
 	Content     template.HTML
+	TLDR        template.HTML
 	HtmlContent []byte
 	Description string
 	Order       int

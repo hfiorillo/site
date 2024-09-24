@@ -1,21 +1,56 @@
 package pages
 
 import (
+	"fmt"
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/layout"
 )
 
 templ Blog(posts []*models.BlogPost) {
 	@layout.Base() {
-		for _, post := range posts {
-			<div>
-				<h1>{ post.Title } </h1>
-				<h1>{ post.Metadata.Date }</h1>
-			</div>
-		}
+		<div id="blog-base">
+			for _, post := range posts {
+				@BlogCard(post)
+			}
+		</div>
 	}
 }
 
 // Button that when clicked replaced the current HTML with the blog itself?
-templ BlogCard() {
+templ BlogCard(post *models.BlogPost) {
+	<div id={ fmt.Sprintf("blog-card-%s", post.Filename) } class="w-full mb-5 bg-base-100 border border-gray-300 dark:fill-pink-500 p-3">
+		<a href="#" class="cursor-pointer" hx-get={ fmt.Sprintf("/blog/%s", post.Filename) } hx-trigger="click" hx-target="#blog-base" hx-swap="outerHTML">
+			<div class="text-base-content">
+				<h1 class="text-2xl font-semibold hover:text-primary">{ post.Title }</h1>
+				<p class="text-gray-600 mt-2">{ post.Description }</p>
+				<p class="text-gray-500 mt-1">Date: { post.Metadata.Date }</p>
+			</div>
+		</a>
+	</div>
+}
+
+templ BlogPage(post *models.BlogPost) {
+	<div class="prose max-w-4xl mx-auto py-10 px-5 bg-base-100 rounded-lg">
+		<div>
+			<h1>
+				{ post.Title }
+			</h1>
+			<h3>
+				{ post.Description }
+				// <br/>
+			</h3>
+			<p>
+				{ post.Metadata.Date }
+			</p>
+			for _, tag := range post.Metadata.Tags {
+				<tags>
+					{ tag }
+				</tags>
+			}
+		</div>
+		<div class="divider"></div>
+		<div>
+			@templ.Raw(post.Content)
+		</div>
+	</div>
 }

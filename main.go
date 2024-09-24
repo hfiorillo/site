@@ -49,6 +49,7 @@ func main() {
 	// router.Handle("/*", http.FileServerFS(contentFS))
 	router.Get("/", handler.Make(pageHandler.HandleIndexPage))
 	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
+	router.Get("/blog/{filename}", handler.Make(pageHandler.HandleBlogPostPage))
 	router.Get("/aboutme", handler.Make(pageHandler.HandleAboutMePage))
 
 	server := &http.Server{

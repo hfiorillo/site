@@ -1,5 +1,5 @@
 title: Kubernetes Pi - Ingress
-date: 2020-01-24 00:00:00 +0000
+date: 2020-01-19
 categories:
 - raspberrypi
 tags:

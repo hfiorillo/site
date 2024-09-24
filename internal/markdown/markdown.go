@@ -3,36 +3,74 @@ package markdown
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"html/template"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/hfiorillo/site/models"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"gopkg.in/yaml.v2"
 )
 
-func LoadMarkdownPosts(dir string) ([]*models.BlogPost, error) {
+const contentDir string = "./content"
+
+// Returns markdown parser with extensions
+func NewGoldMarkParser() goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("dracula"),
+			),
+		),
+	)
+}
+
+// Loads a given markdown post from the posts directory
+func LoadMarkdownPost(fileName string) (*models.BlogPost, error) {
+
+	path := contentDir + fileName + ".md"
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	post, err := ParseMarkdownFile(content)
+	if err != nil {
+		return nil, err
+	}
+
+	post.Filename = fileName
+
+	return post, nil
+}
+
+// Loads all the markdown posts in the posts directory
+func LoadMarkdownPosts() ([]*models.BlogPost, error) {
 	var posts []*models.BlogPost
-	files, err := os.ReadDir(dir)
+
+	postsDir := contentDir + "/posts"
+
+	files, err := os.ReadDir(postsDir)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".md") {
-			path := dir + "/" + file.Name()
+			path := postsDir + "/" + file.Name()
 			content, err := os.ReadFile(path)
 			if err != nil {
 				return nil, err
 			}
 
-			// fmt.Println(file)
 			post, err := ParseMarkdownFile(content)
 			if err != nil {
-				return nil, fmt.Errorf("failed parsing markdown file: %w", err)
+				return nil, err
 			}
+
+			post.Filename = strings.Trim(file.Name(), ".md")
 
 			posts = append(posts, post)
 		}
@@ -56,10 +94,17 @@ func ParseMarkdownFile(file []byte) (*models.BlogPost, error) {
 
 	// Convert markdown to HTML using goldmark
 	var buf bytes.Buffer
-	md := goldmark.New()
+	md := NewGoldMarkParser()
 	if err := md.Convert(sections[1], &buf); err != nil {
 		return nil, err
 	}
+
+	d, err := time.Parse("2006-01-02", metadata.Date)
+	if err != nil {
+		return nil, err
+	}
+
+	metadata.Date = d.Format("2006-01-02")
 
 	// Populate BlogPost struct
 	blogPost := &models.BlogPost{

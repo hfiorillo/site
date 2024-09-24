@@ -1,15 +1,15 @@
-Title: Your first REST API Call in Azure
-Date: 2020-06-10 00:00:00 +0000
-Categories: 
+title: Your first REST API Call in Azure
+date: 2020-06-10
+categories: 
 - azure
-Tags:
+tags:
 - azure
 - public cloud
 - REST APIs
 - devops
 - scripts
-Published: true
-Description: An introduction to Azure's REST API and a walkthrough demo.
+published: true
+description: An introduction to Azure's REST API and a walkthrough demo.
 ---
 
 In todays post, we're going to make a REST API call, both GET and PUT, towards an Azure API using an Azure API and a VS Code Extension called [Thunder Client](https://www.thunderclient.io/).

@@ -1,9 +1,12 @@
 package pages
 
-import "github.com/hfiorillo/site/view/layout"
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+)
 
 templ Index() {
 	@layout.Base() {
-		@AboutMe()
+		@AboutMe(&models.BlogPost{})
 	}
 }
