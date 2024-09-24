@@ -1,18 +1,13 @@
-Title: Raspberry Pi
-date:   2020-01-09 00:00:00 +0000
+title: Raspberry Pi
+date: 2020-01-09 00:00:00 +0000
 categories: 
-    - raspberrypi
+- raspberrypi
 tags:
-    - compute
-    - raspberry pi
-    - single-board computers
-classes: wide
-toc: true
-header: 
-    overlay_image: /img/raspberry-pi-logo.jpg 
-    overlay_filter: rgba(0, 0, 0, 0.4)
+- compute
+- raspberrypi
+- single-board computers
 published: true
-Description: A brief introduction to the Raspberry Pi Foundation and their latest single board computer.
+description: A brief introduction to the Raspberry Pi Foundation and their latest single board computer.
 ---
 
 **What is Raspberry Pi?**

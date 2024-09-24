@@ -1,20 +1,15 @@
-Title: Kubernetes Pi: Monitoring Pt. 1
+title: Kubernetes Pi - Monitoring Pt. 1
 date: 2020-01-24 00:00:00 +0000
 categories: 
-    - raspberrypi
+- raspberrypi
 tags:
-    - cluster
-    - raspberry pi
-    - kubernetes
-    - monitoring
-    - grafana
-    - EFK
-    - Prometheus
-classes: wide
-toc: true
-header: 
-    overlay_image: assets/images/kubernetes/monitoring/monitoroverlay.png 
-    overlay_filter: rgba(0, 0, 0, 0.4)
+- cluster
+- raspberry pi
+- kubernetes
+- monitoring
+- grafana
+- EFK
+- Prometheus
 published: true
 Description: Discussion of monitoring in Kubernetes clusters, best practices and tooling choices.
 

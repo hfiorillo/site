@@ -3,8 +3,7 @@ package pages
 import "github.com/hfiorillo/site/view/layout"
 
 templ Index() {
-	@layout.Base()
-}
-
-templ Empty() {
+	@layout.Base() {
+		@AboutMe()
+	}
 }

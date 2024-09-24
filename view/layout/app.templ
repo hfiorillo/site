@@ -13,14 +13,12 @@ templ Base() {
 			<link rel="icon" type="image/x-icon" href="/public/icon.svg"/>
 		</head>
 		<body>
-			<main>
+			<main class="p-6">
 				@sidemenu.Sidemenu() {
 					{ children... }
 				}
 			</main>
 		</body>
-		<footer>
-			@Footer()
-		</footer>
+		<footer></footer>
 	</html>
 }

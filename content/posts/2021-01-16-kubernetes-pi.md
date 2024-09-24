@@ -1,19 +1,14 @@
-Title: Kubernetes Pi: k3s and Ansible
-date:   2020-01-16 00:00:00 +0000
+title: Kubernetes Pi - k3s and Ansible
+date: 2020-01-16 00:00:00 +0000
 categories: 
-    - raspberrypi
+- raspberrypi
 tags:
-    - cluster
-    - raspberry pi
-    - kubernetes
-    - automation
-classes: wide
-toc: true
-header: 
-    overlay_image: /img/kubernetes/k8s-pi.jpg 
-    overlay_filter: rgba(0, 0, 0, 0.4)
+- cluster
+- raspberrypi
+- kubernetes
+- automation
 published: true
-Description: A how-to on deploying Kubernetes using k3s and Ansible to a Raspberry Pi cluster.
+description: A how-to on deploying Kubernetes using k3s and Ansible to a Raspberry Pi cluster.
 ---
 
 # Kubernetes on Raspberry Pi

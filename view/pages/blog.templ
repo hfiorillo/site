@@ -3,18 +3,19 @@ package pages
 import (
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/layout"
-	"github.com/hfiorillo/site/view/posts"
 )
 
-templ Blog(nav bool, post models.BlogPost) {
-	<!DOCTYPE html>
-	@layout.Header()
-	<html lang="en" data-theme="dark">
-		<body class="antialiased">
-			{ children... }
-			<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-				@posts.Posts([]models.BlogPost{})
+templ Blog(posts []*models.BlogPost) {
+	@layout.Base() {
+		for _, post := range posts {
+			<div>
+				<h1>{ post.Title } </h1>
+				<h1>{ post.Metadata.Date }</h1>
 			</div>
-		</body>
-	</html>
+		}
+	}
+}
+
+// Button that when clicked replaced the current HTML with the blog itself?
+templ BlogCard() {
 }

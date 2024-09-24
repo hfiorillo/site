@@ -21,7 +21,7 @@ import (
 //go:embed public
 var publicFS embed.FS
 
-// go:embed content
+//go:embed content
 var contentFS embed.FS
 
 // define env vars
@@ -42,17 +42,14 @@ func main() {
 		logger.Error(err.Error())
 	}
 
-	// load and parse markdown files
-	postsHandler := handler.NewPostsHandler(logger)
-	generalHandler := handler.NewGeneralHandler(logger)
+	pageHandler := handler.NewPageHandler(logger)
 
 	router := chi.NewMux()
 	router.Handle("/*", public())
-	router.Get("/", handler.Make(handler.HandleHomeIndex))
-	router.Get("/", handler.Make(postsHandler.ListBlogPosts))
-	router.Get("/blog", handler.Make(postsHandler.ListBlogPosts))
-	router.Get("/images", handler.Make(postsHandler.ListBlogPosts))
-	router.Get("/aboutme", handler.Make(generalHandler.HandleAboutMe))
+	// router.Handle("/*", http.FileServerFS(contentFS))
+	router.Get("/", handler.Make(pageHandler.HandleIndexPage))
+	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
+	router.Get("/aboutme", handler.Make(pageHandler.HandleAboutMePage))
 
 	server := &http.Server{
 		Addr:         cfg.Port,

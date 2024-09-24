@@ -1,19 +1,14 @@
-Title: Kubernetes Pi: Ingress
+title: Kubernetes Pi - Ingress
 date: 2020-01-24 00:00:00 +0000
 categories:
-    - raspberrypi
+- raspberrypi
 tags:
-    - cluster
-    - raspberry pi
-    - kubernetes
-    - ingress
-classes: wide
-toc: true
-header: 
-    overlay_image: /img/kubernetes/traefik.jpg 
-    overlay_filter: rgba(0, 0, 0, 0.4)
+- cluster
+- raspberry pi
+- kubernetes
+- ingress
 published: true
-Description: A brief explanation of Kubernetes Ingress and demo on k3s.
+description: A brief explanation of Kubernetes Ingress and demo on k3s.
 ---
 
 This blog post is one in a series of posts about my experiences of deploying kubernetes to a Raspberry Pi cluster, if you haven't seen the others i'd advise checking them out [here](http://hfiorillo.github.io/). Today's blog, is more of a precursor to what is coming next.

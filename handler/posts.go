@@ -1,38 +1,28 @@
 package handler
 
-import (
-	"log/slog"
-	"net/http"
+// const postsPath = "./content/posts"
 
-	"github.com/hfiorillo/site/pkg"
-	"github.com/hfiorillo/site/view/posts"
+// type PostsHandler struct {
+// 	BlogPosts []models.BlogPost
+// }
 
-	"github.com/hfiorillo/site/models"
-)
+// func NewPostsHandler(logger *slog.Logger) PostsHandler {
 
-const postsPath = "./content/posts"
+// 	posts, err := markdown.LoadMarkdownPosts(postsPath)
+// 	if err != nil {
+// 		logger.Error("error loading markdown posts dir: %s", postsPath)
+// 	}
 
-type PostsHandler struct {
-	BlogPosts []models.BlogPost
-}
+// 	return PostsHandler{
+// 		BlogPosts: posts,
+// 	}
+// }
 
-func NewPostsHandler(logger *slog.Logger) PostsHandler {
+// // Returns a list of blog posts
+// func (p PostsHandler) ListBlogPosts(w http.ResponseWriter, r *http.Request) error {
+// 	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
+// }
 
-	posts, err := pkg.LoadMarkdownPosts(postsPath)
-	if err != nil {
-		logger.Error("error loading markdown posts dir: %s", postsPath)
-	}
-
-	return PostsHandler{
-		BlogPosts: posts,
-	}
-}
-
-// Returns a list of blog posts
-func (p PostsHandler) ListBlogPosts(w http.ResponseWriter, r *http.Request) error {
-	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
-}
-
-func (p PostsHandler) DisplayBlogPosts(w http.ResponseWriter, r *http.Request) error {
-	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
-}
+// func (p PostsHandler) DisplayBlogPosts(w http.ResponseWriter, r *http.Request) error {
+// 	return posts.Posts(p.BlogPosts).Render(r.Context(), w)
+// }

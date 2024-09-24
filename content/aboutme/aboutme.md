@@ -1,25 +1,20 @@
 Title: About Me
 date:   2024-06-21 00:00:00 +0000
 categories: 
-    - aboutme
+- aboutme
 tags:
-    - aboutme
-    - engineering
-classes: wide
-toc: true
+- aboutme
+- engineering
 header: 
     overlay_image: 
     overlay_filter: rgba(0, 0, 0, 0.4)
 published: true
 Description: A description about myself.
-
 ---
 
 # Bio
 
-Avatar
-
-I currently live in Manchester, UK and work at Total Processing. I'm a DevOps engineering and previously studied at Bristol's UWE.
+I currently live in Manchester, UK and work at Total Processing where I am a DevOps engineer.
 
 Email: [harryhughes13@gmail.com](harryhughes13@gmail.com)
 
