@@ -60,6 +60,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ env.GAR_LOCATION }}
+        run: |
+          echo "$SUPER_SECRET"
+
       - name: Google Auth
         id: auth
         uses: 'google-github-actions/auth@v2'
