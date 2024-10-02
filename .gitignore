@@ -24,7 +24,6 @@ go.work
 .DS_STORE
 .build
 .env
-public/styles.css
 node_modules
 
 *_templ.go
