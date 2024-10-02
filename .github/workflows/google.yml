@@ -65,6 +65,7 @@ jobs:
           SUPER_SECRET: ${{ env.GAR_LOCATION }}
         run: |
           echo "$SUPER_SECRET"
+          printenv
 
       - name: Google Auth
         id: auth
