@@ -34,7 +34,7 @@ jobs:
         #   registry: '${{ vars.GAR_LOCATION }}-docker.pkg.dev'
         uses: docker/login-action@v3
         with:
-          registry: gcr.io
+          registry: '${{ vars.GAR_LOCATION }}-docker.pkg.dev'
           username: _json_key
           password: ${{ secrets.GCP_CREDENTIALS }}
 
