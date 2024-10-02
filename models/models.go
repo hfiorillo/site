@@ -2,6 +2,7 @@ package models
 
 import (
 	"html/template"
+	"time"
 )
 
 type BlogPost struct {
@@ -9,6 +10,7 @@ type BlogPost struct {
 	Title       string
 	Slug        string
 	Parent      string
+	Date        time.Time
 	Content     template.HTML
 	TLDR        template.HTML
 	HtmlContent []byte

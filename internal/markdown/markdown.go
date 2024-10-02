@@ -5,6 +5,7 @@ import (
 	"errors"
 	"html/template"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -76,6 +77,9 @@ func LoadMarkdownPosts() ([]*models.BlogPost, error) {
 		}
 	}
 
+	// Sort posts by date
+	sort.Slice(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
+
 	return posts, nil
 }
 
@@ -104,11 +108,10 @@ func ParseMarkdownFile(file []byte) (*models.BlogPost, error) {
 		return nil, err
 	}
 
-	metadata.Date = d.Format("2006-01-02")
-
 	// Populate BlogPost struct
 	blogPost := &models.BlogPost{
 		Title:       metadata.Title,
+		Date:        d,
 		Description: metadata.Description,
 		HtmlContent: buf.Bytes(),
 		Content:     template.HTML(buf.String()), // For use in templates
