@@ -4,12 +4,15 @@ ARG GO_VERSION=1.22
 # STAGE 1: building the executable
 FROM golang:${GO_VERSION}-alpine AS build
 
-ENV CGO_ENABLED 0
+ENV CGO_ENABLED=0
 
 WORKDIR /src
 COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY ./ ./
+
+RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN templ generate
 
 # Build the executable
 RUN CGO_ENABLED=0 go build \
