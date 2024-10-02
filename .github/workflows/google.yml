@@ -54,8 +54,8 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-
     runs-on: ubuntu-latest
+    environment: google
     steps:
       - name: Checkout
         uses: actions/checkout@v2
