@@ -48,11 +48,11 @@ on:
   push:
     branches: ["main"]
 
-env:
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GAR_LOCATION: ${{ secrets.GAR_LOCATION }}
-  SERVICE: ${{ secrets.SERVICE }}
-  REGION: ${{ secrets.REGION }}
+# env:
+#   PROJECT_ID: ${{ env.PROJECT_ID }}
+#   GAR_LOCATION: ${{ secrets.GAR_LOCATION }}
+#   SERVICE: ${{ secrets.SERVICE }}
+#   REGION: ${{ secrets.REGION }}
 
 jobs:
   deploy:
