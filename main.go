@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"embed"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -46,7 +47,6 @@ func main() {
 
 	router := chi.NewMux()
 	router.Handle("/*", public())
-	// router.Handle("/*", http.FileServerFS(contentFS))
 	router.Get("/", handler.Make(pageHandler.HandleIndexPage))
 	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
 	router.Get("/blog/{filename}", handler.Make(pageHandler.HandleBlogPostPage))
@@ -60,9 +60,9 @@ func main() {
 	}
 
 	go func() {
-		slog.Info("application running", "link: http://localhost"+cfg.Port)
+		slog.Info(fmt.Sprintf("application running: http://localhost%s", cfg.Port))
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			slog.Error("Failed to start server", err)
+			logging.ErrAttr(err)
 		}
 	}()
 
