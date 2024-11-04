@@ -48,7 +48,6 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 }
 
 func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) error {
-
 	post, err := markdown.LoadMarkdownPost(fmt.Sprintf("/posts/%s", chi.URLParam(r, "filename")))
 	if err != nil {
 		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
