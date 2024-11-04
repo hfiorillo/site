@@ -28,3 +28,5 @@ node_modules
 
 *_templ.go
 *_templ.**
+
+content/posts/archive/*
