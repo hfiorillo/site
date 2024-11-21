@@ -9,15 +9,15 @@ type BlogPost struct {
 	Filename    string
 	Title       string
 	Slug        string
-	Parent      string
+	Description string
 	Date        time.Time
 	Content     template.HTML
-	TLDR        template.HTML
-	HtmlContent []byte
-	Description string
-	Order       int
-	Headers     []string // for page h2's
+	Headers     Headers
 	Metadata    Metadata
+	Order       int
+	// HtmlContent []byte
+	// Parent      string
+	// TLDR        template.HTML
 }
 
 // Metadata represents the YAML front matter
@@ -34,6 +34,19 @@ type Metadata struct {
 	} `yaml:"header"`
 	Published   bool   `yaml:"published"`
 	Description string `yaml:"description"`
+}
+
+// Headers within headers
+type Headers struct {
+	TopLevel []struct { // #
+		Headers  string
+		MidLevel []struct { // ##
+			Headers     string
+			BottomLevel []struct { // ###
+				Headers string
+			}
+		}
+	}
 }
 
 type SidebarData struct {

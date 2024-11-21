@@ -12,17 +12,15 @@ published: true
 
 # About Me
 
-I currently live in Manchester, UK, and I work as a DevOps Engineer at Total Processing (a fintech company), though I often end up wearing many hats. My current tech stack revolves around GCP, Kubernetes, and Golang. I use a wide variety of tools to complement those core products and tend to be fairly agnostic when it comes to tooling, programming languages, or public cloud preferences.
+I work as a DevOps Engineer at Total Processing (a fintech company) where i've worked on a whole host of different projects (see my professional experience below for more info). My humble beginnings do not lie in tech; I actually have a degree in Economics! Fortunately for me, I was more interested in the Economicmetrics, data science and programming side of my degree.
 
-My humble beginnings do not lie in tech; I actually have a degree in Economics! I didn’t even make it to the end of my degree before realizing the world of Economics wasn’t for me. After being increasingly drawn to my friends studying computer science, I began teaching myself about the world of tech.
-
-Most of my experience lies within DevOps and Platform Engineering. Recently, my work has focused on Platform Engineering — building internal tools and improving DevEx for our developers. While I’ve been building tools to automate tasks throughout my career, there’s a clear distinction between tools I’ve built on a whim to fix issues at a point in time (i.e., a simple log-sink monitoring alert system) versus solving an underlying problem for a team through a fully-fledged application. I thoroughly enjoy doing both!
+Most of my professional experience lies within DevOps and Platform Engineering. More recently, work has been focused more around Platform Engineering — namely, building internal tools and improving DevEx for our developers.
 
 ## Professional Experience
 
 **Total Processing - DevOps Engineer (Sept. 2022 - Present)**
-- In-house DevOps Engineer embedded in a small team of developers.
-- Strong philosophy around the idea of 'shifting left' and moving towards trunk based development for our software engineers.
+- In-house DevOps Engineer embedded in a small team of DevOps engineers and developers.
+- Strong advocates of the idea of 'shifting left' and moving towards trunk based development for our software engineers.
 - End-to-end deployment and management of kubernetes clusters and the production services on them using Argo, IAC (Golang + Pulumi) and a whole host of cutting edge tools.
 - Worked across the full stack when building applications with a focus on backend work and mainly using Golang.
 - Key projects worked on:
@@ -39,7 +37,7 @@ Most of my experience lies within DevOps and Platform Engineering. Recently, my 
   - Designed and created a Trusted Research Environment for Data Scientists (Azure Compute, Terraform, .NET).
   - Large scale self-hosted GitLab deployment on Kubernetes with the aim of improving DevEx across siloed engineering teams (AWS EKS, Terraform, Monitoring and Alerting, Complex networking).
 
-**ANS Group - Technical Analyst (Sept. 2020 to Sept. 2021)**
+**ANS Group - Technical Analyst (Sept. 2020 - Sept. 2021)**
 - 2nd and 3rd line managed services support across On-prem, AWS and Azure.
 - Built automation tools for other engineers using Powershell & Azure Logic Apps.
 - Worked with:

@@ -1,0 +1,27 @@
+package pages
+
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+)
+
+templ AboutMe(post *models.BlogPost) {
+	@layout.Base() {
+		@AboutMeInner(post)
+	}
+}
+
+templ AboutMeInner(post *models.BlogPost) {
+	<div
+		id="about-me"
+		class="relative flex flex-col sm:flex-row sm:justify-center sm:items-start min-h-screen bg-base-100"
+	>
+		<div
+			class="prose mx-auto px-4 py-6 sm:px-8 sm:max-w-2xl bg-base-100 rounded-lg"
+		>
+			<div>
+				@templ.Raw(post.Content)
+			</div>
+		</div>
+	</div>
+}

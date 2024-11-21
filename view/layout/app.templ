@@ -9,16 +9,19 @@ templ Base() {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<script src="https://unpkg.com/htmx.org@2.0.2"></script>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap"/>
 			<link rel="stylesheet" href="/public/styles.css"/>
 			<link rel="icon" type="image/x-icon" href="/public/fish.svg"/>
 		</head>
-		<body>
-			<main class="p-6">
+		<body
+			style="font-family:'Merriweather', Georgia, 'Times New Roman', Times, serif"
+			class="flex items-center justify-center min-h-screen"
+		>
+			<main class="p-4">
 				@sidemenu.Sidemenu() {
 					{ children... }
 				}
 			</main>
 		</body>
-		<footer></footer>
 	</html>
 }
