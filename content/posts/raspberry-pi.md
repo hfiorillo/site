@@ -10,7 +10,7 @@ published: true
 description: A brief introduction to the Raspberry Pi Foundation and their latest single board computer.
 ---
 
-**What is Raspberry Pi?**
+## **What is Raspberry Pi?**
 
 The Rapsberry Pi foundation is a educational charity founded by [Eben Upton](https://en.wikipedia.org/wiki/Eben_Upton) in 2008. Its humble roots began as a means of inpsiring young children in an approachable yet practical manner to turn to 'computers'. In the hopes that generations to come will pursue studying computer science in further education, thus filling the large skills gap at the time. In essence the foundation produces low cost single-board comptuers (a complete computer built on a single circuit board) but, since its first public release in 2012 it has become much more than an electronics manufacturer. After the intial release of the Raspberry Pi the foundation had huge [success](https://www.theguardian.com/technology/2015/feb/18/raspberry-pi-becomes-best-selling-british-computer), the product sold out and had an amazing [community](https://www.raspberrypi.org/community/) response. Today, the Pi foundation has gone above and beyond what it first set out to do, now at the forefront of a huge [global movement](https://www.raspberrypi.org/stories/), inspiring and helping young people all over the world learn about computing. Code Club and CoderDojo are part of the foundation althought these programs are separate from the Raspberry Pi hardware, these are clubs aim to ensure every child has the opportunity to access learning about computing.
 
@@ -18,7 +18,7 @@ Raspberry Pi operates in the open source ecosystem; running linux, its main supp
 
 [Here](https://www.youtube.com/watch?v=AUq7iyT9Hcg&t=1677s&ab_channel=RMC-TheCave) is a great interview of Eben Upton by Retro Man Cave (RMC) where Eben talks in length about the evolution of the Pi foundation, from its fantastic origin story to where the foundation sees itself in the future.
 
-**Technical Specifications of Raspberry Pi**
+### **Technical Specifications of Raspberry Pi**
 
 Currently, there a wide variety of different Raspberry Pi computers to choose from. Each one fits a specific purpose be it price, size, compute power and accessiblity. I'll mainly be focusing on the Rapsberry Pi 4B which at the time of writing this is the latest and most powerful release from the foundation. Each Pi however, has at its core, like any 'normal' computer, a cpu, gpu, ram which make up the compute processes of the device. Where each generation of Pi compute units see huge improvements to performance, device architecture, memory speeds and display output.
 
@@ -27,7 +27,7 @@ The specs of the latest Pi model, the Raspberry Pi 4B, it has a 1.5-Ghz Broadcom
 Raspberry Pi 4B (mine has small heat sinks on the Pi for cooling):
 ![A picture of my Raspberry Pi 4B](/img/raspberry-pi4b-1.jpg)
 
-**Operating sytem** 
+### **Operating sytem** 
 
 The Rapsberry Pi foundation, along with the Open Source commuity, have developed a number of [operating systems](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit) for their devices; their standard Raspberry Pi OS, previously known as Raspbian OS, being based on Debian and is extremely well optimised for the Raspberry Pi hardware. Raspberry Pi OS comes with over 35,000 packages: pre-compiled software bundle in a format that makes for easy installation and Bookshelf: a collection of the Free PDFs released by the publishing company Raspberry Pi Press which automates automatically for each new release from a number of their press outlets; MagPi, Hackspace and Wireframe. All of which contain useful information on the latest computing hardware, projects and tutorials.
 
@@ -35,7 +35,7 @@ A number of 3rd parties have developed well optimised Raspbery Pi Operating Syst
 
 As the raspberry Pi boots from the Micro SD inserted into the card reader, this means you can have different OS' on different micro SD cards  from that allows you to have multiple uses for a single Pi or have multiple Pi's with a single use (see [Kubernetes on Pi](https://ubuntu.com/tutorials/how-to-kubernetes-cluster-on-raspberry-pi#1-overview), more on that later).
 
-**What do you need to get started?**
+## **What do you need to get started?**
 
 All the parts separately:
 
@@ -55,7 +55,7 @@ Once you have all the necessary parts, make sure you flash the correct operating
 
 Well what are you waiting for? Get started! [Here](https://projects.raspberrypi.org/en/projects) is an exhaustive list of the all the official Raspberry Pi projects.
 
-**What do I plan to do with the Raspberry Pi?**
+### **What do I plan to do with the Raspberry Pi?**
 
 I have a number of projects in mind for the Raspberry Pi so keep your eyes peeled:
 

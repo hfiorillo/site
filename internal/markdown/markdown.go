@@ -77,12 +77,14 @@ func LoadMarkdownPosts() ([]*models.BlogPost, error) {
 		}
 	}
 
+	// TODO: maintain an order based on dates
 	// Sort posts by date
 	sort.Slice(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
 
 	return posts, nil
 }
 
+// TODO: refactor
 // Accepts markdown file - parses and returns a BlogPost
 func ParseMarkdownFile(file []byte) (*models.BlogPost, error) {
 	sections := bytes.SplitN(file, []byte("---"), 2)
@@ -103,35 +105,21 @@ func ParseMarkdownFile(file []byte) (*models.BlogPost, error) {
 		return nil, err
 	}
 
-	d, err := time.Parse("2006-01-02", metadata.Date)
+	// TODO: fix date
+	date, err := time.Parse("2006-01-02", metadata.Date)
 	if err != nil {
 		return nil, err
 	}
 
-	// Populate BlogPost struct
+	// Piece together blog post
 	blogPost := &models.BlogPost{
 		Title:       metadata.Title,
-		Date:        d,
+		Date:        date,
 		Description: metadata.Description,
-		HtmlContent: buf.Bytes(),
 		Content:     template.HTML(buf.String()), // For use in templates
 		Metadata:    metadata,
+		Headers:     parseHeaders(sections[1]),
 	}
-
-	// Parse headers (H2) from the markdown content
-	blogPost.Headers = extractHeaders(sections[1])
 
 	return blogPost, nil
-}
-
-// Function to extract headers (h2) from the markdown content
-func extractHeaders(content []byte) []string {
-	lines := strings.Split(string(content), "\n")
-	var headers []string
-	for _, line := range lines {
-		if strings.HasPrefix(line, "## ") { // Assuming H2 headers start with "## "
-			headers = append(headers, strings.TrimPrefix(line, "## "))
-		}
-	}
-	return headers
 }

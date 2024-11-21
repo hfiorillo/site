@@ -22,6 +22,11 @@ var items = []struct {
 		Path: "/aboutme",
 		Img:  "",
 	},
+	// {
+	// 	Name: "Pictures",
+	// 	Path: "/pcitures",
+	// 	Img:  "",
+	// },
 }
 
 // TODO: Add theme controller
@@ -32,7 +37,7 @@ templ Sidemenu() {
 				<ul class="menu p-4 w-40 min-h-full text-base-content">
 					<li class="mb-6">
 						<div class="avatar w-36">
-							<img src="public/images/avatar.jpg" alt="Profile"/>
+							<img src="/public/images/avatar.jpg" alt="Profile"/>
 						</div>
 					</li>
 					for _, v := range items {
@@ -62,7 +67,7 @@ templ Sidemenu() {
 				</ul>
 			</div>
 		</aside>
-		<div class="p-4 sm:ml-64 h-full">
+		<div class="p-4 h-full">
 			<div class="">
 				{ children... }
 			</div>

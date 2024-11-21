@@ -16,17 +16,17 @@ In todays post, we're going to make a REST API call, both GET and PUT, towards a
 
 Thunder Client is a lightweight extension built for VS Code and is perfect for making a first API call, for those interested in more functionality and detail you can look at [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/).
 
-### But first, why use REST API calls when working with Public Cloud? 💭
+## But first, why use REST API calls when working with Public Cloud? 💭
 
 The more popular public cloud infrastructure becomes the important it becomes to manage at scale, whilst GUI's provide ample means to do so functionality can become limited and there are often problems that cannot be solved at scale through the portal without manual labour. We don't like manual labour in the cloud, instead we automate! We can do so by making use of REST API's. Learning to interact with resources via API requests, like IaC, can add another weapon to your arsenal when configuring, managing and creating cloud infrastructure. It is increasinly important to understand how to interact with REST API's as this can allow you to interact with them on a more complex level; perhaps incorporating them into scripts, applications or pipelines. What makes REST APIs so powerful is their flexibility and scalability, you are able to return a variety of resource information, make changes to resources and even create resources, through what is actually a very simple process (the API does all the hard work). REST APIs aren't limited to Azure, all major public cloud providers have their own functional API (AWS, Azure, Google Cloud & others!) and due to their standardised nature, the ability to interact with one can can help prepare you for the possibility your business goes multi-cloud!
 
 # Your first REST API Call 👋
 
-### Thunder Client
+## Thunder Client
 
 To get started with [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) simply install the VS Code extension from the Extensions Marketplace and you're set.
 
-### Service Principal Creation
+## Service Principal Creation
 
 To do this we can use the az cli to make a service principal with contributor permissions.
 
@@ -40,7 +40,7 @@ To do this we can use the az cli to make a service principal with contributor pe
 
 3. Save the JSON output!
 
-### Creating our Azure Environment in Thunder Client
+## Creating our Azure Environment in Thunder Client
 
 1. In Thunder Client we will need to create a new Env which we will call Azure.
 2. Click on the Thunder Client VS Code Icon on the left hand side, select **Env** and then the 3 lines here you can create a new Environment.
@@ -58,7 +58,7 @@ You will need to add the parameters listed below:
 
 Once done, you can save and call it **Azure** or something similar.
 
-### Lets generate our OAuth 2.0 Token
+## Lets generate our OAuth 2.0 Token
 
 1. In Thunder Client, click 'New Request'
 
@@ -86,7 +86,7 @@ You should now be able to generate a token!
 
 If you interested in the breakdown of the token you can paste it into here [https://jwt.ms/](https://jwt.ms/) a JSON Web Token decoder and take a look!
 
-### Now lets call the API
+## Now lets call the API
 
 1. To find the REST API you wish to call, you can head to [https://resources.azure.com/](https://resources.azure.com/) or look take a look at the [Microsoft documentation](https://docs.microsoft.com/en-us/rest/api/resources/resources) for each API operation.
 2. Next locate the API URI (Uniform Resource Idenifier) it should look something like this: `` https://management.azure.com/subscriptions/<Subscription-ID>?api-version=2014-04-01 ``
@@ -100,7 +100,7 @@ If you interested in the breakdown of the token you can paste it into here [http
 
     ![/img/your-first-api-request/statuscode.png](/img/your-first-api-request/statuscode.png)
 
-### Great... Now what?
+## Great... Now what?
 
 You have made your first API request! Well done. The returned response is in JSON Format, using this in conjuction with a script means you can generate all sorts of reports or filter out items with specific parameters and then make changes to them. The possibilities are endless.
 

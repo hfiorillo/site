@@ -12,13 +12,16 @@ templ Base() {
 			<link rel="stylesheet" href="/public/styles.css"/>
 			<link rel="icon" type="image/x-icon" href="/public/fish.svg"/>
 		</head>
-		<body>
-			<main class="p-6">
+		<body
+			style="font-family:Georgia, 'Times New Roman', Times, serif"
+			class="flex items-center justify-center min-h-screen"
+		>
+			<main class="p-4">
 				@sidemenu.Sidemenu() {
 					{ children... }
 				}
 			</main>
 		</body>
-		<footer></footer>
+		// <footer></footer>
 	</html>
 }

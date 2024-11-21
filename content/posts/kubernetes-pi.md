@@ -17,7 +17,7 @@ Building a home lab is often cited as the best way to experiment and learn, hand
 
 Inspiration for this blog post from [Jeff Geerling](https://www.jeffgeerling.com/blog) & [Alex Ellis](https://blog.alexellis.io/tag/raspberry-pi/). I highly recommend you check out their blogs on all things Raspberry Pi.
 
-## Why build a cluster?
+# Why build a cluster?
 
 - Mainly, to explore the concept of prototyping, clustering and parallel computing using industry dominant technologies such as [Kubernetes](https://kubernetes.io/), [Docker](https://www.docker.com/), [Ansible](https://www.ansible.com/overview/how-ansible-works) and [Terraform](https://www.terraform.io/).
 - Whilst cloud infrastructure offers less physical maintenance building in the cloud reduces the level of control you have over your own envionment. The 'hands on' approach associated with working on bare metal machines brings back that control, and provides a greater sense of achievement when you get things working as intended.
@@ -26,7 +26,7 @@ Inspiration for this blog post from [Jeff Geerling](https://www.jeffgeerling.com
 - The Raspberry Pi itself is extremely versatile. The Pi's used in the cluster can be reused for various different projects that don't all resolve around building a cluster.
 - It looks cool. The potential of adding more and more nodes, eventually building out something like the [SuperPi](https://www.youtube.com/watch?v=KbVcRQQ9PNw&ab_channel=OracleDevelopers) seems like something that would be fun to explore.
 
-## **Why Kubernetes** (also known as "k8s" or "kube")**?**
+# **Why Kubernetes** (also known as "k8s" or "kube")**?**
 
 It is an open source container orchestration platform that automates many of the manual processes involved in deploying, managing and scaling containerized applications. Designed by  Google, it is now maintained by the [Cloud Native Computing Foundation](https://landscape.cncf.io/category=certified-kubernetes-distribution,certified-kubernetes-hosted,certified-kubernetes-installer,special&format=card-mode&grouping=category). At only 6 years old Kubernetes has managed to establish itself year-on-year as one of the [most consistently loved platforms](https://insights.stackoverflow.com/survey/2020#technology-most-loved-dreaded-and-wanted-platforms); one of the reasons for this is Kubernetes movement towards [infrastructure-as-data](https://cloud.google.com/blog/products/containers-kubernetes/understanding-configuration-as-data-in-kubernetes) (IaD) and away from more traditional [infrastructure-as-code](https://cloud.google.com/solutions/infrastructure-as-code) (IaC). This lets admins express what *should* happen, rather than express precisely how to do it. The ability of Kubernetes to express resources in a simple *YAML* file makes it easier for DevOps engineers to fully express workloads without the need to write code in a programming language. IaD creates more transparency in version control and makes scalability easy; for example, you can simply alter the [horizontal pod auto-scale](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) value within the configuration file to determine the number of pods, the smallest deployable unit within k8s, that will be created in order to cater for differing levels of demand. [Ricardo Aravena](https://stackoverflow.blog/2020/05/29/why-kubernetes-getting-so-popular/)'s blog post goes into more depth when delving into the key parts of Kubernetes that make it the popular enterprise platform it is today. 
 
@@ -38,7 +38,7 @@ Independently managing each node in the cluster is hard work, and we don't like 
 - [Scaling out](https://kubernetes.io/blog/2016/07/autoscaling-in-kubernetes/) is made easy i.e. Adding more compute nodes to a cluster or tuning a clusters ability to automatically scale horizontally, via pods, is as simple as running a [single command](https://kubernetes.io/docs/concepts/architecture/nodes/) from the cli to alter the clusters configuration.
 - Highly-available. Highly-availability the ability to be of a cluster to be conitiously operational even in the event of a node failure. If a node were to fail Kubernetes will simply readjust and assign the burden of the failed node across the cluster instead of completely failing as a singular powerful node might. As our cluster only contains one master node, this means it is not fully highly available, if our master node were to fail our cluster nodes would no longer be able to communicate with one another. However, more typical enterprise-scale Kubernetes clusters will have a ['multi-master'](https://medium.com/velotio-perspectives/demystifying-high-availability-in-kubernetes-using-kubeadm-3d83ed8c458b#:~:text=Kubernetes%20High%2DAvailability%20is%20about,access%20to%20same%20worker%20nodes.) set up, whereby ensuring that high availablility is fully implemented and there is no single point of failure.
 
-**Distributions**
+## **Distributions**
 
 As Kubernetes is an open source project, it makes its source code [publicly and freely available on GitHub](https://github.com/kubernetes/kubernetes). This means anyone can download, compile and build their own distribution of Kubernetes however, process involves a great deal of time and effort due to the complexity of the source code. As a result, most people turn to a particular [Kubernetes distribution](https://qllc.com/Q%20Sights%20-%20Leading%20Kubernetes%20Distributions) to meet their container orchestration needs, as they provide a complete software package with a pre-built version of Kubernetes. These distributions often offer tools to help with setup and installation processes and can be run locally or, as a cloud hosted solution. There are a [large range](https://www.infoworld.com/article/3265059/10-kubernetes-distributions-leading-the-container-revolution.html) of distributions available. Choosing the right version of Kubernetes depends highly on your use case. Here are a few honourable mentions:
 
@@ -154,13 +154,13 @@ diskutil unmountDisk /dev/disk2 # unmount the disk
 
 Or not, this process needs to be repeated for each Raspberry Pi in the cluster.
 
-### Finding Raspberry Pi's on your network
+## Finding Raspberry Pi's on your network
 
 Once all the Pi's have their subsequent microSD cards flashed, plug them in and power them on, allow them a few minutes to fully boot. Now we need to find them on our network; you can have a look on your router to see any new registered devices and their subsequent IP addresses or install a network scanner - I personally use [Angry IP Scanner](https://angryip.org/) as seen below, but you are free to use `nmap` or other networking mapping tools. Scan your network in the range of /24. For instance, my router IP was 192.168.1.1 and I scanned 192.168.1.1/24 to find all the devices on my network. The default Raspberry Pi hostname should be something like `raspberrypi.local` . Look for the corresponding IP addresses and make note.Locate all the Raspberry Pi's addresses and make note.
 
 ![Angry IP Scanner](../../public/img/kubernetes/angryip.png)
 
-### Setting up SSH Keys
+## Setting up SSH Keys
 
 Ansible requires a [passwordless](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md) SSH connection in order to carry out the automated tasks on each node. To set up ssh keys for each of the nodes we can run the following commands individually:
 
