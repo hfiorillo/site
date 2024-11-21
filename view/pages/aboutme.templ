@@ -12,13 +12,16 @@ templ AboutMe(post *models.BlogPost) {
 }
 
 templ AboutMeInner(post *models.BlogPost) {
-	<div id="about-me" class="prose dark:prose-invert max-w-4xl mx-auto py-10 px-5 bg-base-100 rounded-lg">
-		<div class="text-center mb-8">
-			<h1 class="text-4xl font-bold text-gray-900">{ post.Title }</h1>
-			<p class="text-lg text-gray-600 mt-2">{ post.Description }</p>
-		</div>
-		<div class="text-left">
-			@templ.Raw(post.Content)
+	<div
+		id="about-me"
+		class="relative flex flex-col sm:flex-row sm:justify-center sm:items-start min-h-screen bg-base-100"
+	>
+		<div
+			class="prose mx-auto px-4 py-6 sm:px-8 sm:max-w-2xl bg-base-100 rounded-lg"
+		>
+			<div>
+				@templ.Raw(post.Content)
+			</div>
 		</div>
 	</div>
 }
