@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -16,6 +17,25 @@ import (
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/pages"
 )
+
+var (
+	routeDataOnce sync.Once
+	routeData     *gpx.RouteData
+	coordsJSON    string
+)
+
+func loadRouteData() {
+	rd, err := gpx.Parse("./public/routes/Badger_divide_reverse.gpx")
+	if err != nil {
+		panic(fmt.Sprintf("failed to load route gpx: %v", err))
+	}
+	cj, err := gpx.CoordsToJSON(rd.Coords)
+	if err != nil {
+		panic(fmt.Sprintf("failed to marshal coords: %v", err))
+	}
+	routeData = rd
+	coordsJSON = cj
+}
 
 type PageHandler struct {
 	Logger  *slog.Logger
@@ -124,10 +144,12 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 	filename := chi.URLParam(r, "filename")
 	post, err := markdown.LoadMarkdownPost(fmt.Sprintf("/posts/%s", filename))
 	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
 		return pages.ErrorPage("Tis page does not exist.").Render(r.Context(), w)
 	}
 
 	if !post.Metadata.Published {
+		w.WriteHeader(http.StatusNotFound)
 		return pages.ErrorPage("Tis page does not exist.").Render(r.Context(), w)
 	}
 
@@ -249,22 +271,15 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 }
 
 func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error {
-	rd, err := gpx.Parse("./public/routes/Badger_divide_reverse.gpx")
-	if err != nil {
-		return err
-	}
-	coordsJSON, err := gpx.CoordsToJSON(rd.Coords)
-	if err != nil {
-		return err
-	}
+	routeDataOnce.Do(loadRouteData)
 
 	route := &models.Route{
 		Name:          "Badger Divide (Reverse)",
 		Location:      "Glasgow to Inverness, Scotland",
-		DistanceKm:    math.Round(rd.DistanceKm),
-		ElevationGain: math.Round(rd.ElevationGain),
-		ElevationMax:  math.Round(rd.ElevationMax),
-		ElevationMin:  math.Round(rd.ElevationMin),
+		DistanceKm:    math.Round(routeData.DistanceKm),
+		ElevationGain: math.Round(routeData.ElevationGain),
+		ElevationMax:  math.Round(routeData.ElevationMax),
+		ElevationMin:  math.Round(routeData.ElevationMin),
 		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
 		CoordsJSON:    coordsJSON,
 		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
@@ -280,22 +295,15 @@ func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
-	rd, err := gpx.Parse("./public/routes/Badger_divide_reverse.gpx")
-	if err != nil {
-		return err
-	}
-	coordsJSON, err := gpx.CoordsToJSON(rd.Coords)
-	if err != nil {
-		return err
-	}
+	routeDataOnce.Do(loadRouteData)
 
 	route := &models.Route{
 		Name:          "Badger Divide (Reverse)",
 		Location:      "Glasgow to Inverness, Scotland",
-		DistanceKm:    math.Round(rd.DistanceKm),
-		ElevationGain: math.Round(rd.ElevationGain),
-		ElevationMax:  math.Round(rd.ElevationMax),
-		ElevationMin:  math.Round(rd.ElevationMin),
+		DistanceKm:    math.Round(routeData.DistanceKm),
+		ElevationGain: math.Round(routeData.ElevationGain),
+		ElevationMax:  math.Round(routeData.ElevationMax),
+		ElevationMin:  math.Round(routeData.ElevationMin),
 		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
 		CoordsJSON:    coordsJSON,
 		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
@@ -311,12 +319,9 @@ func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (p PageHandler) HandleRouteCoords(w http.ResponseWriter, r *http.Request) error {
-	rd, err := gpx.Parse("./public/routes/Badger_divide_reverse.gpx")
-	if err != nil {
-		return err
-	}
+	routeDataOnce.Do(loadRouteData)
 	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(rd.Coords)
+	return json.NewEncoder(w).Encode(routeData.Coords)
 }
 
 func xmlEscape(s string) string {

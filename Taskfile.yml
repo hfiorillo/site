@@ -19,7 +19,7 @@ tasks:
     - go mod tidy
   hot-reload:
     cmds:
-    - tailwindcss -i view/css/app.css -o public/styles.css 
+    - npx @tailwindcss/cli -i view/css/app.css -o public/styles.css 
     - templ generate --watch --cmd="go run main.go" --proxy="http://localhost:3000"
 
   new-post:

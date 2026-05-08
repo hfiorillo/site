@@ -6,7 +6,7 @@ WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . ./
-RUN npx tailwindcss -i view/css/app.css -o public/styles.css
+RUN npx @tailwindcss/cli -i view/css/app.css -o public/styles.css
 
 FROM golang:${GO_VERSION}-alpine AS build
 
