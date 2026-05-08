@@ -1,0 +1,93 @@
+package pages
+
+import (
+	"fmt"
+
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+)
+
+templ Routes(routes []*models.Route, meta models.PageMeta) {
+	@layout.Base(meta) {
+		<div class="max-w-2xl mx-auto">
+			<h1 class="text-7xl font-semibold mb-6"><strong>Routes</strong></h1>
+			<table class="w-full text-left border-collapse not-prose">
+				<thead>
+					<tr class="border-b border-base-content/20 text-sm text-base-content/50">
+						<th class="pb-2 pr-6 font-medium">Route</th>
+						<th class="pb-2 pr-6 font-medium">Location</th>
+						<th class="pb-2 pr-6 font-medium text-right">Distance</th>
+						<th class="pb-2 pr-6 font-medium text-right">Elevation</th>
+						<th class="pb-2 pr-6 font-medium">Date</th>
+						<th class="pb-2 font-medium">GPX</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, r := range routes {
+						<tr class="border-b border-base-content/10 hover:bg-base-200 transition-colors">
+							<td class="py-3 pr-6">
+								<a href={ templ.SafeURL("/routes/badger-divide") } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
+							</td>
+							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
+							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
+							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f m", r.ElevationGain) }</td>
+							<td class="py-3 pr-6 text-sm">{ r.Date.Format("Jan 2006") }</td>
+							<td class="py-3">
+								<a href={ templ.SafeURL(r.GPXFile) } download class="text-sm text-primary no-underline hover:opacity-80">Download</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+}
+
+templ RoutePage(r *models.Route, meta models.PageMeta) {
+	@layout.Base(meta) {
+		<div class="max-w-3xl mx-auto">
+			<div class="not-prose">
+				<h1 class="text-3xl sm:text-4xl font-bold">{ r.Name }</h1>
+				<p class="text-sm text-base-content/50 mt-1">{ r.Location }</p>
+			</div>
+			<div class="flex gap-6 mt-4 not-prose text-sm">
+				<div>
+					<span class="text-base-content/50">Distance</span>
+					<p class="font-semibold">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</p>
+				</div>
+				<div>
+					<span class="text-base-content/50">Elevation gain</span>
+					<p class="font-semibold">{ fmt.Sprintf("%.0f m", r.ElevationGain) }</p>
+				</div>
+				<div>
+					<span class="text-base-content/50">Min / Max</span>
+					<p class="font-semibold">{ fmt.Sprintf("%.0f / %.0f m", r.ElevationMin, r.ElevationMax) }</p>
+				</div>
+				<div>
+					<span class="text-base-content/50">Completed</span>
+					<p class="font-semibold">{ r.Date.Format("Jan 2006") }</p>
+				</div>
+				<div>
+					<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
+				</div>
+			</div>
+			<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;"></div>
+		</div>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+		<script>
+			fetch('/api/routes/badger-divide/coords')
+				.then(function(r) { return r.json(); })
+				.then(function(coords) {
+					var map = L.map('route-map').setView([55.94, -4.31], 8);
+					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+						maxZoom: 18
+					}).addTo(map);
+					var pts = coords.map(function(c) { return [c.lat, c.lon]; });
+					var poly = L.polyline(pts, { color: '#e74c3c', weight: 3 }).addTo(map);
+					map.fitBounds(poly.getBounds());
+				});
+		</script>
+	}
+}

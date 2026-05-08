@@ -2,29 +2,29 @@ package sidemenu
 
 import (
 	"fmt"
+	"github.com/hfiorillo/site/internal/markdown"
 	"github.com/hfiorillo/site/models"
 )
 
 templ Contents(post *models.BlogPost) {
 	<aside
-		class="fixed top-0 right-0 z-40 h-screen w-60 transition-transform translate-x-full sm:translate-x-0"
+		class="sticky top-0 z-40 w-60 hidden lg:block self-start flex-shrink-0"
 		aria-label="Contents"
 	>
-		<div id="contents" class="h-full px-3 py-4 overflow-y-auto">
+		<div id="contents" class="h-screen px-3 py-4 overflow-y-auto">
 			<ul class="menu p-1 text-base-content">
 				<span class="font-bold text-lg">Contents</span>
 				<div class="divider"></div>
-				// Build contents list out
 				for _, topLevel := range post.Headers.TopLevel {
-					<a href={ templ.SafeURL(fmt.Sprintf("#%s", topLevel.Headers)) }>
+					<a href={ templ.SafeURL(fmt.Sprintf("#%s", markdown.Slugify(topLevel.Headers))) }>
 						<p class="font-bold text-lg pl-2">{ topLevel.Headers }</p>
 					</a>
 					for _, midLevel := range topLevel.MidLevel {
-						<a href={ templ.SafeURL(fmt.Sprintf("#%s", midLevel.Headers)) }>
+						<a href={ templ.SafeURL(fmt.Sprintf("#%s", markdown.Slugify(midLevel.Headers))) }>
 							<p class="font-semibold text-md pl-4">{ midLevel.Headers }</p>
 						</a>
 						for _, bottomLevel := range midLevel.BottomLevel {
-							<a href={ templ.SafeURL(fmt.Sprintf("#%s", bottomLevel.Headers)) }>
+							<a href={ templ.SafeURL(fmt.Sprintf("#%s", markdown.Slugify(bottomLevel.Headers))) }>
 								<p class="font-medium text-sm pl-6">{ bottomLevel.Headers }</p>
 							</a>
 						}

@@ -1,3 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Geist', Georgia, 'Times New Roman', Times, serif;
+}
+
+.prose img {
+  @apply rounded-lg mx-auto cursor-pointer;
+  transition: opacity 0.2s;
+}
+
+.prose img:hover {
+  opacity: 0.9;
+}
+
+.prose video {
+  @apply rounded-lg mx-auto w-full;
+}
+
+.prose iframe {
+  @apply rounded-lg mx-auto w-full;
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  border: none;
+}
+
+.lb-enter {
+  animation: lbFadeIn 0.2s ease-out;
+}
+
+@keyframes lbFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

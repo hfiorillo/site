@@ -1,27 +1,60 @@
 package layout
 
-import "github.com/hfiorillo/site/view/sidemenu"
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/sidemenu"
+)
 
-templ Base() {
-	<html>
+templ Base(meta models.PageMeta) {
+	<!DOCTYPE html>
+	<html lang="en">
 		<head>
-			<title>Blog</title>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ meta.Title }</title>
+			<meta name="description" content={ meta.Description }/>
+
+			<meta property="og:title" content={ meta.Title }/>
+			<meta property="og:description" content={ meta.Description }/>
+			<meta property="og:image" content={ meta.Image }/>
+			<meta property="og:url" content={ meta.URL }/>
+			<meta property="og:type" content="website"/>
+
+			<meta name="twitter:card" content="summary_large_image"/>
+			<meta name="twitter:title" content={ meta.Title }/>
+			<meta name="twitter:description" content={ meta.Description }/>
+			<meta name="twitter:image" content={ meta.Image }/>
+
 			<script src="https://unpkg.com/htmx.org@2.0.2"></script>
-			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap"/>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+			<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500&family=IM+Fell+French+Canon:ital@0;1&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href="/public/styles.css"/>
 			<link rel="icon" type="image/x-icon" href="/public/fish.svg"/>
 		</head>
 		<body
-			style="font-family:'Merriweather', Georgia, 'Times New Roman', Times, serif"
-			class="flex items-center justify-center min-h-screen"
+			style="font-family:'Geist', Georgia, 'Times New Roman', Times, serif"
+			class="bg-base-100 min-h-screen flex"
+			x-data="{ lb: null }"
+			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
 		>
-			<main class="p-4">
-				@sidemenu.Sidemenu() {
+			<div
+				x-data="{ progress: 0 }"
+				x-init="window.addEventListener('scroll', () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; progress = d > 0 ? Math.min((s / d) * 100, 100) : 0 })"
+				class="fixed top-0 left-0 h-0.5 bg-primary z-50"
+				:style="`width: ${progress}%`"
+			></div>
+			<div class="flex gap-4">
+				@sidemenu.Sidemenu()
+			</div>
+			<main class="flex-1 p-4 flex justify-center min-h-screen">
+				<div class="w-full">
 					{ children... }
-				}
+				</div>
 			</main>
+
+			<div x-show="lb" @click="lb = null" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" style="display: none;">
+				<img :src="lb" class="max-w-full max-h-full object-contain rounded-lg cursor-default" @click.stop alt=""/>
+			</div>
 		</body>
 	</html>
 }
