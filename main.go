@@ -22,16 +22,12 @@ import (
 //go:embed public
 var publicFS embed.FS
 
-//go:embed content
-var contentFS embed.FS
-
-// define env vars
 type config struct {
-	Port string `env:"HTTP_LISTEN_ADDR" envDefault:":3001"`
+	Port    string `env:"HTTP_LISTEN_ADDR" envDefault:":3001"`
+	SiteURL string `env:"SITE_URL" envDefault:"https://blog.fiorillo.xyz"`
 }
 
 func main() {
-
 	logger := logging.NewJsonLogger()
 
 	if err := godotenv.Load(); err != nil {
@@ -43,7 +39,7 @@ func main() {
 		logger.Error(err.Error())
 	}
 
-	pageHandler := handler.NewPageHandler(logger)
+	pageHandler := handler.NewPageHandler(logger, cfg.SiteURL)
 
 	router := chi.NewMux()
 	router.Handle("/*", public())
@@ -51,6 +47,11 @@ func main() {
 	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
 	router.Get("/blog/{filename}", handler.Make(pageHandler.HandleBlogPostPage))
 	router.Get("/aboutme", handler.Make(pageHandler.HandleAboutMePage))
+	router.Get("/feed.xml", handler.Make(pageHandler.HandleFeed))
+	router.Get("/sitemap.xml", handler.Make(pageHandler.HandleSitemap))
+	router.Get("/routes", handler.Make(pageHandler.HandleRoutes))
+	router.Get("/routes/badger-divide", handler.Make(pageHandler.HandleRoute))
+	router.Get("/api/routes/badger-divide/coords", handler.Make(pageHandler.HandleRouteCoords))
 
 	server := &http.Server{
 		Addr:         cfg.Port,
@@ -66,25 +67,20 @@ func main() {
 		}
 	}()
 
-	// Create a channel to receive OS signals
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
-	// Block until a signal is received
 	<-stop
 
 	slog.Info("Shutting down server...")
 
-	// Create a deadline to wait for
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Attempt to gracefully shut down the server
 	if err := server.Shutdown(ctx); err != nil {
-		slog.Error("Server shutdown failed: %v", err)
+		slog.Error("Server shutdown failed", "error", err)
 		os.Exit(1)
 	}
-
 }
 
 func public() http.Handler {

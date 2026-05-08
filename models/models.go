@@ -6,55 +6,60 @@ import (
 )
 
 type BlogPost struct {
-	Filename    string
-	Title       string
-	Slug        string
-	Description string
-	Date        time.Time
-	Content     template.HTML
-	Headers     Headers
-	Metadata    Metadata
-	Order       int
-	// HtmlContent []byte
-	// Parent      string
-	// TLDR        template.HTML
+	Filename        string
+	Title           string
+	Slug            string
+	Description     string
+	Date            time.Time
+	Content         template.HTML
+	Headers         Headers
+	Metadata        Metadata
+	ReadTimeMinutes int
 }
 
-// Metadata represents the YAML front matter
 type Metadata struct {
-	Title      string   `yaml:"title"`
-	Date       string   `yaml:"date"`
-	Categories []string `yaml:"categories"`
-	Tags       []string `yaml:"tags"`
-	Classes    string   `yaml:"classes"`
-	TOC        bool     `yaml:"toc"`
-	Header     struct {
-		OverlayImage  string `yaml:"overlay_image"`
-		OverlayFilter string `yaml:"overlay_filter"`
-	} `yaml:"header"`
-	Published   bool   `yaml:"published"`
-	Description string `yaml:"description"`
+	Title       string   `yaml:"title"`
+	Date        string   `yaml:"date"`
+	Categories  []string `yaml:"categories"`
+	Tags        []string `yaml:"tags"`
+	Published   bool     `yaml:"published"`
+	Description string   `yaml:"description"`
+	Image       string   `yaml:"image"`
 }
 
-// Headers within headers
+type PageMeta struct {
+	Title       string
+	Description string
+	Image       string
+	URL         string
+}
+
+type TopLevelHeader struct {
+	Headers  string
+	MidLevel []MidLevelHeader
+}
+
+type MidLevelHeader struct {
+	Headers     string
+	BottomLevel []BottomLevelHeader
+}
+
+type BottomLevelHeader struct {
+	Headers string
+}
+
 type Headers struct {
-	TopLevel []struct { // #
-		Headers  string
-		MidLevel []struct { // ##
-			Headers     string
-			BottomLevel []struct { // ###
-				Headers string
-			}
-		}
-	}
+	TopLevel []TopLevelHeader
 }
 
-type SidebarData struct {
-	Categories []Category
-}
-
-type Category struct {
-	Name  string
-	Pages []BlogPost
-	Order int
+type Route struct {
+	Name          string
+	Location      string
+	DistanceKm    float64
+	ElevationGain float64
+	ElevationMax  float64
+	ElevationMin  float64
+	Date          time.Time
+	CoordsJSON    string
+	GPXFile       string
 }

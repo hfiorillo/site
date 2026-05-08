@@ -5,8 +5,8 @@ import (
 	"github.com/hfiorillo/site/view/layout"
 )
 
-templ AboutMe(post *models.BlogPost) {
-	@layout.Base() {
+templ AboutMe(post *models.BlogPost, meta models.PageMeta) {
+	@layout.Base(meta) {
 		@AboutMeInner(post)
 	}
 }
@@ -14,14 +14,10 @@ templ AboutMe(post *models.BlogPost) {
 templ AboutMeInner(post *models.BlogPost) {
 	<div
 		id="about-me"
-		class="relative flex flex-col sm:flex-row sm:justify-center sm:items-start min-h-screen bg-base-100"
+		class="flex flex-col items-center py-6 w-full"
 	>
-		<div
-			class="prose mx-auto px-4 py-6 sm:px-8 sm:max-w-2xl bg-base-100 rounded-lg"
-		>
-			<div>
-				@templ.Raw(post.Content)
-			</div>
+		<div class="px-4 sm:px-8 max-w-2xl mx-auto bg-base-100 rounded-lg prose max-w-none text-justify">
+			@templ.Raw(post.Content)
 		</div>
 	</div>
 }

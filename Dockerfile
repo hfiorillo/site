@@ -1,7 +1,13 @@
-# argument for Go version
-ARG GO_VERSION=1.22
+ARG NODE_VERSION=22
+ARG GO_VERSION=1.23
 
-# STAGE 1: building the executable
+FROM node:${NODE_VERSION}-alpine AS css
+WORKDIR /src
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . ./
+RUN npx tailwindcss -i view/css/app.css -o public/styles.css
+
 FROM golang:${GO_VERSION}-alpine AS build
 
 ENV CGO_ENABLED=0
@@ -11,25 +17,21 @@ COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY ./ ./
 
+COPY --from=css /src/public/styles.css ./public/styles.css
+
 RUN go install github.com/a-h/templ/cmd/templ@latest
 RUN templ generate
 
-# Build the executable
 RUN CGO_ENABLED=0 go build \
-    -ldflags "-X main.build=${BUILD_REF}" \
-    -installsuffix 'static' \
+    -ldflags "-s -w" \
     -o /app ./main.go
 
-# Run the Go Binary in Distroless.
 FROM gcr.io/distroless/static@sha256:d6fa9db9548b5772860fecddb11d84f9ebd7e0321c0cb3c02870402680cc315f AS final
 
-# change to a nonroot user
 USER nonroot:nonroot
 
-# copy compiled app
 COPY --from=build --chown=nonroot:nonroot /app /app
 COPY --chown=nonroot:nonroot ./content /content
-COPY --chown=nonroot:nonroot ./public /public
+COPY --from=build --chown=nonroot:nonroot /src/public /public
 
 ENTRYPOINT ["./app"]
-
