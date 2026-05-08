@@ -12,7 +12,7 @@ templ Contents(post *models.BlogPost) {
 		aria-label="Contents"
 	>
 		<div id="contents" class="h-screen px-3 py-4 overflow-y-auto">
-			<ul class="menu p-1 text-base-content">
+			<nav class="menu p-1 text-base-content">
 				<span class="font-bold text-lg">Contents</span>
 				<div class="divider"></div>
 				for _, topLevel := range post.Headers.TopLevel {
@@ -30,7 +30,7 @@ templ Contents(post *models.BlogPost) {
 						}
 					}
 				}
-			</ul>
+			</nav>
 		</div>
 	</aside>
 }

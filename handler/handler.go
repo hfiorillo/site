@@ -22,10 +22,16 @@ var (
 	routeDataOnce sync.Once
 	routeData     *gpx.RouteData
 	coordsJSON    string
+	badgerRoute   = &models.Route{
+		Name:          "Badger Divide (Reverse)",
+		Location:      "Glasgow to Inverness, Scotland",
+		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
+		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
+	}
 )
 
 func loadRouteData() {
-	rd, err := gpx.Parse("./public/routes/Badger_divide_reverse.gpx")
+	rd, err := gpx.Parse("." + badgerRoute.GPXFile)
 	if err != nil {
 		panic(fmt.Sprintf("failed to load route gpx: %v", err))
 	}
@@ -35,6 +41,11 @@ func loadRouteData() {
 	}
 	routeData = rd
 	coordsJSON = cj
+	badgerRoute.DistanceKm = math.Round(rd.DistanceKm)
+	badgerRoute.ElevationGain = math.Round(rd.ElevationGain)
+	badgerRoute.ElevationMax = math.Round(rd.ElevationMax)
+	badgerRoute.ElevationMin = math.Round(rd.ElevationMin)
+	badgerRoute.CoordsJSON = cj
 }
 
 type PageHandler struct {
@@ -113,7 +124,7 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 
 	title := "Blog | Harry Fiorillo-Hughes"
 	if filter != "" {
-		title = strings.Title(filter) + " | Harry Fiorillo-Hughes"
+		title = toTitle(filter) + " | Harry Fiorillo-Hughes"
 	}
 
 	meta := models.PageMeta{
@@ -273,49 +284,25 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error {
 	routeDataOnce.Do(loadRouteData)
 
-	route := &models.Route{
-		Name:          "Badger Divide (Reverse)",
-		Location:      "Glasgow to Inverness, Scotland",
-		DistanceKm:    math.Round(routeData.DistanceKm),
-		ElevationGain: math.Round(routeData.ElevationGain),
-		ElevationMax:  math.Round(routeData.ElevationMax),
-		ElevationMin:  math.Round(routeData.ElevationMin),
-		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
-		CoordsJSON:    coordsJSON,
-		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
-	}
-
 	meta := models.PageMeta{
 		Title:       "Routes | Harry Fiorillo-Hughes",
 		Description: "Bikepacking and cycling routes.",
 		URL:         p.SiteURL + "/routes",
 		Image:       p.SiteURL + "/public/images/avatar.jpg",
 	}
-	return pages.Routes([]*models.Route{route}, meta).Render(r.Context(), w)
+	return pages.Routes([]*models.Route{badgerRoute}, meta).Render(r.Context(), w)
 }
 
 func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 	routeDataOnce.Do(loadRouteData)
 
-	route := &models.Route{
-		Name:          "Badger Divide (Reverse)",
-		Location:      "Glasgow to Inverness, Scotland",
-		DistanceKm:    math.Round(routeData.DistanceKm),
-		ElevationGain: math.Round(routeData.ElevationGain),
-		ElevationMax:  math.Round(routeData.ElevationMax),
-		ElevationMin:  math.Round(routeData.ElevationMin),
-		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
-		CoordsJSON:    coordsJSON,
-		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
-	}
-
 	meta := models.PageMeta{
-		Title:       route.Name + " | Routes | Harry Fiorillo-Hughes",
-		Description: route.Location,
+		Title:       badgerRoute.Name + " | Routes | Harry Fiorillo-Hughes",
+		Description: badgerRoute.Location,
 		URL:         p.SiteURL + "/routes/badger-divide",
 		Image:       p.SiteURL + "/public/images/avatar.jpg",
 	}
-	return pages.RoutePage(route, meta).Render(r.Context(), w)
+	return pages.RoutePage(badgerRoute, meta).Render(r.Context(), w)
 }
 
 func (p PageHandler) HandleRouteCoords(w http.ResponseWriter, r *http.Request) error {
@@ -331,4 +318,11 @@ func xmlEscape(s string) string {
 	s = strings.ReplaceAll(s, "\"", "&quot;")
 	s = strings.ReplaceAll(s, "'", "&apos;")
 	return s
+}
+
+func toTitle(s string) string {
+	if s == "" {
+		return ""
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
 }

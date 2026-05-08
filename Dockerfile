@@ -19,7 +19,7 @@ COPY ./ ./
 
 COPY --from=css /src/public/styles.css ./public/styles.css
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN go install github.com/a-h/templ/cmd/templ@v0.3.906
 RUN templ generate
 
 RUN CGO_ENABLED=0 go build \

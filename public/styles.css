@@ -2580,17 +2580,6 @@
   max-width: 100%;
   border: none;
 }
-.lb-enter {
-  animation: lbFadeIn 0.2s ease-out;
-}
-@keyframes lbFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 @layer base {
   :where(:root),:root:has(input.theme-controller[value=light]:checked),[data-theme=light] {
     color-scheme: light;

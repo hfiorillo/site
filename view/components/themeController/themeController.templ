@@ -3,7 +3,6 @@ package navigation
 templ ThemeController() {
 	<div
 		x-data="themeController()"
-		x-init="initTheme()"
 	>
 		<label class="swap swap-rotate">
 			<input
@@ -32,7 +31,7 @@ templ ThemeController() {
         document.addEventListener('alpine:init', () => {
             Alpine.data('themeController', () => ({
                 isDark: false,
-                initTheme() {
+                init() {
                     // Get theme from localStorage or system preference
                     const savedTheme = localStorage.getItem('theme') || 
                         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
