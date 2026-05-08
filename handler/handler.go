@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"math"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -16,36 +17,62 @@ import (
 	"github.com/hfiorillo/site/internal/markdown"
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/pages"
+	"gopkg.in/yaml.v2"
 )
+
+type routeEntry struct {
+	Name     string `yaml:"name"`
+	Slug     string `yaml:"slug"`
+	Location string `yaml:"location"`
+	Date     string `yaml:"date"`
+	GPXFile  string `yaml:"gpx"`
+}
 
 var (
-	routeDataOnce sync.Once
-	routeData     *gpx.RouteData
-	coordsJSON    string
-	badgerRoute   = &models.Route{
-		Name:          "Badger Divide (Reverse)",
-		Location:      "Glasgow to Inverness, Scotland",
-		GPXFile:       "/public/routes/Badger_divide_reverse.gpx",
-		Date:          time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
-	}
+	routesOnce   sync.Once
+	routesList   []routeEntry
+	routesCache  = map[string]*models.Route{}
+	routesCoords = map[string]*gpx.RouteData{}
+	routesErr    error
 )
 
-func loadRouteData() {
-	rd, err := gpx.Parse("." + badgerRoute.GPXFile)
+func loadRoutes() {
+	raw, err := os.ReadFile("./content/routes/routes.yml")
 	if err != nil {
-		panic(fmt.Sprintf("failed to load route gpx: %v", err))
+		routesErr = fmt.Errorf("reading routes.yml: %w", err)
+		return
 	}
-	cj, err := gpx.CoordsToJSON(rd.Coords)
-	if err != nil {
-		panic(fmt.Sprintf("failed to marshal coords: %v", err))
+	if err := yaml.Unmarshal(raw, &routesList); err != nil {
+		routesErr = fmt.Errorf("parsing routes.yml: %w", err)
+		return
 	}
-	routeData = rd
-	coordsJSON = cj
-	badgerRoute.DistanceKm = math.Round(rd.DistanceKm)
-	badgerRoute.ElevationGain = math.Round(rd.ElevationGain)
-	badgerRoute.ElevationMax = math.Round(rd.ElevationMax)
-	badgerRoute.ElevationMin = math.Round(rd.ElevationMin)
-	badgerRoute.CoordsJSON = cj
+	for i, r := range routesList {
+		date, parseErr := time.Parse("2006-01-02", r.Date)
+		if parseErr != nil {
+			routesErr = fmt.Errorf("parsing date for %s: %w", r.Name, parseErr)
+			return
+		}
+		rd, parseErr := gpx.Parse("." + r.GPXFile)
+		if parseErr != nil {
+			routesErr = fmt.Errorf("parsing gpx for %s: %w", r.Name, parseErr)
+			return
+		}
+		cj, _ := gpx.CoordsToJSON(rd.Coords)
+		routesCache[r.Slug] = &models.Route{
+			Slug:          r.Slug,
+			Name:          r.Name,
+			Location:      r.Location,
+			DistanceKm:    math.Round(rd.DistanceKm),
+			ElevationGain: math.Round(rd.ElevationGain),
+			ElevationMax:  math.Round(rd.ElevationMax),
+			ElevationMin:  math.Round(rd.ElevationMin),
+			Date:          date,
+			CoordsJSON:    cj,
+			GPXFile:       r.GPXFile,
+		}
+		routesCoords[r.Slug] = rd
+		routesList[i].Slug = r.Slug
+	}
 }
 
 type PageHandler struct {
@@ -275,6 +302,24 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 		buf.WriteString("</url>\n")
 	}
 
+	routesOnce.Do(loadRoutes)
+	if routesErr == nil {
+		buf.WriteString("<url>\n")
+		buf.WriteString(fmt.Sprintf("<loc>%s/routes</loc>\n", p.SiteURL))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
+		buf.WriteString("<changefreq>monthly</changefreq>\n")
+		buf.WriteString("<priority>0.5</priority>\n")
+		buf.WriteString("</url>\n")
+		for _, entry := range routesList {
+			buf.WriteString("<url>\n")
+			buf.WriteString(fmt.Sprintf("<loc>%s/routes/%s</loc>\n", p.SiteURL, entry.Slug))
+			buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
+			buf.WriteString("<changefreq>never</changefreq>\n")
+			buf.WriteString("<priority>0.5</priority>\n")
+			buf.WriteString("</url>\n")
+		}
+	}
+
 	buf.WriteString("</urlset>\n")
 
 	w.Write(buf.Bytes())
@@ -282,7 +327,10 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 }
 
 func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error {
-	routeDataOnce.Do(loadRouteData)
+	routesOnce.Do(loadRoutes)
+	if routesErr != nil {
+		return routesErr
+	}
 
 	meta := models.PageMeta{
 		Title:       "Routes | Harry Fiorillo-Hughes",
@@ -290,25 +338,51 @@ func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error 
 		URL:         p.SiteURL + "/routes",
 		Image:       p.SiteURL + "/public/images/avatar.jpg",
 	}
-	return pages.Routes([]*models.Route{badgerRoute}, meta).Render(r.Context(), w)
+	var list []*models.Route
+	for _, entry := range routesList {
+		if route, ok := routesCache[entry.Slug]; ok {
+			list = append(list, route)
+		}
+	}
+	return pages.Routes(list, meta).Render(r.Context(), w)
 }
 
 func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
-	routeDataOnce.Do(loadRouteData)
+	routesOnce.Do(loadRoutes)
+	if routesErr != nil {
+		return routesErr
+	}
+
+	slug := chi.URLParam(r, "slug")
+	route, ok := routesCache[slug]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
+	}
 
 	meta := models.PageMeta{
-		Title:       badgerRoute.Name + " | Routes | Harry Fiorillo-Hughes",
-		Description: badgerRoute.Location,
-		URL:         p.SiteURL + "/routes/badger-divide",
+		Title:       route.Name + " | Routes | Harry Fiorillo-Hughes",
+		Description: route.Location,
+		URL:         p.SiteURL + "/routes/" + slug,
 		Image:       p.SiteURL + "/public/images/avatar.jpg",
 	}
-	return pages.RoutePage(badgerRoute, meta).Render(r.Context(), w)
+	return pages.RoutePage(route, slug, meta).Render(r.Context(), w)
 }
 
 func (p PageHandler) HandleRouteCoords(w http.ResponseWriter, r *http.Request) error {
-	routeDataOnce.Do(loadRouteData)
+	routesOnce.Do(loadRoutes)
+	if routesErr != nil {
+		return routesErr
+	}
+
+	slug := chi.URLParam(r, "slug")
+	rd, ok := routesCoords[slug]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
+	}
 	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(routeData.Coords)
+	return json.NewEncoder(w).Encode(rd.Coords)
 }
 
 func xmlEscape(s string) string {

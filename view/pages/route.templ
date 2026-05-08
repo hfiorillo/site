@@ -26,7 +26,7 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 					for _, r := range routes {
 						<tr class="border-b border-base-content/10 hover:bg-base-200 transition-colors">
 							<td class="py-3 pr-6">
-								<a href={ templ.SafeURL("/routes/badger-divide") } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
+								<a href={ templ.SafeURL(fmt.Sprintf("/routes/%s", r.Slug)) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
 							</td>
 							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
@@ -43,7 +43,7 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 	}
 }
 
-templ RoutePage(r *models.Route, meta models.PageMeta) {
+templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 	@layout.Base(meta) {
 		<div class="max-w-3xl mx-auto">
 			<div class="not-prose">
@@ -71,12 +71,13 @@ templ RoutePage(r *models.Route, meta models.PageMeta) {
 					<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
 				</div>
 			</div>
-			<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;"></div>
+			<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;" data-slug={ slug }></div>
 		</div>
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 		<script>
-			fetch('/api/routes/badger-divide/coords')
+			var slug = document.getElementById('route-map').getAttribute('data-slug');
+			fetch('/api/routes/' + slug + '/coords')
 				.then(function(r) { return r.json(); })
 				.then(function(coords) {
 					var map = L.map('route-map').setView([55.94, -4.31], 8);

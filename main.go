@@ -50,8 +50,8 @@ func main() {
 	router.Get("/feed.xml", handler.Make(pageHandler.HandleFeed))
 	router.Get("/sitemap.xml", handler.Make(pageHandler.HandleSitemap))
 	router.Get("/routes", handler.Make(pageHandler.HandleRoutes))
-	router.Get("/routes/badger-divide", handler.Make(pageHandler.HandleRoute))
-	router.Get("/api/routes/badger-divide/coords", handler.Make(pageHandler.HandleRouteCoords))
+	router.Get("/routes/{slug}", handler.Make(pageHandler.HandleRoute))
+	router.Get("/api/routes/{slug}/coords", handler.Make(pageHandler.HandleRouteCoords))
 
 	server := &http.Server{
 		Addr:         cfg.Port,

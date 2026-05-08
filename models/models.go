@@ -53,6 +53,7 @@ type Headers struct {
 }
 
 type Route struct {
+	Slug          string
 	Name          string
 	Location      string
 	DistanceKm    float64
