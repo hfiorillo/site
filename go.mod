@@ -7,7 +7,7 @@ toolchain go1.24.4
 require (
 	github.com/a-h/templ v0.3.906
 	github.com/caarlos0/env v3.5.0+incompatible
-	github.com/go-chi/chi/v5 v5.0.12
+	github.com/go-chi/chi/v5 v5.2.5
 	github.com/joho/godotenv v1.5.1
 	github.com/yuin/goldmark v1.7.4
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
