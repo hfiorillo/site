@@ -1,0 +1,21 @@
+package layout
+
+import (
+	"github.com/hfiorillo/site/view/components/icons"
+)
+
+templ Footer() {
+	<footer class="w-full border-t border-base-content/10 py-6 mt-12">
+		<div class="flex flex-col items-center gap-3 text-sm text-base-content/50">
+			<div class="flex gap-4 items-center">
+				<a href="https://www.github.com/hfiorillo" target="_blank" rel="noopener noreferrer" class="w-4 h-4 text-base-content/40 hover:text-base-content/70 transition-colors">
+					@icons.GitHub()
+				</a>
+				<a href="https://www.instagram.com/harryfiorillo" target="_blank" rel="noopener noreferrer" class="w-4 h-4 text-base-content/40 hover:text-base-content/70 transition-colors">
+					@icons.Instagram()
+				</a>
+			</div>
+			<p>&copy; 2026 Harry Fiorillo-Hughes. Built with Go &amp; templ.</p>
+		</div>
+	</footer>
+}

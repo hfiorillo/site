@@ -32,24 +32,28 @@ templ Base(meta models.PageMeta) {
 		</head>
 		<body
 			style="font-family:'Geist', Georgia, 'Times New Roman', Times, serif"
-			class="bg-base-100 min-h-screen flex"
+			class="bg-base-100 min-h-screen flex flex-col"
 			x-data="{ lb: null }"
 			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
 		>
-			<div
+			<div class="flex flex-1">
+				<div class="flex gap-4">
+					@sidemenu.Sidemenu()
+				</div>
+				<main class="flex-1 p-4 flex justify-center">
+					<div class="w-full">
+						{ children... }
+					</div>
+				</main>
+			</div>
+
+			@Footer()
+
+			<div class="fixed top-0 left-0 h-0.5 bg-primary z-50"
 				x-data="{ progress: 0 }"
 				x-init="window.addEventListener('scroll', () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; progress = d > 0 ? Math.min((s / d) * 100, 100) : 0 })"
-				class="fixed top-0 left-0 h-0.5 bg-primary z-50"
 				:style="`width: ${progress}%`"
 			></div>
-			<div class="flex gap-4">
-				@sidemenu.Sidemenu()
-			</div>
-			<main class="flex-1 p-4 flex justify-center min-h-screen">
-				<div class="w-full">
-					{ children... }
-				</div>
-			</main>
 
 			<div x-show="lb" @click="lb = null" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" style="display: none;">
 				<img :src="lb" class="max-w-full max-h-full object-contain rounded-lg cursor-default" @click.stop alt=""/>
