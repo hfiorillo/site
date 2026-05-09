@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 	"unicode"
 
@@ -31,8 +32,14 @@ const (
 	dateFormat        = "2006-01-02"
 )
 
-var parserInst goldmark.Markdown
-var imgAttrRegex = regexp.MustCompile(`<img\s`)
+var (
+	parserInst    goldmark.Markdown
+	imgAttrRegex  = regexp.MustCompile(`<img\s`)
+	postsCache    []*models.BlogPost
+	postsMu       sync.RWMutex
+	postsCacheAt  time.Time
+	cacheTTL      = 60 * time.Second
+)
 
 func init() {
 	parserInst = goldmark.New(
@@ -94,6 +101,31 @@ func LoadMarkdownPost(fileName string) (*models.BlogPost, error) {
 }
 
 func LoadMarkdownPosts() ([]*models.BlogPost, error) {
+	postsMu.RLock()
+	if postsCache != nil && time.Since(postsCacheAt) < cacheTTL {
+		defer postsMu.RUnlock()
+		return postsCache, nil
+	}
+	postsMu.RUnlock()
+
+	postsMu.Lock()
+	defer postsMu.Unlock()
+
+	if postsCache != nil && time.Since(postsCacheAt) < cacheTTL {
+		return postsCache, nil
+	}
+
+	posts, err := loadPostsUncached()
+	if err != nil {
+		return nil, err
+	}
+
+	postsCache = posts
+	postsCacheAt = time.Now()
+	return posts, nil
+}
+
+func loadPostsUncached() ([]*models.BlogPost, error) {
 	var posts []*models.BlogPost
 
 	err := filepath.WalkDir(postsDir, func(path string, d fs.DirEntry, err error) error {
