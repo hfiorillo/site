@@ -73,16 +73,18 @@ func loadRoutes() {
 
 func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error {
 	routesOnce.Do(loadRoutes)
+	siteOnce.Do(loadSiteMeta)
 	if routesErr != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return pages.ErrorPage("Could not load routes.").Render(r.Context(), w)
 	}
 
-	meta := models.PageMeta{
-		Title:       "Routes | Harry Fiorillo-Hughes",
-		Description: "Bikepacking and cycling routes.",
+	var meta models.PageMeta
+	meta = models.PageMeta{
+		Title:       siteMeta.Routes.Title + " | " + siteMeta.Title,
+		Description: siteMeta.Routes.Description,
 		URL:         p.SiteURL + "/routes",
-		Image:       p.SiteURL + "/public/images/avatar.jpg",
+		Image:       p.SiteURL + siteImage(),
 	}
 	var list []*models.Route
 	for _, entry := range routesList {
@@ -107,11 +109,12 @@ func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
 	}
 
+	siteOnce.Do(loadSiteMeta)
 	meta := models.PageMeta{
-		Title:       route.Name + " | Routes | Harry Fiorillo-Hughes",
+		Title:       route.Name + " | " + siteMeta.Title,
 		Description: route.Location,
 		URL:         p.SiteURL + "/routes/" + slug,
-		Image:       p.SiteURL + "/public/images/avatar.jpg",
+		Image:       p.SiteURL + siteImage(),
 	}
 	return pages.RoutePage(route, slug, meta).Render(r.Context(), w)
 }

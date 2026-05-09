@@ -1,0 +1,15 @@
+title: Harry Fiorillo-Hughes
+description: Software engineering, bike riding and the outdoors.
+image: /public/images/avatar.jpg
+
+blog:
+  title: Blog
+  description: Recent posts about DevOps, engineering, and adventures.
+
+feed:
+  title: Harry Fiorillo-Hughes | Blog
+  description: Personal blog about DevOps, engineering, and adventures.
+
+routes:
+  title: Routes
+  description: Bikepacking and cycling routes.

@@ -18,6 +18,7 @@ templ generate && npx @tailwindcss/cli -i view/css/app.css -o public/styles.css 
 
 | Path | What |
 |------|------|
+| `content/site.yml` | Site metadata (title, description, OG image) |
 | `content/posts/{year}/` | Blog posts (markdown with YAML front matter) |
 | `content/routes/routes.yml` | Route metadata |
 | `content/aboutme/` | About page content |

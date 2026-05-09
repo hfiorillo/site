@@ -13,6 +13,7 @@ import (
 )
 
 func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) error {
+	siteOnce.Do(loadSiteMeta)
 	posts, err := markdown.LoadMarkdownPosts()
 	if err != nil {
 		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
@@ -44,16 +45,16 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 		posts = filtered
 	}
 
-	title := "Blog | Harry Fiorillo-Hughes"
+	title := siteMeta.Blog.Title + " | " + siteMeta.Title
 	if filter != "" {
-		title = toTitle(filter) + " | Harry Fiorillo-Hughes"
+		title = toTitle(filter) + " | " + siteMeta.Title
 	}
 
 	meta := models.PageMeta{
 		Title:       title,
-		Description: "Recent posts about DevOps, engineering, and adventures.",
+		Description: siteMeta.Blog.Description,
 		URL:         p.SiteURL + "/blog",
-		Image:       p.SiteURL + "/public/images/avatar.jpg",
+		Image:       p.SiteURL + siteImage(),
 	}
 
 	var recent, old []*models.BlogPost
@@ -104,7 +105,8 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 		}
 	}
 
-	image := p.SiteURL + "/public/images/avatar.jpg"
+	siteOnce.Do(loadSiteMeta)
+	image := p.SiteURL + siteImage()
 	if post.Metadata.Image != "" {
 		image = p.SiteURL + post.Metadata.Image
 	}

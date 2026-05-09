@@ -10,6 +10,7 @@ import (
 )
 
 func (p PageHandler) HandleFeed(w http.ResponseWriter, r *http.Request) error {
+	siteOnce.Do(loadSiteMeta)
 	posts, err := markdown.LoadMarkdownPosts()
 	if err != nil {
 		return err
@@ -21,9 +22,9 @@ func (p PageHandler) HandleFeed(w http.ResponseWriter, r *http.Request) error {
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	buf.WriteString(`<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">` + "\n")
 	buf.WriteString("<channel>\n")
-	buf.WriteString("<title>Harry Fiorillo-Hughes | Blog</title>\n")
+	buf.WriteString(fmt.Sprintf("<title>%s</title>\n", xmlEscape(siteMeta.Feed.Title)))
 	buf.WriteString(fmt.Sprintf("<link>%s</link>\n", p.SiteURL))
-	buf.WriteString("<description>Personal blog about DevOps, engineering, and adventures</description>\n")
+	buf.WriteString(fmt.Sprintf("<description>%s</description>\n", xmlEscape(siteMeta.Feed.Description)))
 	buf.WriteString(fmt.Sprintf("<atom:link href=\"%s/feed.xml\" rel=\"self\" type=\"application/rss+xml\"/>\n", p.SiteURL))
 	buf.WriteString("<language>en</language>\n")
 

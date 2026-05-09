@@ -38,11 +38,12 @@ func (p PageHandler) HandleIndexPage(w http.ResponseWriter, r *http.Request) err
 		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
 	}
 
+	siteOnce.Do(loadSiteMeta)
 	meta := models.PageMeta{
-		Title:       "Harry Fiorillo-Hughes",
-		Description: "DevOps Engineer and Platform Engineer based in Manchester, UK.",
+		Title:       siteMeta.Title,
+		Description: siteMeta.Description,
 		URL:         p.SiteURL + "/",
-		Image:       p.SiteURL + "/public/images/avatar.jpg",
+		Image:       p.SiteURL + siteImage(),
 	}
 	return pages.AboutMe(aboutme, meta).Render(r.Context(), w)
 }
@@ -53,11 +54,12 @@ func (p PageHandler) HandleAboutMePage(w http.ResponseWriter, r *http.Request) e
 		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
 	}
 
+	siteOnce.Do(loadSiteMeta)
 	meta := models.PageMeta{
-		Title:       "About Me | Harry Fiorillo-Hughes",
-		Description: "DevOps Engineer and Platform Engineer based in Manchester, UK.",
+		Title:       siteMeta.Title,
+		Description: siteMeta.Description,
 		URL:         p.SiteURL + "/aboutme",
-		Image:       p.SiteURL + "/public/images/avatar.jpg",
+		Image:       p.SiteURL + siteImage(),
 	}
 	return pages.AboutMe(aboutme, meta).Render(r.Context(), w)
 }
