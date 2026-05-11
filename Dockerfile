@@ -5,19 +5,18 @@ FROM node:${NODE_VERSION}-alpine AS css
 WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci
-COPY . ./
-RUN npx @tailwindcss/cli -i view/css/app.css -o public/styles.css
+COPY view/ ./view/
+RUN npx @tailwindcss/cli -i view/css/app.css -o /styles.css
 
 FROM golang:${GO_VERSION}-alpine AS build
 
 ENV CGO_ENABLED=0
 
 WORKDIR /src
-COPY ./go.mod ./go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
-COPY ./ ./
-
-COPY --from=css /src/public/styles.css ./public/styles.css
+COPY . ./
+COPY --from=css /styles.css ./public/styles.css
 
 RUN go install github.com/a-h/templ/cmd/templ@v0.3.906
 RUN templ generate

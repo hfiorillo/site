@@ -1,0 +1,13 @@
+.git
+.gitignore
+.gitattributes
+node_modules
+.build
+.env
+README.md
+TODO
+Taskfile.yml
+.air.toml
+pnpm-lock.yaml
+scripts
+.github
