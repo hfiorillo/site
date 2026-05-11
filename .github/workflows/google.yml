@@ -35,8 +35,6 @@ jobs:
           tags: |
             ${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.PROJECT_ID }}/personal/${{ vars.SERVICE }}:${{ github.sha }}
             ${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.PROJECT_ID }}/personal/${{ vars.SERVICE }}:latest
-          cache-from: type=registry,ref=${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.PROJECT_ID }}/personal/${{ vars.SERVICE }}:buildcache
-          cache-to: type=registry,ref=${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ vars.PROJECT_ID }}/personal/${{ vars.SERVICE }}:buildcache,mode=max
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
