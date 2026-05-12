@@ -2,7 +2,6 @@ package sidemenu
 
 import (
 	"github.com/hfiorillo/site/view/components/icons"
-	navigation "github.com/hfiorillo/site/view/components/themeController"
 )
 
 templ Sidemenu() {
@@ -31,7 +30,14 @@ templ Sidemenu() {
                    class="w-5 h-5 text-base-content hover:opacity-70 transition-opacity inline-flex items-center justify-center">
                     @icons.Instagram()
                 </a>
-                @navigation.ThemeController()
+                <a href="https://www.komoot.com/user/1306431058067" target="_blank" rel="noopener noreferrer"
+                   class="w-5 h-5 text-base-content hover:opacity-70 transition-opacity inline-flex items-center justify-center">
+                    @icons.Komoot()
+                </a>
+                <a href="https://www.strava.com/athletes/19890295" target="_blank" rel="noopener noreferrer"
+                   class="w-5 h-5 text-base-content hover:opacity-70 transition-opacity inline-flex items-center justify-center">
+                    @icons.Strava()
+                </a>
             </div>
         </div>
     </aside>

@@ -2,6 +2,7 @@ package layout
 
 import (
 	"github.com/hfiorillo/site/models"
+	navigation "github.com/hfiorillo/site/view/components/themeController"
 	"github.com/hfiorillo/site/view/sidemenu"
 )
 
@@ -54,6 +55,10 @@ templ Base(meta models.PageMeta) {
 				x-init="window.addEventListener('scroll', () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; progress = d > 0 ? Math.min((s / d) * 100, 100) : 0 })"
 				:style="`width: ${progress}%`"
 			></div>
+
+			<div class="fixed top-4 right-4 z-50 opacity-60 hover:opacity-100 transition-opacity">
+				@navigation.ThemeController()
+			</div>
 
 			<div x-show="lb" @click="lb = null" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" style="display: none;">
 				<img :src="lb" class="max-w-full max-h-full object-contain rounded-lg cursor-default" @click.stop alt=""/>

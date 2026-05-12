@@ -63,4 +63,5 @@ type Route struct {
 	Date          time.Time
 	CoordsJSON    string
 	GPXFile       string
+	Packlist      string
 }

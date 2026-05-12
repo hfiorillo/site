@@ -14,25 +14,31 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 			<table class="w-full text-left border-collapse not-prose">
 				<thead>
 					<tr class="border-b border-base-content/20 text-sm text-base-content/50">
-						<th class="pb-2 pr-6 font-medium">Route</th>
+						<th class="pb-2 pl-4 pr-6 font-medium">Route</th>
 						<th class="pb-2 pr-6 font-medium">Location</th>
 						<th class="pb-2 pr-6 font-medium text-right">Distance</th>
 						<th class="pb-2 pr-6 font-medium text-right">Elevation</th>
 						<th class="pb-2 pr-6 font-medium">Date</th>
+						<th class="pb-2 pr-6 font-medium">Packlist</th>
 						<th class="pb-2 font-medium">GPX</th>
 					</tr>
 				</thead>
 				<tbody>
 					for _, r := range routes {
 						<tr class="border-b border-base-content/10 hover:bg-base-200 transition-colors">
-							<td class="py-3 pr-6">
+							<td class="py-3 pl-4 pr-6">
 								<a href={ templ.SafeURL(fmt.Sprintf("/routes/%s", r.Slug)) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
 							</td>
 							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f m", r.ElevationGain) }</td>
 							<td class="py-3 pr-6 text-sm">{ r.Date.Format("Jan 2006") }</td>
-							<td class="py-3">
+							<td class="py-3 pr-6">
+								if r.Packlist != "" {
+									<a href={ templ.SafeURL(r.Packlist) } target="_blank" rel="noopener noreferrer" class="text-sm text-primary no-underline hover:opacity-80">View</a>
+								}
+							</td>
+							<td class="py-3 pr-4">
 								<a href={ templ.SafeURL(r.GPXFile) } download class="text-sm text-primary no-underline hover:opacity-80">Download</a>
 							</td>
 						</tr>
@@ -70,6 +76,11 @@ templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 				<div>
 					<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
 				</div>
+				if r.Packlist != "" {
+					<div>
+						<a href={ templ.SafeURL(r.Packlist) } target="_blank" rel="noopener noreferrer" class="text-primary no-underline hover:opacity-80 font-semibold">Packlist</a>
+					</div>
+				}
 			</div>
 			<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;" data-slug={ slug }></div>
 		</div>

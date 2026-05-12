@@ -22,6 +22,7 @@ type routeEntry struct {
 	Location string `yaml:"location"`
 	Date     string `yaml:"date"`
 	GPXFile  string `yaml:"gpx"`
+	Packlist string `yaml:"packlist"`
 }
 
 var (
@@ -65,6 +66,7 @@ func loadRoutes() {
 			Date:          date,
 			CoordsJSON:    cj,
 			GPXFile:       r.GPXFile,
+			Packlist:      r.Packlist,
 		}
 		routesCoords[r.Slug] = rd
 		routesList[i].Slug = r.Slug
