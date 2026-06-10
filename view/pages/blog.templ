@@ -51,7 +51,7 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 
 templ BlogCard(post *models.BlogPost) {
 	<div class="py-6">
-		<p class="text-base text-base-content/40 mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
+		<p class="text-base text-base-content/60 font-semibold mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
 		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline">
 			<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors">{ post.Title }</h2>
 		</a>
@@ -62,7 +62,7 @@ templ BlogCard(post *models.BlogPost) {
 templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPost, meta models.PageMeta) {
 	@layout.Base(meta) {
 		<h1 class="text-3xl font-bold leading-snug">{ post.Title }</h1>
-			<p class="text-lg text-base-content/50 mt-3">
+			<p class="text-lg text-base-content/60 font-semibold mt-3">
 				posted { timeAgo(post.Date) } by Harry Fiorillo
 				if post.Description != "" {
 					{ " — " + post.Description }

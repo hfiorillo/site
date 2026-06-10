@@ -36,18 +36,18 @@ templ Base(meta models.PageMeta) {
 			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
 		>
 			<div class="flex justify-center min-h-screen">
-				<div class="hidden lg:flex w-48 flex-shrink-0 justify-end pr-6 border-r border-dotted border-base-content/10">
-					<div class="fixed">
+				<div class="hidden md:flex w-48 flex-shrink-0 justify-end pr-6 border-r border-dotted border-base-content/10">
+					<div class="fixed top-0">
 						@Brand()
 					</div>
 				</div>
 
-				<main class="flex-1 max-w-3xl w-full px-4 py-8">
+				<main class="flex-1 max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl w-full px-4 py-8">
 					{ children... }
 				</main>
 
-				<div class="hidden xl:block w-56 flex-shrink-0 pl-6 border-l border-dotted border-base-content/10">
-					<div class="fixed">
+				<div class="hidden md:block w-48 xl:w-56 flex-shrink-0 pl-6 border-l border-dotted border-base-content/10">
+					<div class="fixed top-0 pt-4">
 						@SideNav()
 					</div>
 				</div>

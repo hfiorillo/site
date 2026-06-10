@@ -25,3 +25,8 @@ tasks:
   new-post:
     cmds:
     - scripts/newpost.sh
+
+  images:
+    desc: "Convert all .HEIC images in public/images/ to .jpg"
+    cmds:
+    - scripts/images.sh
