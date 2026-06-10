@@ -6,6 +6,10 @@
   --font-sans: 'Geist', Georgia, 'Times New Roman', Times, serif;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 .prose img {
   @apply rounded-lg mx-auto cursor-pointer;
   transition: opacity 0.2s;
@@ -24,4 +28,39 @@
   aspect-ratio: 16 / 9;
   max-width: 100%;
   border: none;
+}
+
+@keyframes hue {
+  0%   { background: #e74c3c; }
+  20%  { background: #f39c12; }
+  40%  { background: #2ecc71; }
+  60%  { background: #3498db; }
+  80%  { background: #9b59b6; }
+  100% { background: #e74c3c; }
+}
+
+@keyframes hue-text {
+  0%   { color: #e74c3c; }
+  20%  { color: #f39c12; }
+  40%  { color: #2ecc71; }
+  60%  { color: #3498db; }
+  80%  { color: #9b59b6; }
+  100% { color: #e74c3c; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-hue {
+  animation: hue 6s infinite;
+}
+
+.animate-hue-text {
+  animation: hue-text 6s infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
 }

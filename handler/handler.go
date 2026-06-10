@@ -33,19 +33,7 @@ func Make(h func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 }
 
 func (p PageHandler) HandleIndexPage(w http.ResponseWriter, r *http.Request) error {
-	aboutme, err := markdown.LoadMarkdownPost("/aboutme/aboutme")
-	if err != nil {
-		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
-	}
-
-	siteOnce.Do(loadSiteMeta)
-	meta := models.PageMeta{
-		Title:       siteMeta.Title,
-		Description: siteMeta.Description,
-		URL:         p.SiteURL + "/",
-		Image:       p.SiteURL + siteImage(),
-	}
-	return pages.AboutMe(aboutme, meta).Render(r.Context(), w)
+	return p.HandleBlogPage(w, r)
 }
 
 func (p PageHandler) HandleAboutMePage(w http.ResponseWriter, r *http.Request) error {

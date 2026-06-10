@@ -2,8 +2,6 @@ package layout
 
 import (
 	"github.com/hfiorillo/site/models"
-	navigation "github.com/hfiorillo/site/view/components/themeController"
-	"github.com/hfiorillo/site/view/sidemenu"
 )
 
 templ Base(meta models.PageMeta) {
@@ -27,38 +25,39 @@ templ Base(meta models.PageMeta) {
 			<meta name="twitter:image" content={ meta.Image }/>
 
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
-			<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500&family=IM+Fell+French+Canon:ital@0;1&display=swap" rel="stylesheet"/>
+			<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href="/public/styles.css"/>
-			<link rel="icon" type="image/x-icon" href="/public/fish.svg"/>
+			<link rel="icon" type="image/svg+xml" href="/public/fish.svg"/>
 		</head>
 		<body
 			style="font-family:'Geist', Georgia, 'Times New Roman', Times, serif"
-			class="bg-base-100 min-h-screen flex flex-col"
+			class="bg-base-100 min-h-screen"
 			x-data="{ lb: null }"
 			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
 		>
-			<div class="flex flex-1">
-				<div class="flex gap-4">
-					@sidemenu.Sidemenu()
-				</div>
-				<main class="flex-1 p-4 flex justify-center">
-					<div class="w-full">
-						{ children... }
+			<div class="flex justify-center min-h-screen">
+				<div class="hidden lg:flex w-48 flex-shrink-0 justify-end pr-6 border-r border-dotted border-base-content/10">
+					<div class="fixed">
+						@Brand()
 					</div>
-				</main>
-			</div>
+				</div>
 
-			@Footer()
+				<main class="flex-1 max-w-3xl w-full px-4 py-8">
+					{ children... }
+				</main>
+
+				<div class="hidden xl:block w-56 flex-shrink-0 pl-6 border-l border-dotted border-base-content/10">
+					<div class="fixed">
+						@SideNav()
+					</div>
+				</div>
+			</div>
 
 			<div class="fixed top-0 left-0 h-0.5 bg-primary z-50"
 				x-data="{ progress: 0 }"
 				x-init="window.addEventListener('scroll', () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; progress = d > 0 ? Math.min((s / d) * 100, 100) : 0 })"
 				:style="`width: ${progress}%`"
 			></div>
-
-			<div class="fixed top-4 right-4 z-50 opacity-60 hover:opacity-100 transition-opacity">
-				@navigation.ThemeController()
-			</div>
 
 			<div x-show="lb" @click="lb = null" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" style="display: none;">
 				<img :src="lb" class="max-w-full max-h-full object-contain rounded-lg cursor-default" @click.stop alt=""/>

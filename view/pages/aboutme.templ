@@ -7,19 +7,9 @@ import (
 
 templ AboutMe(post *models.BlogPost, meta models.PageMeta) {
 	@layout.Base(meta) {
-		@AboutMeInner(post)
-	}
-}
-
-templ AboutMeInner(post *models.BlogPost) {
-	<div
-		id="about-me"
-		class="flex flex-col items-center py-6 w-full"
-	>
-		<div class="max-w-2xl mx-auto w-full">
-			<div class="px-4 sm:px-8 bg-base-100 rounded-lg prose max-w-none text-justify">
-				@templ.Raw(post.Content)
-			</div>
+		<h1 class="text-3xl font-bold mb-6">About</h1>
+		<div class="prose max-w-none">
+			@templ.Raw(post.Content)
 		</div>
-	</div>
+	}
 }

@@ -3,112 +3,122 @@ package pages
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/layout"
-	"github.com/hfiorillo/site/view/sidemenu"
 )
 
 templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, recent []*models.BlogPost, old []*models.BlogPost) {
 	@layout.Base(meta) {
-		<div class="max-w-2xl mx-auto">
-			<div id="blog-base" class="text-justify">
-			<div class="flex items-baseline gap-4 mb-6">
-				if category != "" {
-					<h1 class="text-7xl font-semibold">
-						<strong>{ titleCase(category) }</strong>
-					</h1>
-					<a href="/blog" class="text-sm text-base-content/50 hover:text-primary no-underline">all posts</a>
-				} else {
-					<h1 class="text-7xl font-semibold">
-						<strong>Recent Posts</strong>
-					</h1>
+		if category == "" {
+			<h1 class="text-3xl font-bold mb-8">fiorillo.xyz posts</h1>
+		}
+		if category != "" {
+			<h1 class="text-3xl font-bold mb-1">{ titleCase(category) }</h1>
+			<a href="/blog" class="text-base text-base-content/40 hover:text-primary no-underline">all posts</a>
+		}
+		if len(posts) == 0 {
+			<p class="text-base-content/40 mt-12">No posts yet.</p>
+		} else {
+			for i, post := range recent {
+				if i > 0 {
+					<hr class="border-0 border-t border-dotted border-base-content/20 my-0"/>
 				}
-			</div>
-			if len(posts) == 0 {
-				<p class="text-base-content/50 mt-4">No posts yet.</p>
-			} else {
-				for _, post := range recent {
-					@BlogCard(post)
-				}
-				if len(old) > 0 {
-					<div class="mt-6 not-prose" x-data="{ open: false }">
-						<button
-							@click="open = !open"
-							class="flex items-center gap-2 text-sm text-base-content/50 hover:text-primary transition-colors cursor-pointer"
-						>
-							<span x-show="!open">▶</span>
-							<span x-show="open">▼</span>
-							{ fmt.Sprintf("Older posts (%d)", len(old)) }
-						</button>
-						<div x-show="open" class="mt-2">
-							for _, post := range old {
-								@BlogCard(post)
-							}
-						</div>
-					</div>
-				}
+				@BlogCard(post)
 			}
-		</div>
-		</div>
+			if len(old) > 0 {
+				<div class="mt-8 pt-4" x-data="{ open: false }">
+					<hr class="border-0 border-t border-dotted border-base-content/20 mb-4"/>
+					<button @click="open = !open" class="text-lg text-base-content/40 hover:text-primary transition-colors cursor-pointer">
+						<span x-show="!open">▶</span>
+						<span x-show="open">▼</span>
+						{ fmt.Sprintf("Older posts (%d)", len(old)) }
+					</button>
+					<div x-show="open" class="mt-4">
+						for i, post := range old {
+							if i > 0 {
+								<hr class="border-0 border-t border-dotted border-base-content/20"/>
+							}
+							@BlogCard(post)
+						}
+					</div>
+				</div>
+			}
+		}
 	}
 }
 
 templ BlogCard(post *models.BlogPost) {
-	<div id={ fmt.Sprintf("blog-card-%s", post.Filename) } class="w-full mb-0 hover:bg-base-200 py-1.5 px-3 rounded-lg transition-colors">
-		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="cursor-pointer no-underline">
-			<div class="text-base-content">
-				<h2 class="text-2xl font-semibold hover:text-primary transition-colors">{ post.Title }</h2>
-				<p class="text-gray-600 mt-2 not-prose"> { post.ReadTimeMinutes } min | { dateFormat(post) } | { post.Description }</p>
-			</div>
+	<div class="py-6">
+		<p class="text-base text-base-content/40 mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
+		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline">
+			<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors">{ post.Title }</h2>
 		</a>
+		<p class="text-lg text-base-content/60 mt-1 leading-relaxed">{ post.Description }</p>
 	</div>
 }
 
 templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPost, meta models.PageMeta) {
 	@layout.Base(meta) {
-		<div class="relative flex flex-col sm:flex-row sm:justify-center sm:items-start min-h-screen bg-base-100">
-			<div class="prose max-w-none mx-auto px-4 py-6 sm:px-8 sm:max-w-3xl bg-base-100 rounded-lg text-justify">
-				<div class="not-prose text-center">
-					<h1 class="text-3xl sm:text-4xl font-bold">{ post.Title }</h1>
-				</div>
-				<div class="divider"></div>
-				<div class="not-prose">
-					<p class="text-sm text-base-content/50">{ dateFormat(post) } — { post.Description }</p>
-				</div>
-				@templ.Raw(post.Content)
-				if len(post.Metadata.Tags) > 0 {
-					<div class="not-prose flex flex-wrap gap-2 mt-8">
-						for _, tag := range post.Metadata.Tags {
-							<a href={ templ.SafeURL(fmt.Sprintf("/blog?tag=%s", tag)) } class="text-sm text-base-content/60 hover:text-primary no-underline">#{ tag }</a>
-						}
-					</div>
+		<h1 class="text-3xl font-bold leading-snug">{ post.Title }</h1>
+			<p class="text-lg text-base-content/50 mt-3">
+				posted { timeAgo(post.Date) } by Harry Fiorillo
+				if post.Description != "" {
+					{ " — " + post.Description }
 				}
-				<div class="divider"></div>
-				<div class="flex justify-between not-prose mt-8">
-					if prev != nil {
-						<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", prev.Filename)) } class="btn btn-outline btn-sm">
-							&larr; { prev.Title }
-						</a>
-					} else {
-						<div></div>
-					}
-					if next != nil {
-						<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", next.Filename)) } class="btn btn-outline btn-sm ml-auto">
-							{ next.Title } &rarr;
-						</a>
+			</p>
+			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
+			<div class="prose prose-lg max-w-none text-justify leading-relaxed">
+				@templ.Raw(post.Content)
+			</div>
+			if len(post.Metadata.Tags) > 0 {
+				<div class="flex flex-wrap gap-3 mt-8 not-prose">
+					for _, tag := range post.Metadata.Tags {
+						<a href={ templ.SafeURL(fmt.Sprintf("/blog?tag=%s", tag)) } class="text-lg text-base-content/40 hover:text-primary no-underline">{ tag }</a>
 					}
 				</div>
+			}
+			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
+			<div class="flex justify-between not-prose">
+				if prev != nil {
+					<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", prev.Filename)) } class="text-lg text-base-content/60 hover:text-primary no-underline">&larr; { prev.Title }</a>
+				} else {
+					<div></div>
+				}
+				if next != nil {
+					<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", next.Filename)) } class="text-lg text-base-content/60 hover:text-primary no-underline">{ next.Title } &rarr;</a>
+				}
 			</div>
-			<div>
-				@sidemenu.Contents(post)
-			</div>
-		</div>
 	}
 }
 
-func dateFormat(post *models.BlogPost) string {
-	return post.Date.Format("02 January 2006")
+func timeAgo(t time.Time) string {
+	d := time.Since(t)
+	switch {
+	case d < time.Minute:
+		return "just now"
+	case d < time.Hour:
+		m := int(d.Minutes())
+		if m == 1 { return "1 minute ago" }
+		return fmt.Sprintf("%d minutes ago", m)
+	case d < 24*time.Hour:
+		h := int(d.Hours())
+		if h == 1 { return "1 hour ago" }
+		return fmt.Sprintf("%d hours ago", h)
+	case d < 7*24*time.Hour:
+		days := int(d.Hours() / 24)
+		if days == 1 { return "1 day ago" }
+		return fmt.Sprintf("%d days ago", days)
+	case d < 365*24*time.Hour:
+		months := int(d.Hours() / 24 / 30)
+		if months == 1 { return "1 month ago" }
+		return fmt.Sprintf("%d months ago", months)
+	default:
+		years := int(d.Hours() / 24 / 365)
+		if years == 1 { return "1 year ago" }
+		return fmt.Sprintf("%d years ago", years)
+	}
 }
 
 func titleCase(s string) string {

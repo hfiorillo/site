@@ -9,8 +9,8 @@ import (
 
 templ Routes(routes []*models.Route, meta models.PageMeta) {
 	@layout.Base(meta) {
-		<div class="max-w-2xl mx-auto">
-			<h1 class="text-7xl font-semibold mb-6"><strong>Routes</strong></h1>
+		<div>
+			<h1 class="text-3xl font-bold mb-6">Routes</h1>
 			<table class="w-full text-left border-collapse not-prose">
 				<thead>
 					<tr class="border-b border-base-content/20 text-sm text-base-content/50">
@@ -51,9 +51,9 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 
 templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 	@layout.Base(meta) {
-		<div class="max-w-3xl mx-auto">
+		<div>
 			<div class="not-prose">
-				<h1 class="text-3xl sm:text-4xl font-bold">{ r.Name }</h1>
+				<h1 class="text-3xl font-bold">{ r.Name }</h1>
 				<p class="text-sm text-base-content/50 mt-1">{ r.Location }</p>
 			</div>
 			<div class="flex gap-6 mt-4 not-prose text-sm">

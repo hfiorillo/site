@@ -45,5 +45,5 @@ func siteImage() string {
 	if siteMeta.Image != "" {
 		return siteMeta.Image
 	}
-	return "/public/images/avatar.jpg"
+	return "/public/images/harryfiorilloxyz-removebg-preview.png"
 }

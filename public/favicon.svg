@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="c">
+      <circle cx="50" cy="50" r="48"/>
+    </clipPath>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="#f5f5f4"/>
+  <image href="/public/images/harryfiorilloxyz-removebg-preview.png" x="2" y="2" width="96" height="96" clip-path="url(#c)" preserveAspectRatio="xMidYMid slice"/>
+</svg>
