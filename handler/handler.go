@@ -52,6 +52,27 @@ func (p PageHandler) HandleAboutMePage(w http.ResponseWriter, r *http.Request) e
 	return pages.AboutMe(aboutme, meta).Render(r.Context(), w)
 }
 
+func (p PageHandler) HandleAboutThisSite(w http.ResponseWriter, r *http.Request) error {
+	siteOnce.Do(loadSiteMeta)
+	about, err := markdown.LoadMarkdownPost("/about-this-site/about-this-site")
+	if err != nil {
+		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
+	}
+
+	image := p.SiteURL + siteImage()
+	if about.Metadata.Image != "" {
+		image = p.SiteURL + about.Metadata.Image
+	}
+
+	meta := models.PageMeta{
+		Title:       about.Title + " | Harry Fiorillo-Hughes",
+		Description: about.Description,
+		URL:         p.SiteURL + "/about-this-site",
+		Image:       image,
+	}
+	return pages.AboutThisSite(about, meta).Render(r.Context(), w)
+}
+
 func xmlEscape(s string) string {
 	s = strings.ReplaceAll(s, "&", "&amp;")
 	s = strings.ReplaceAll(s, "<", "&lt;")
