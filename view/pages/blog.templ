@@ -62,7 +62,7 @@ templ BlogCard(post *models.BlogPost) {
 templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPost, meta models.PageMeta) {
 	@layout.Base(meta) {
 		<h1 class="text-3xl font-bold leading-snug">{ post.Title }</h1>
-			<p class="text-lg text-base-content/60 font-semibold mt-3">
+			<p class="text-base text-base-content/60 font-semibold mt-3">
 				posted { timeAgo(post.Date) } by Harry Fiorillo
 				if post.Description != "" {
 					{ " — " + post.Description }
