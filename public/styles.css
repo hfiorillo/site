@@ -2454,6 +2454,18 @@
   .whitespace-nowrap {
     white-space: nowrap;
   }
+  .text-\[\#4CAF50\] {
+    color: #4CAF50;
+  }
+  .text-\[\#333\] {
+    color: #333;
+  }
+  .text-\[\#E4405F\] {
+    color: #E4405F;
+  }
+  .text-\[\#FC4C02\] {
+    color: #FC4C02;
+  }
   .text-base-content {
     color: var(--color-base-content);
   }
@@ -2534,6 +2546,16 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-base-content);
+      }
+    }
+  }
+  .hover\:text-base-content\/60 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-base-content);
+        @supports (color: color-mix(in lab, red, red)) {
+          color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+        }
       }
     }
   }
