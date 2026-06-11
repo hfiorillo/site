@@ -39,15 +39,6 @@ html {
   100% { background: #e74c3c; }
 }
 
-@keyframes hue-text {
-  0%   { color: #e74c3c; }
-  20%  { color: #f39c12; }
-  40%  { color: #2ecc71; }
-  60%  { color: #3498db; }
-  80%  { color: #9b59b6; }
-  100% { color: #e74c3c; }
-}
-
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
@@ -57,10 +48,32 @@ html {
   animation: hue 6s infinite;
 }
 
-.animate-hue-text {
-  animation: hue-text 6s infinite;
-}
-
 .animate-spin-slow {
   animation: spin-slow 12s linear infinite;
+}
+
+@media (min-width: 640px) {
+  .sm\:max-w-xl { max-width: 36rem; }
+}
+
+@media (min-width: 768px) {
+  .md\:flex { display: flex; }
+  .md\:block { display: block; }
+  .md\:w-48 { width: 12rem; }
+  .md\:max-w-2xl { max-width: 42rem; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:max-w-3xl { max-width: 48rem; }
+}
+
+@media (min-width: 1280px) {
+  .xl\:block { display: block; }
+  .xl\:w-48 { width: 12rem; }
+  .xl\:w-56 { width: 14rem; }
+  .xl\:max-w-4xl { max-width: 56rem; }
+}
+
+@media (min-width: 1536px) {
+  .\32xl\:max-w-5xl { max-width: 64rem; }
 }
