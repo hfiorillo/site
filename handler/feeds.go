@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,44 +10,78 @@ import (
 	"github.com/hfiorillo/site/internal/markdown"
 )
 
+type rssFeed struct {
+	XMLName xml.Name  `xml:"rss"`
+	Version string    `xml:"version,attr"`
+	Atom    string    `xml:"xmlns:atom,attr"`
+	Channel rssChannel `xml:"channel"`
+}
+
+type rssChannel struct {
+	Title       string    `xml:"title"`
+	Link        string    `xml:"link"`
+	Description string    `xml:"description"`
+	AtomLink    rssAtom   `xml:"atom:link"`
+	Language    string    `xml:"language"`
+	Items       []rssItem `xml:"item"`
+}
+
+type rssAtom struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+	Type string `xml:"type,attr"`
+}
+
+type rssItem struct {
+	Title       string `xml:"title"`
+	Link        string `xml:"link"`
+	GUID        string `xml:"guid"`
+	Description string `xml:"description"`
+	PubDate     string `xml:"pubDate"`
+}
+
 func (p PageHandler) HandleFeed(w http.ResponseWriter, r *http.Request) error {
 	siteOnce.Do(loadSiteMeta)
-	posts, err := markdown.LoadMarkdownPosts()
+	posts, err := markdown.LoadMarkdownPosts(r.Context())
 	if err != nil {
 		return err
 	}
 
-	w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
-
-	var buf bytes.Buffer
-	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
-	buf.WriteString(`<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">` + "\n")
-	buf.WriteString("<channel>\n")
-	buf.WriteString(fmt.Sprintf("<title>%s</title>\n", xmlEscape(siteMeta.Feed.Title)))
-	buf.WriteString(fmt.Sprintf("<link>%s</link>\n", p.SiteURL))
-	buf.WriteString(fmt.Sprintf("<description>%s</description>\n", xmlEscape(siteMeta.Feed.Description)))
-	buf.WriteString(fmt.Sprintf("<atom:link href=\"%s/feed.xml\" rel=\"self\" type=\"application/rss+xml\"/>\n", p.SiteURL))
-	buf.WriteString("<language>en</language>\n")
-
+	items := make([]rssItem, 0, len(posts))
 	for _, post := range posts {
-		buf.WriteString("<item>\n")
-		buf.WriteString(fmt.Sprintf("<title>%s</title>\n", xmlEscape(post.Title)))
-		buf.WriteString(fmt.Sprintf("<link>%s/blog/%s</link>\n", p.SiteURL, post.Filename))
-		buf.WriteString(fmt.Sprintf("<guid>%s/blog/%s</guid>\n", p.SiteURL, post.Filename))
-		buf.WriteString(fmt.Sprintf("<description>%s</description>\n", xmlEscape(post.Description)))
-		buf.WriteString(fmt.Sprintf("<pubDate>%s</pubDate>\n", post.Date.Format(time.RFC822)))
-		buf.WriteString("</item>\n")
+		items = append(items, rssItem{
+			Title:       post.Title,
+			Link:        p.SiteURL + "/blog/" + post.Filename,
+			GUID:        p.SiteURL + "/blog/" + post.Filename,
+			Description: post.Description,
+			PubDate:     post.Date.Format(time.RFC822),
+		})
 	}
 
-	buf.WriteString("</channel>\n")
-	buf.WriteString("</rss>\n")
+	feed := rssFeed{
+		Version: "2.0",
+		Atom:    "http://www.w3.org/2005/Atom",
+		Channel: rssChannel{
+			Title:       siteMeta.Feed.Title,
+			Link:        p.SiteURL,
+			Description: siteMeta.Feed.Description,
+			Language:    "en",
+			AtomLink: rssAtom{
+				Href: p.SiteURL + "/feed.xml",
+				Rel:  "self",
+				Type: "application/rss+xml",
+			},
+			Items: items,
+		},
+	}
 
-	w.Write(buf.Bytes())
-	return nil
+	w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
+	w.Write([]byte(xml.Header))
+	return xml.NewEncoder(w).Encode(feed)
 }
 
 func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error {
-	posts, err := markdown.LoadMarkdownPosts()
+	posts, err := markdown.LoadMarkdownPosts(r.Context())
 	if err != nil {
 		posts = nil
 	}
@@ -59,56 +94,33 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	buf.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")
 
-	buf.WriteString("<url>\n")
-	buf.WriteString(fmt.Sprintf("<loc>%s/</loc>\n", p.SiteURL))
-	buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
-	buf.WriteString("<changefreq>monthly</changefreq>\n")
-	buf.WriteString("<priority>1.0</priority>\n")
-	buf.WriteString("</url>\n")
+	addURL := func(loc, lastmod, changefreq, priority string) {
+		buf.WriteString("<url>\n")
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>\n", loc))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", lastmod))
+		buf.WriteString(fmt.Sprintf("<changefreq>%s</changefreq>\n", changefreq))
+		buf.WriteString(fmt.Sprintf("<priority>%s</priority>\n", priority))
+		buf.WriteString("</url>\n")
+	}
 
-	buf.WriteString("<url>\n")
-	buf.WriteString(fmt.Sprintf("<loc>%s/blog</loc>\n", p.SiteURL))
-	buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
-	buf.WriteString("<changefreq>weekly</changefreq>\n")
-	buf.WriteString("<priority>0.8</priority>\n")
-	buf.WriteString("</url>\n")
-
-	buf.WriteString("<url>\n")
-	buf.WriteString(fmt.Sprintf("<loc>%s/aboutme</loc>\n", p.SiteURL))
-	buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
-	buf.WriteString("<changefreq>monthly</changefreq>\n")
-	buf.WriteString("<priority>0.6</priority>\n")
-	buf.WriteString("</url>\n")
+	now := time.Now().Format(dateFormat)
+	addURL(p.SiteURL+"/", now, "monthly", "1.0")
+	addURL(p.SiteURL+"/blog", now, "weekly", "0.8")
+	addURL(p.SiteURL+"/aboutme", now, "monthly", "0.6")
 
 	for _, post := range posts {
-		buf.WriteString("<url>\n")
-		buf.WriteString(fmt.Sprintf("<loc>%s/blog/%s</loc>\n", p.SiteURL, post.Filename))
-		buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", post.Date.Format(dateFormat)))
-		buf.WriteString("<changefreq>never</changefreq>\n")
-		buf.WriteString("<priority>0.6</priority>\n")
-		buf.WriteString("</url>\n")
+		addURL(p.SiteURL+"/blog/"+post.Filename, post.Date.Format(dateFormat), "never", "0.6")
 	}
 
 	routesOnce.Do(loadRoutes)
 	if routesErr == nil {
-		buf.WriteString("<url>\n")
-		buf.WriteString(fmt.Sprintf("<loc>%s/routes</loc>\n", p.SiteURL))
-		buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
-		buf.WriteString("<changefreq>monthly</changefreq>\n")
-		buf.WriteString("<priority>0.5</priority>\n")
-		buf.WriteString("</url>\n")
+		addURL(p.SiteURL+"/routes", now, "monthly", "0.5")
 		for _, entry := range routesList {
-			buf.WriteString("<url>\n")
-			buf.WriteString(fmt.Sprintf("<loc>%s/routes/%s</loc>\n", p.SiteURL, entry.Slug))
-			buf.WriteString(fmt.Sprintf("<lastmod>%s</lastmod>\n", time.Now().Format(dateFormat)))
-			buf.WriteString("<changefreq>never</changefreq>\n")
-			buf.WriteString("<priority>0.5</priority>\n")
-			buf.WriteString("</url>\n")
+			addURL(p.SiteURL+"/routes/"+entry.Slug, now, "never", "0.5")
 		}
 	}
 
 	buf.WriteString("</urlset>\n")
-
 	w.Write(buf.Bytes())
 	return nil
 }

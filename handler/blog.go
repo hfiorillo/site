@@ -14,7 +14,7 @@ import (
 
 func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) error {
 	siteOnce.Do(loadSiteMeta)
-	posts, err := markdown.LoadMarkdownPosts()
+	posts, err := markdown.LoadMarkdownPosts(r.Context())
 	if err != nil {
 		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
 	}
@@ -76,7 +76,7 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 
 func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) error {
 	filename := chi.URLParam(r, "filename")
-	post, err := markdown.LoadMarkdownPost(fmt.Sprintf("/posts/%s", filename))
+	post, err := markdown.LoadMarkdownPost(r.Context(), fmt.Sprintf("/posts/%s", filename))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return pages.ErrorPage("This page does not exist.").Render(r.Context(), w)
@@ -87,7 +87,7 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 		return pages.ErrorPage("This page does not exist.").Render(r.Context(), w)
 	}
 
-	allPosts, err := markdown.LoadMarkdownPosts()
+	allPosts, err := markdown.LoadMarkdownPosts(r.Context())
 	if err != nil {
 		allPosts = nil
 	}

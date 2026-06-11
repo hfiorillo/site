@@ -2,6 +2,7 @@ package markdown
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"html/template"
@@ -14,7 +15,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode"
 
 	"github.com/hfiorillo/site/models"
 	"github.com/yuin/goldmark"
@@ -39,6 +39,8 @@ var (
 	postsMu       sync.RWMutex
 	postsCacheAt  time.Time
 	cacheTTL      = 60 * time.Second
+	postsPathMu   sync.RWMutex
+	postsPathMap  map[string]string
 )
 
 func init() {
@@ -56,6 +58,42 @@ func init() {
 			html.WithUnsafe(),
 		),
 	)
+	buildPathMap()
+}
+
+func buildPathMap() {
+	m := make(map[string]string)
+	filepath.WalkDir(contentDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		if !d.IsDir() && strings.HasSuffix(d.Name(), markdownExtension) {
+			name := strings.TrimSuffix(d.Name(), markdownExtension)
+			m[name] = path
+		}
+		return nil
+	})
+	postsPathMu.Lock()
+	postsPathMap = m
+	postsPathMu.Unlock()
+}
+
+func findPostPath(targetBase string) (string, error) {
+	postsPathMu.RLock()
+	path, ok := postsPathMap[targetBase]
+	postsPathMu.RUnlock()
+	if ok {
+		return path, nil
+	}
+
+	postsPathMu.Lock()
+	buildPathMap()
+	path = postsPathMap[targetBase]
+	postsPathMu.Unlock()
+	if path == "" {
+		return "", fmt.Errorf("post '%s' not found", targetBase)
+	}
+	return path, nil
 }
 
 func calculateReadTime(text string) int {
@@ -63,44 +101,35 @@ func calculateReadTime(text string) int {
 	if wordCount == 0 {
 		return 0
 	}
-	readTime := math.Ceil(float64(wordCount) / float64(avgWordsPerMinute))
-	return int(readTime)
+	return int(math.Ceil(float64(wordCount) / float64(avgWordsPerMinute)))
 }
 
-func LoadMarkdownPost(fileName string) (*models.BlogPost, error) {
+func LoadMarkdownPost(ctx context.Context, fileName string) (*models.BlogPost, error) {
 	targetBase := filepath.Base(fileName)
-	var foundPath string
-	err := filepath.WalkDir(contentDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return nil
-		}
-		if !d.IsDir() && d.Name() == targetBase+markdownExtension {
-			foundPath = path
-			return fs.SkipAll
-		}
-		return nil
-	})
+
+	path, err := findPostPath(targetBase)
 	if err != nil {
-		return nil, fmt.Errorf("searching for post '%s': %w", fileName, err)
-	}
-	if foundPath == "" {
-		return nil, fmt.Errorf("post '%s' not found", fileName)
+		return nil, err
 	}
 
-	content, err := os.ReadFile(foundPath)
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
+	content, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read file %s: %w", foundPath, err)
+		return nil, fmt.Errorf("reading %s: %w", path, err)
 	}
 
 	post, err := ParseMarkdown(content, targetBase)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse markdown for %s: %w", fileName, err)
+		return nil, fmt.Errorf("parsing %s: %w", fileName, err)
 	}
 
 	return post, nil
 }
 
-func LoadMarkdownPosts() ([]*models.BlogPost, error) {
+func LoadMarkdownPosts(ctx context.Context) ([]*models.BlogPost, error) {
 	postsMu.RLock()
 	if postsCache != nil && time.Since(postsCacheAt) < cacheTTL {
 		defer postsMu.RUnlock()
@@ -115,7 +144,11 @@ func LoadMarkdownPosts() ([]*models.BlogPost, error) {
 		return postsCache, nil
 	}
 
-	posts, err := loadPostsUncached()
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
+	posts, err := loadPostsUncached(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +158,7 @@ func LoadMarkdownPosts() ([]*models.BlogPost, error) {
 	return posts, nil
 }
 
-func loadPostsUncached() ([]*models.BlogPost, error) {
+func loadPostsUncached(ctx context.Context) ([]*models.BlogPost, error) {
 	var posts []*models.BlogPost
 
 	err := filepath.WalkDir(postsDir, func(path string, d fs.DirEntry, err error) error {
@@ -134,6 +167,10 @@ func loadPostsUncached() ([]*models.BlogPost, error) {
 		}
 		if d.IsDir() || !strings.HasSuffix(d.Name(), markdownExtension) {
 			return nil
+		}
+
+		if ctx.Err() != nil {
+			return ctx.Err()
 		}
 
 		content, err := os.ReadFile(path)
@@ -157,7 +194,7 @@ func loadPostsUncached() ([]*models.BlogPost, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to read posts directory: %w", err)
+		return nil, fmt.Errorf("reading posts: %w", err)
 	}
 
 	sort.Slice(posts, func(i, j int) bool {
@@ -175,7 +212,7 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 	var contentHTML bytes.Buffer
 	ctx := parser.NewContext()
 	if err := parserInst.Convert(fileContent, &contentHTML, parser.WithContext(ctx)); err != nil {
-		return nil, fmt.Errorf("failed to convert markdown to HTML for '%s': %w", filename, err)
+		return nil, fmt.Errorf("converting markdown for '%s': %w", filename, err)
 	}
 
 	metaData := meta.Get(ctx)
@@ -187,7 +224,7 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 
 	postDate, err := time.Parse(dateFormat, metadata.Date)
 	if err != nil {
-		return nil, fmt.Errorf("invalid date format for post '%s' ('%s'): %w. please use 'YYYY-MM-DD'", filename, metadata.Date, err)
+		return nil, fmt.Errorf("invalid date '%s' for '%s': %w", metadata.Date, filename, err)
 	}
 
 	html := addImgAttrs(contentHTML.String())
@@ -197,7 +234,7 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 		return nil, fmt.Errorf("parsing headers for '%s': %w", filename, err)
 	}
 
-	blogPost := &models.BlogPost{
+	return &models.BlogPost{
 		Filename:        filename,
 		Title:           metadata.Title,
 		Date:            postDate,
@@ -206,9 +243,7 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 		Metadata:        metadata,
 		ReadTimeMinutes: calculateReadTime(string(fileContent)),
 		Headers:         headers,
-	}
-
-	return blogPost, nil
+	}, nil
 }
 
 func mapMetaToMetadata(metaData map[string]interface{}) models.Metadata {
@@ -276,10 +311,10 @@ func Slugify(text string) string {
 	prevHyphen := false
 
 	for _, r := range lower {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+		if r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '_' {
 			buf.WriteRune(r)
 			prevHyphen = false
-		} else if unicode.IsSpace(r) || r == '-' {
+		} else if r == ' ' || r == '-' {
 			if !prevHyphen && buf.Len() > 0 {
 				buf.WriteRune('-')
 				prevHyphen = true
