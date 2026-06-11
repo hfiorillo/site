@@ -192,6 +192,11 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 
 	html := addImgAttrs(contentHTML.String())
 
+	headers, err := ParseHeaders(fileContent)
+	if err != nil {
+		return nil, fmt.Errorf("parsing headers for '%s': %w", filename, err)
+	}
+
 	blogPost := &models.BlogPost{
 		Filename:        filename,
 		Title:           metadata.Title,
@@ -200,7 +205,7 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 		Content:         template.HTML(html),
 		Metadata:        metadata,
 		ReadTimeMinutes: calculateReadTime(string(fileContent)),
-		Headers:         ParseHeaders(fileContent),
+		Headers:         headers,
 	}
 
 	return blogPost, nil

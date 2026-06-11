@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"log/slog"
 	"os"
 	"sync"
 
@@ -25,17 +25,16 @@ type SectionMeta struct {
 var (
 	siteOnce sync.Once
 	siteMeta SiteMeta
-	siteErr  error
 )
 
 func loadSiteMeta() {
 	raw, err := os.ReadFile("./content/site.yml")
 	if err != nil {
-		siteErr = fmt.Errorf("reading site.yml: %w", err)
+		slog.Error("reading site.yml", "error", err)
 		return
 	}
 	if err := yaml.Unmarshal(raw, &siteMeta); err != nil {
-		siteErr = fmt.Errorf("parsing site.yml: %w", err)
+		slog.Error("parsing site.yml", "error", err)
 		return
 	}
 }

@@ -3,12 +3,13 @@ package markdown
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/hfiorillo/site/models"
 )
 
-func ParseHeaders(content []byte) models.Headers {
+func ParseHeaders(content []byte) (models.Headers, error) {
 	scanner := bufio.NewScanner(bytes.NewReader(content))
 
 	var result models.Headers
@@ -43,7 +44,11 @@ func ParseHeaders(content []byte) models.Headers {
 		}
 	}
 
-	return result
+	if err := scanner.Err(); err != nil {
+		return result, fmt.Errorf("scanning headers: %w", err)
+	}
+
+	return result, nil
 }
 
 func cleanHeader(text string) string {

@@ -16,6 +16,7 @@ import (
 	"github.com/hfiorillo/site/utils/logging"
 
 	"github.com/go-chi/chi/v5"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 )
 
@@ -42,6 +43,7 @@ func main() {
 	pageHandler := handler.NewPageHandler(logger, cfg.SiteURL)
 
 	router := chi.NewMux()
+	router.Use(chimiddleware.Logger, chimiddleware.Recoverer, chimiddleware.Timeout(30 * time.Second))
 	router.Handle("/*", public())
 	router.Get("/", handler.Make(pageHandler.HandleIndexPage))
 	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
@@ -64,7 +66,7 @@ func main() {
 	go func() {
 		slog.Info(fmt.Sprintf("application running: http://localhost%s", cfg.Port))
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logging.ErrAttr(err)
+			slog.Error("server error", logging.ErrAttr(err))
 		}
 	}()
 

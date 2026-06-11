@@ -79,12 +79,12 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 	post, err := markdown.LoadMarkdownPost(fmt.Sprintf("/posts/%s", filename))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		return pages.ErrorPage("Tis page does not exist.").Render(r.Context(), w)
+		return pages.ErrorPage("This page does not exist.").Render(r.Context(), w)
 	}
 
 	if !post.Metadata.Published {
 		w.WriteHeader(http.StatusNotFound)
-		return pages.ErrorPage("Tis page does not exist.").Render(r.Context(), w)
+		return pages.ErrorPage("This page does not exist.").Render(r.Context(), w)
 	}
 
 	allPosts, err := markdown.LoadMarkdownPosts()
