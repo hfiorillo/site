@@ -17,12 +17,14 @@ import (
 )
 
 type routeEntry struct {
-	Name     string `yaml:"name"`
-	Slug     string `yaml:"slug"`
-	Location string `yaml:"location"`
-	Date     string `yaml:"date"`
-	GPXFile  string `yaml:"gpx"`
-	Packlist string `yaml:"packlist"`
+	Name         string  `yaml:"name"`
+	Slug         string  `yaml:"slug"`
+	Location     string  `yaml:"location"`
+	Date         string  `yaml:"date"`
+	GPXFile      string  `yaml:"gpx"`
+	Packlist     string  `yaml:"packlist"`
+	DistanceKm   float64 `yaml:"distance_km"`
+	ElevationGain float64 `yaml:"elevation_gain"`
 }
 
 var (
@@ -52,12 +54,14 @@ func loadRoutes() {
 			return
 		}
 		routesCache[r.Slug] = &models.Route{
-			Slug:     r.Slug,
-			Name:     r.Name,
-			Location: r.Location,
-			Date:     date,
-			GPXFile:  r.GPXFile,
-			Packlist: r.Packlist,
+			Slug:          r.Slug,
+			Name:          r.Name,
+			Location:      r.Location,
+			Date:          date,
+			GPXFile:       r.GPXFile,
+			Packlist:      r.Packlist,
+			DistanceKm:    r.DistanceKm,
+			ElevationGain: r.ElevationGain,
 		}
 	}
 }
@@ -81,8 +85,12 @@ func ensureRouteData(slug string) (*models.Route, *gpx.RouteData, error) {
 	cj, _ := gpx.CoordsToJSON(rd.Coords)
 
 	routesMu.Lock()
-	route.DistanceKm = math.Round(rd.DistanceKm)
-	route.ElevationGain = math.Round(rd.ElevationGain)
+	if route.DistanceKm == 0 {
+		route.DistanceKm = math.Round(rd.DistanceKm)
+	}
+	if route.ElevationGain == 0 {
+		route.ElevationGain = math.Round(rd.ElevationGain)
+	}
 	route.ElevationMax = math.Round(rd.ElevationMax)
 	route.ElevationMin = math.Round(rd.ElevationMin)
 	route.CoordsJSON = cj
