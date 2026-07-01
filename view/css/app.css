@@ -11,8 +11,9 @@ html {
 }
 
 .prose img {
-  @apply rounded-lg mx-auto cursor-pointer;
+  @apply mx-auto cursor-pointer;
   transition: opacity 0.2s;
+  border-radius: 0;
 }
 
 .prose img:hover {
