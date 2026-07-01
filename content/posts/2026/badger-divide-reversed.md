@@ -107,9 +107,9 @@ The moment we arrived in Callander, we scoffed our faces with 2 fish and a large
 Sat in the centre on Callander and reflected on the day.
 
 <div class="flex flex-wrap gap-2 my-4">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-landscape.jpg" alt="Landscape view" class="w-full sm:w-[calc(33.333%-0.5rem)]" loading="lazy" decoding="async">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-forest.jpg" alt="Forest path" class="w-full sm:w-[calc(33.333%-0.5rem)]" loading="lazy" decoding="async">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-snake.jpg" alt="Snake on the path" class="w-full sm:w-[calc(33.333%-0.5rem)]" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-landscape.jpg" alt="Landscape view" style="max-width:350px" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-forest.jpg" alt="Forest path" style="max-width:350px" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-snake.jpg" alt="Snake on the path" style="max-width:350px" loading="lazy" decoding="async">
 </div>
 
 Prior to the trip we'd booked a [camping permit](https://www.lochlomond-trossachs.org/things-to-do/camping/get-a-permit/) for the region around Callander, which at £4.50 was reasonable.
