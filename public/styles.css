@@ -2749,11 +2749,6 @@
       }
     }
   }
-  .sm\:w-\[calc\(33\.333\%-0\.5rem\)\] {
-    @media (width >= 40rem) {
-      width: calc(33.333% - 0.5rem);
-    }
-  }
   .sm\:max-w-xl {
     @media (width >= 40rem) {
       max-width: var(--container-xl);

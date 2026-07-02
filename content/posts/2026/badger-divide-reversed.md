@@ -79,7 +79,6 @@ With that in mind, for this trip we opted not to risk chancing it and all piling
 Instead, we booked 2 separate trains and all had our bike reservation tickets.
 We got a train from Manchester Airport direct to Glasgow, that train ran through Manchester Piccadilly where we picked up our friends along the way.
 
-
 ## Day by day
 
 ### Day 1 - Glasgow to Loch Venachour
@@ -106,10 +105,10 @@ Coming into Callander we went past our first loch, Loch Venachour. A huge loch t
 The moment we arrived in Callander, we scoffed our faces with 2 fish and a large chips each, accompanied by a soft drink of your choosing.
 Sat in the centre on Callander and reflected on the day.
 
-<div class="flex flex-wrap gap-2 my-4">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-landscape.jpg" alt="Landscape view" style="max-width:350px" loading="lazy" decoding="async">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-forest.jpg" alt="Forest path" style="max-width:350px" loading="lazy" decoding="async">
-  <img src="/public/images/posts/badger-divide-reversed/day-1-snake.jpg" alt="Snake on the path" style="max-width:350px" loading="lazy" decoding="async">
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0;">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-landscape.jpg" alt="Landscape view" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-forest.jpg" alt="Forest path" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-1-snake.jpg" alt="Snake on the path" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
 </div>
 
 Prior to the trip we'd booked a [camping permit](https://www.lochlomond-trossachs.org/things-to-do/camping/get-a-permit/) for the region around Callander, which at £4.50 was reasonable.
@@ -150,7 +149,7 @@ An absolute killer.
 <!-- >>view of loch Lubnaig, glen ogle viaduct -->
 
 Everyone was silent pedalling away until we hit the top and ate some food.
-There was a comfort in knowing it was "all downhill from here" to the guesthouse.
+There was comfort in knowing it was "all downhill from here" to the guesthouse.
 The route continued to wind through the increasingly remote countryside, until we descended through a forest into an old village with some abandoned buildings.
 We then simply followed the road to the guesthouse alongside Loch Rannoch.
 The Bridge of Gaur guesthouse owners Heather and Eddie greeted us with welcome arms, we parked our bikes up and Eddie brought us 7 ice cold beers.
@@ -173,8 +172,6 @@ We set off late in the morning (again) and aimed to get into Corrour Station in 
 The first part of the route was a slow ascent all the way to Corrour on a hardpack gravel road, crossing mountain streams on old wooden bridges.
 It felt like we were getting increasingly remote.
 
-<!-- views of gravel path to corrour -->
-
 The ride into Corrour Station, past Loch Ossian Youth Hostel was cool.
 Surrounded by snowcapped mountain peaks.
 It truly was in the middle of knowhere.
@@ -186,7 +183,10 @@ We then had to make a decision around what the plan was re the rain.
 The forecast was getting worse and it was looking like it was going to let off through the night.
 The idea of camping in the rain was filling everyone with much joy.
 
-<!-- corrour station, badge, food -->
+<div class="flex flex-wrap gap-2 my-4 justify-center">
+  <img src="/public/images/posts/badger-divide-reversed/day-3-views.jpg" alt="View of the night camp" class="w-full" style="max-width:350px" loading="lazy" decoding="async">
+  <img src="/public/images/posts/badger-divide-reversed/day-3-corrour.jpg" alt="Inside Corrour station" class="w-full" style="max-width:350px" loading="lazy" decoding="async">
+</div>
 
 We got chatting to one of the groups who was doing the route the proper way.
 They sold me the dream - describing a cosy bothy full of firewood, right before the Corriearick Pass.
@@ -241,7 +241,7 @@ Over breakfast we decided that we'd call it a day once we got to Fort Augustus a
 That way we can get a decent nights sleep, wash our clothes in a sink and enjoy the final days push to Inverness.
 John, a close friend of a relative, was going to come and meet us at the bothy to climb over the pass with us - a long time dream of Johns, he'd never managed to find an excuse to do it.
 
-<img src="/public/images/posts/badger-divide-reversed/day-4-snow.jpg" alt="Snow up the pass" style="float:right; max-width:200px; margin:0 0 0.5rem 1rem" loading="lazy" decoding="async">
+<img src="/public/images/posts/badger-divide-reversed/day-4-pass-web.jpg" alt="Picture of the pass from online" style="float:left; max-width:200px; margin:0 1rem 0.5rem 0" loading="lazy" decoding="async">
 
 We finally readied ourselves for what was set to be one of the hardest bits of the route.
 The Corrieyairack Pass.
@@ -253,13 +253,35 @@ Lots of your classic up and down, down into puddles.
 Which featured alot throughout this route.
 Despite the mist, it became evident that we'd reached the base of the pass as it basically went straight up.
 You could just see the first switchback.
-That was right next to the heaps of snow that had started to appear.
 
-<!-- - Decided once we get into Fort Augustus we were going to find somewhere to stay there
-- Switchbacks
-- Top of the pass
-- Awful view
-- Chill in Fort Augustus, relax, have a shower and eat some good food to rest up and push to finish on day 5.
-- We were in no rush and fort augustus had a good vibe -->
+<img src="/public/images/posts/badger-divide-reversed/day-4-snow.jpg" alt="Snow up the pass" style="float:right; max-width:200px; margin:0 0 0.5rem 1rem" loading="lazy" decoding="async">
+
+That was right next to the heaps of snow that had started to appear.
+The passes infamous switchbacks proved hardwork to cycle up.
+Misjudge a corner and you end up veering into a huge rock and toppling off your bike.
+This happened a few times.
+Once the switch backs finished, there was a final super steep climb that brought you to the top of the pass.
+
+<img src="/public/images/posts/badger-divide-reversed/day-4-top-of-pass.jpg" alt="Snow up the pass" style="float:right; max-width:200px; margin:0 0 0.5rem 1rem" loading="lazy" decoding="async">
+
+It was freezing up at the top, we were surrounded by snow.
+There was a few riders going the opposite direction took shelter in the hut at the top with me.
+They got their stoves on to make a brew.
+We said goodbye and headed down the way the came.
+The descent was long and sketchy but great fun.
+It felt like it was never going to end.
+On the way down we collected John, who was waiting for us with flapjacks to refuel.
+<!-- Rewrite this rushed section -->
+Once we got to Fort Augustus we found ourselves in a pub, getting lunch and having a few pints.
+During which time we managed to find a hotel/apartment for the evening for the much needed rest we so desired.
 
 ### Day 5
+
+<!-- Pointers
+- Great day
+- Legs were feeling it
+- Super hilly day ahead
+- Following the full length of loch ness
+- Over the surrounding hills
+- Wooden cirlce thing - research
+ -->
