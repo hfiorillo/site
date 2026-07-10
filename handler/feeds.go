@@ -107,6 +107,7 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 	addURL(p.SiteURL+"/", now, "monthly", "1.0")
 	addURL(p.SiteURL+"/blog", now, "weekly", "0.8")
 	addURL(p.SiteURL+"/aboutme", now, "monthly", "0.6")
+	addURL(p.SiteURL+"/about-this-site", now, "monthly", "0.4")
 
 	for _, post := range posts {
 		addURL(p.SiteURL+"/blog/"+post.Filename, post.Date.Format(dateFormat), "never", "0.6")

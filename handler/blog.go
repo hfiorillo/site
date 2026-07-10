@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -51,10 +52,12 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 	}
 
 	meta := models.PageMeta{
-		Title:       title,
-		Description: siteMeta.Blog.Description,
-		URL:         p.SiteURL + "/blog",
-		Image:       p.SiteURL + siteImage(),
+		Title:          title,
+		Description:    siteMeta.Blog.Description,
+		URL:            p.SiteURL + "/blog",
+		Canonical:      p.SiteURL + "/blog",
+		Image:          p.SiteURL + siteImage(),
+		StructuredData: personJSON(p.SiteURL),
 	}
 
 	var recent, old []*models.BlogPost
@@ -111,11 +114,26 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 		image = p.SiteURL + post.Metadata.Image
 	}
 
+	blogURL := p.SiteURL + "/blog/" + post.Filename
+	sd := map[string]any{
+		"@context":       "https://schema.org",
+		"@type":          "BlogPosting",
+		"headline":       post.Title,
+		"datePublished":  post.Date.Format("2006-01-02"),
+		"dateModified":   post.Date.Format("2006-01-02"),
+		"author":         map[string]string{"@type": "Person", "name": "Harry Fiorillo"},
+		"description":    post.Description,
+		"mainEntityOfPage": map[string]string{"@type": "WebPage", "@id": blogURL},
+	}
+	sdJSON, _ := json.Marshal(sd)
+
 	meta := models.PageMeta{
-		Title:       post.Title + " | Harry Fiorillo-Hughes",
-		Description: post.Description,
-		URL:         p.SiteURL + "/blog/" + post.Filename,
-		Image:       image,
+		Title:          post.Title + " | Harry Fiorillo-Hughes",
+		Description:    post.Description,
+		URL:            blogURL,
+		Canonical:      blogURL,
+		Image:          image,
+		StructuredData: string(sdJSON),
 	}
 	return pages.BlogPage(post, prev, next, meta).Render(r.Context(), w)
 }

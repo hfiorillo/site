@@ -119,10 +119,12 @@ func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error 
 	}
 
 	meta := models.PageMeta{
-		Title:       siteMeta.Routes.Title + " | " + siteMeta.Title,
-		Description: siteMeta.Routes.Description,
-		URL:         p.SiteURL + "/routes",
-		Image:       p.SiteURL + siteImage(),
+		Title:          siteMeta.Routes.Title + " | " + siteMeta.Title,
+		Description:    siteMeta.Routes.Description,
+		URL:            p.SiteURL + "/routes",
+		Canonical:      p.SiteURL + "/routes",
+		Image:          p.SiteURL + siteImage(),
+		StructuredData: personJSON(p.SiteURL),
 	}
 	return pages.Routes(list, meta).Render(r.Context(), w)
 }
@@ -144,10 +146,12 @@ func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 
 	siteOnce.Do(loadSiteMeta)
 	meta := models.PageMeta{
-		Title:       route.Name + " | " + siteMeta.Title,
-		Description: route.Location,
-		URL:         p.SiteURL + "/routes/" + slug,
-		Image:       p.SiteURL + siteImage(),
+		Title:          route.Name + " | " + siteMeta.Title,
+		Description:    route.Location,
+		URL:            p.SiteURL + "/routes/" + slug,
+		Canonical:      p.SiteURL + "/routes/" + slug,
+		Image:          p.SiteURL + siteImage(),
+		StructuredData: personJSON(p.SiteURL),
 	}
 	return pages.RoutePage(route, slug, meta).Render(r.Context(), w)
 }

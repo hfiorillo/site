@@ -12,7 +12,7 @@ import (
 templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, recent []*models.BlogPost, old []*models.BlogPost) {
 	@layout.Base(meta) {
 		if category == "" {
-			<h1 class="text-3xl font-bold mb-8">fiorillo.xyz posts</h1>
+			<h1 class="text-3xl font-bold mb-8">Blog</h1>
 		}
 		if category != "" {
 			<h1 class="text-3xl font-bold mb-1">{ titleCase(category) }</h1>
@@ -50,18 +50,26 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 }
 
 templ BlogCard(post *models.BlogPost) {
-	<div class="py-6">
+	<article class="py-6" itemscope itemtype="https://schema.org/BlogPosting">
+		<meta itemprop="datePublished" content={ post.Date.Format("2006-01-02") }/>
+		<meta itemprop="author" content="Harry Fiorillo"/>
 		<p class="text-base text-base-content/60 font-semibold mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
-		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline">
-			<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors">{ post.Title }</h2>
+		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline" itemprop="url">
+			<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors" itemprop="headline">{ post.Title }</h2>
 		</a>
-		<p class="text-lg text-base-content/60 mt-1 leading-relaxed">{ post.Description }</p>
-	</div>
+		<p class="text-lg text-base-content/60 mt-1 leading-relaxed" itemprop="description">{ post.Description }</p>
+	</article>
 }
 
 templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPost, meta models.PageMeta) {
 	@layout.Base(meta) {
-		<h1 class="text-3xl font-bold leading-snug">{ post.Title }</h1>
+		if meta.StructuredData != "" {
+			<script type="application/ld+json">@templ.Raw(meta.StructuredData)</script>
+		}
+		<article itemscope itemtype="https://schema.org/BlogPosting">
+			<meta itemprop="datePublished" content={ post.Date.Format("2006-01-02") }/>
+			<meta itemprop="author" content="Harry Fiorillo"/>
+			<h1 class="text-3xl font-bold leading-snug" itemprop="headline">{ post.Title }</h1>
 			<p class="text-base text-base-content/60 font-semibold mt-3">
 				posted { timeAgo(post.Date) } by Harry Fiorillo
 				if post.Description != "" {
@@ -69,7 +77,7 @@ templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPo
 				}
 			</p>
 			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
-			<div class="prose prose-lg max-w-none text-justify leading-relaxed">
+			<div class="prose prose-lg max-w-none text-justify leading-relaxed" itemprop="articleBody">
 				@templ.Raw(post.Content)
 			</div>
 			if len(post.Metadata.Tags) > 0 {
@@ -90,6 +98,7 @@ templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPo
 					<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", next.Filename)) } class="text-lg text-base-content/60 hover:text-primary no-underline">{ next.Title } &rarr;</a>
 				}
 			</div>
+		</article>
 	}
 }
 

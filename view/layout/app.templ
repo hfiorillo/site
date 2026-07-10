@@ -28,6 +28,12 @@ templ Base(meta models.PageMeta) {
 			<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href="/public/styles.css"/>
 			<link rel="icon" type="image/svg+xml" href="/public/favicon.svg"/>
+			if meta.Canonical != "" {
+				<link rel="canonical" href={ meta.Canonical }/>
+			}
+			if meta.StructuredData != "" {
+				<script type="application/ld+json">@templ.Raw(meta.StructuredData)</script>
+			}
 		</head>
 		<body
 			style="font-family:'Geist', Georgia, 'Times New Roman', Times, serif"
@@ -36,21 +42,21 @@ templ Base(meta models.PageMeta) {
 			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
 		>
 			<div class="flex justify-center min-h-screen">
-				<div class="hidden md:flex w-48 flex-shrink-0 justify-end pr-6 border-r border-dotted border-base-content/10">
+				<nav class="hidden md:flex w-48 flex-shrink-0 justify-end pr-6 border-r border-dotted border-base-content/10" aria-label="Brand sidebar">
 					<div class="fixed top-0">
 						@Brand()
 					</div>
-				</div>
+				</nav>
 
 				<main class="flex-1 max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl w-full px-4 py-8">
 					{ children... }
 				</main>
 
-				<div class="hidden md:block w-48 xl:w-56 flex-shrink-0 pl-6 border-l border-dotted border-base-content/10">
+				<nav class="hidden md:block w-48 xl:w-56 flex-shrink-0 pl-6 border-l border-dotted border-base-content/10" aria-label="Site navigation">
 					<div class="fixed top-0 pt-4">
 						@SideNav()
 					</div>
-				</div>
+				</nav>
 			</div>
 
 			<div class="fixed top-0 left-0 h-0.5 bg-primary z-50"

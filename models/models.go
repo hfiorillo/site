@@ -28,10 +28,12 @@ type Metadata struct {
 }
 
 type PageMeta struct {
-	Title       string
-	Description string
-	Image       string
-	URL         string
+	Title          string
+	Description    string
+	Image          string
+	URL            string
+	Canonical      string
+	StructuredData string
 }
 
 type TopLevelHeader struct {

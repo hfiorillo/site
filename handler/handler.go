@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -10,6 +11,16 @@ import (
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/view/pages"
 )
+
+func personJSON(siteURL string) string {
+	b, _ := json.Marshal(map[string]string{
+		"@context": "https://schema.org",
+		"@type":    "Person",
+		"name":     "Harry Fiorillo",
+		"url":      siteURL,
+	})
+	return string(b)
+}
 
 type PageHandler struct {
 	Logger  *slog.Logger
@@ -44,10 +55,12 @@ func (p PageHandler) HandleAboutMePage(w http.ResponseWriter, r *http.Request) e
 
 	siteOnce.Do(loadSiteMeta)
 	meta := models.PageMeta{
-		Title:       siteMeta.Title,
-		Description: siteMeta.Description,
-		URL:         p.SiteURL + "/aboutme",
-		Image:       p.SiteURL + siteImage(),
+		Title:          siteMeta.Title,
+		Description:    siteMeta.Description,
+		URL:            p.SiteURL + "/aboutme",
+		Canonical:      p.SiteURL + "/aboutme",
+		Image:          p.SiteURL + siteImage(),
+		StructuredData: personJSON(p.SiteURL),
 	}
 	return pages.AboutMe(aboutme, meta).Render(r.Context(), w)
 }
@@ -65,10 +78,12 @@ func (p PageHandler) HandleAboutThisSite(w http.ResponseWriter, r *http.Request)
 	}
 
 	meta := models.PageMeta{
-		Title:       about.Title + " | Harry Fiorillo-Hughes",
-		Description: about.Description,
-		URL:         p.SiteURL + "/about-this-site",
-		Image:       image,
+		Title:          about.Title + " | Harry Fiorillo-Hughes",
+		Description:    about.Description,
+		URL:            p.SiteURL + "/about-this-site",
+		Canonical:      p.SiteURL + "/about-this-site",
+		Image:          image,
+		StructuredData: personJSON(p.SiteURL),
 	}
 	return pages.AboutThisSite(about, meta).Render(r.Context(), w)
 }
