@@ -1289,6 +1289,9 @@
   .fixed {
     position: fixed;
   }
+  .static {
+    position: static;
+  }
   .sticky {
     position: sticky;
   }
@@ -2177,9 +2180,6 @@
   .mb-6 {
     margin-bottom: calc(var(--spacing) * 6);
   }
-  .mb-8 {
-    margin-bottom: calc(var(--spacing) * 8);
-  }
   .status {
     @layer daisyui.l1.l2.l3 {
       display: inline-block;
@@ -2350,6 +2350,9 @@
   .w-24 {
     width: calc(var(--spacing) * 24);
   }
+  .w-32 {
+    width: calc(var(--spacing) * 32);
+  }
   .w-48 {
     width: calc(var(--spacing) * 48);
   }
@@ -2362,11 +2365,17 @@
   .max-w-none {
     max-width: none;
   }
+  .min-w-0 {
+    min-width: calc(var(--spacing) * 0);
+  }
   .flex-1 {
     flex: 1;
   }
   .flex-shrink-0 {
     flex-shrink: 0;
+  }
+  .grow {
+    flex-grow: 1;
   }
   .border-collapse {
     border-collapse: collapse;
@@ -2444,6 +2453,9 @@
   .gap-6 {
     gap: calc(var(--spacing) * 6);
   }
+  .self-stretch {
+    align-self: stretch;
+  }
   .overflow-hidden {
     overflow: hidden;
   }
@@ -2452,6 +2464,10 @@
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
   }
   .border-0 {
     border-style: var(--tw-border-style);
@@ -2671,6 +2687,12 @@
       color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
     }
   }
+  .text-base-content\/70 {
+    color: var(--color-base-content);
+    @supports (color: color-mix(in lab, red, red)) {
+      color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+    }
+  }
   .text-error {
     color: var(--color-error);
   }
@@ -2801,6 +2823,32 @@
 }
 html {
   scrollbar-gutter: stable;
+}
+.sidenav-link {
+  transition: background-color 0.2s;
+  padding: 0.25rem 0.5rem;
+  margin: -0.25rem -0.5rem;
+}
+.sidenav-link:hover {
+  background-color: #2ecc71;
+  color: #000;
+}
+.sidenav-link-tight {
+  transition: background-color 0.2s;
+}
+.sidenav-link-tight:hover {
+  background-color: #2ecc71;
+  color: #000;
+}
+.prose a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: background-color 0.2s;
+}
+.prose a:hover {
+  background-color: #2ecc71;
+  color: #000;
 }
 .prose img {
   margin-inline: auto;

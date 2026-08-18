@@ -12,7 +12,7 @@ import (
 templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, recent []*models.BlogPost, old []*models.BlogPost) {
 	@layout.Base(meta) {
 		if category == "" {
-			<h1 class="text-3xl font-bold mb-8">Blog</h1>
+			<h1 class="text-3xl font-bold mb-6">Blog</h1>
 		}
 		if category != "" {
 			<h1 class="text-3xl font-bold mb-1">{ titleCase(category) }</h1>
@@ -54,10 +54,19 @@ templ BlogCard(post *models.BlogPost) {
 		<meta itemprop="datePublished" content={ post.Date.Format("2006-01-02") }/>
 		<meta itemprop="author" content="Harry Fiorillo"/>
 		<p class="text-base text-base-content/60 font-semibold mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
-		<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline" itemprop="url">
-			<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors" itemprop="headline">{ post.Title }</h2>
-		</a>
-		<p class="text-lg text-base-content/60 mt-1 leading-relaxed" itemprop="description">{ post.Description }</p>
+		<div class="flex gap-4">
+			if post.Metadata.PreviewImage != "" {
+				<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="flex-shrink-0 w-32 self-stretch no-underline">
+					<img src={ post.Metadata.PreviewImage } alt="" class="w-full h-full object-cover border border-base-content/10" loading="lazy" decoding="async"/>
+				</a>
+			}
+			<div class="flex-1 min-w-0">
+				<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline" itemprop="url">
+					<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors" itemprop="headline">{ post.Title }</h2>
+				</a>
+				<p class="text-lg text-base-content/60 mt-1 leading-relaxed" itemprop="description">{ post.Description }</p>
+			</div>
+		</div>
 	</article>
 }
 
@@ -71,11 +80,11 @@ templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPo
 			<meta itemprop="author" content="Harry Fiorillo"/>
 			<h1 class="text-3xl font-bold leading-snug" itemprop="headline">{ post.Title }</h1>
 			<p class="text-base text-base-content/60 font-semibold mt-3">
-				posted { timeAgo(post.Date) } by Harry Fiorillo
-				if post.Description != "" {
-					{ " — " + post.Description }
-				}
+				posted { timeAgo(post.Date) } by <span class="text-base-content/40">Harry Fiorillo</span>
 			</p>
+			if post.Description != "" {
+				<p class="text-lg text-base-content/70 mt-1" itemprop="description">{ post.Description }</p>
+			}
 			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
 			<div class="prose prose-lg max-w-none text-justify leading-relaxed" itemprop="articleBody">
 				@templ.Raw(post.Content)

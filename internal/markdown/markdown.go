@@ -269,6 +269,9 @@ func mapMetaToMetadata(metaData map[string]interface{}) models.Metadata {
 	if v, ok := metaData["image"]; ok {
 		m.Image = toString(v)
 	}
+	if v, ok := metaData["preview-image"]; ok {
+		m.PreviewImage = toString(v)
+	}
 	return m
 }
 

@@ -50,6 +50,8 @@ func main() {
 	router.Get("/blog/{filename}", handler.Make(pageHandler.HandleBlogPostPage))
 	router.Get("/aboutme", handler.Make(pageHandler.HandleAboutMePage))
 	router.Get("/about-this-site", handler.Make(pageHandler.HandleAboutThisSite))
+	router.Get("/pictures", handler.Make(pageHandler.HandlePictures))
+	router.Get("/work", handler.Make(pageHandler.HandleWork))
 	router.Get("/feed.xml", handler.Make(pageHandler.HandleFeed))
 	router.Get("/sitemap.xml", handler.Make(pageHandler.HandleSitemap))
 	router.Get("/routes", handler.Make(pageHandler.HandleRoutes))

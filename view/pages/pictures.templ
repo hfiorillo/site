@@ -1,0 +1,15 @@
+package pages
+
+import (
+	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/view/layout"
+)
+
+templ Pictures(post *models.BlogPost, meta models.PageMeta) {
+	@layout.Base(meta) {
+		<h1 class="text-3xl font-bold mb-6">{ post.Title }</h1>
+		<div class="prose prose-lg max-w-none">
+			@templ.Raw(post.Content)
+		</div>
+	}
+}

@@ -106,6 +106,8 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 	now := time.Now().Format(dateFormat)
 	addURL(p.SiteURL+"/", now, "monthly", "1.0")
 	addURL(p.SiteURL+"/blog", now, "weekly", "0.8")
+	addURL(p.SiteURL+"/pictures", now, "monthly", "0.6")
+	addURL(p.SiteURL+"/work", now, "monthly", "0.6")
 	addURL(p.SiteURL+"/aboutme", now, "monthly", "0.6")
 	addURL(p.SiteURL+"/about-this-site", now, "monthly", "0.4")
 

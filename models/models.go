@@ -18,13 +18,14 @@ type BlogPost struct {
 }
 
 type Metadata struct {
-	Title       string   `yaml:"title"`
-	Date        string   `yaml:"date"`
-	Categories  []string `yaml:"categories"`
-	Tags        []string `yaml:"tags"`
-	Published   bool     `yaml:"published"`
-	Description string   `yaml:"description"`
-	Image       string   `yaml:"image"`
+	Title        string   `yaml:"title"`
+	Date         string   `yaml:"date"`
+	Categories   []string `yaml:"categories"`
+	Tags         []string `yaml:"tags"`
+	Published    bool     `yaml:"published"`
+	Description  string   `yaml:"description"`
+	Image        string   `yaml:"image"`
+	PreviewImage string   `yaml:"preview-image"`
 }
 
 type PageMeta struct {

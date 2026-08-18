@@ -6,3 +6,11 @@
   packlist: https://lighterpack.com/r/tjgsqt
   distance_km: 348
   elevation_gain: 5330
+- name: West Coast of Ireland
+  slug: west-coast-of-ireland
+  location: Cork to Derry
+  date: 2026-07-24
+  gpx: /public/routes/Badger_divide_reverse.gpx
+  packlist: https://lighterpack.com/r/552vh6
+  distance: ~850km
+  elevation_gain: 8000

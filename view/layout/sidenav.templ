@@ -8,25 +8,27 @@ import (
 templ SideNav() {
 	<div class="flex flex-col gap-6 pt-12">
 		<div class="flex flex-col gap-2">
-			<a href="/" class="text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Home</a>
-			<a href="/routes" class="text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Routes</a>
-			<a href="/aboutme" class="text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">About</a>
+			<a href="/" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Blog</a>
+			<a href="/pictures" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Pictures</a>
+			<a href="/work" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Work</a>
+			<a href="/routes" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Routes</a>
+			<a href="/aboutme" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">About</a>
 		</div>
 
 		<div class="border-t border-dotted border-base-content/20 pt-4 flex flex-col gap-3">
-			<a href="https://www.github.com/hfiorillo" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
+			<a href="https://www.github.com/hfiorillo" target="_blank" rel="noopener noreferrer" class="sidenav-link flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
 				<span class="w-4 h-4 text-[#333]">@icons.GitHub()</span>
 				GitHub
 			</a>
-			<a href="https://www.instagram.com/harryfiorillo" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
+			<a href="https://www.instagram.com/harryfiorillo" target="_blank" rel="noopener noreferrer" class="sidenav-link flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
 				<span class="w-4 h-4 text-[#E4405F]">@icons.Instagram()</span>
 				Instagram
 			</a>
-			<a href="https://www.komoot.com/user/1306431058067" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
+			<a href="https://www.komoot.com/user/1306431058067" target="_blank" rel="noopener noreferrer" class="sidenav-link flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
 				<span class="w-4 h-4 text-[#4CAF50]">@icons.Komoot()</span>
 				Komoot
 			</a>
-			<a href="https://www.strava.com/athletes/19890295" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
+			<a href="https://www.strava.com/athletes/19890295" target="_blank" rel="noopener noreferrer" class="sidenav-link flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
 				<span class="w-4 h-4 text-[#FC4C02]">@icons.Strava()</span>
 				Strava
 			</a>
@@ -38,12 +40,12 @@ templ SideNav() {
 			</div>
 			<div>
 				<p>Harry Fiorillo-Hughes</p>
-				<p><a href="https://maps.google.com/?q=Manchester+UK" target="_blank" rel="noopener noreferrer" class="hover:text-base-content/60 no-underline">Manchester, UK 📍</a></p>
+				<p><a href="https://maps.google.com/?q=Manchester+UK" target="_blank" rel="noopener noreferrer" class="sidenav-link hover:text-base-content/60 no-underline">Manchester, UK 📍</a></p>
 			</div>
 		</div>
 
 		<div class="border-t border-dotted border-base-content/20 pt-4 text-sm text-base-content/30">
-			<p>Learn more about this <a href="/about-this-site" class="text-base-content/50 hover:text-base-content no-underline">site 🌟</a>.</p>
+			<p>Learn more about this <a href="/about-this-site" class="sidenav-link-tight text-base-content/50 hover:text-base-content no-underline">site 🌟</a>.</p>
 		</div>
 	</div>
 }

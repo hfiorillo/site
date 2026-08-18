@@ -88,6 +88,52 @@ func (p PageHandler) HandleAboutThisSite(w http.ResponseWriter, r *http.Request)
 	return pages.AboutThisSite(about, meta).Render(r.Context(), w)
 }
 
+func (p PageHandler) HandlePictures(w http.ResponseWriter, r *http.Request) error {
+	siteOnce.Do(loadSiteMeta)
+	pictures, err := markdown.LoadMarkdownPost(r.Context(), "/pictures/pictures")
+	if err != nil {
+		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
+	}
+
+	image := p.SiteURL + siteImage()
+	if pictures.Metadata.Image != "" {
+		image = p.SiteURL + pictures.Metadata.Image
+	}
+
+	meta := models.PageMeta{
+		Title:          pictures.Title + " | Harry Fiorillo-Hughes",
+		Description:    pictures.Description,
+		URL:            p.SiteURL + "/pictures",
+		Canonical:      p.SiteURL + "/pictures",
+		Image:          image,
+		StructuredData: personJSON(p.SiteURL),
+	}
+	return pages.Pictures(pictures, meta).Render(r.Context(), w)
+}
+
+func (p PageHandler) HandleWork(w http.ResponseWriter, r *http.Request) error {
+	siteOnce.Do(loadSiteMeta)
+	work, err := markdown.LoadMarkdownPost(r.Context(), "/work/work")
+	if err != nil {
+		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
+	}
+
+	image := p.SiteURL + siteImage()
+	if work.Metadata.Image != "" {
+		image = p.SiteURL + work.Metadata.Image
+	}
+
+	meta := models.PageMeta{
+		Title:          work.Title + " | Harry Fiorillo-Hughes",
+		Description:    work.Description,
+		URL:            p.SiteURL + "/work",
+		Canonical:      p.SiteURL + "/work",
+		Image:          image,
+		StructuredData: personJSON(p.SiteURL),
+	}
+	return pages.Work(work, meta).Render(r.Context(), w)
+}
+
 func toTitle(s string) string {
 	if s == "" {
 		return ""

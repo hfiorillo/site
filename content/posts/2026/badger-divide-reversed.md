@@ -11,6 +11,7 @@ tags:
 - adventure
 published: true
 description: A multi-day bikepacking trip across the Scottish Highlands in early May with friends, starting in Glasgow and finishing in Inverness.
+preview-image: /public/images/posts/badger-divide-reversed/picture_of_bike.jpg
 
 ---
 
