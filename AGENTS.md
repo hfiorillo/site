@@ -27,6 +27,7 @@ Personal blog/portfolio site deployed at blog.fiorillo.xyz (domain: fiorillo.xyz
   - `internal/markdown/` — goldmark setup, front matter parsing, post loading, header/TOC parsing
   - `internal/gpx/` — GPX parsing (Haversine distance, elevation gain)
 - `models/models.go` — shared structs (BlogPost, Route, PageMeta, Headers, etc.)
+- `paths/paths.go` — single source of truth for website route & static-asset path constants (used by main.go, handlers, feeds, and templates). Content-file and asset paths live here too.
 - `view/` — all templ templates:
   - `layout/` — `app.templ` (Base layout / three-column shell), `brand.templ` (left sidebar), `sidenav.templ` (right sidebar)
   - `pages/` — one template file per page type
@@ -86,4 +87,5 @@ Common tasks:
 - Page metadata flows through the `PageMeta` struct (title, description, OG image, canonical URL, structured data). Every handler builds one and passes it to the `Base()` layout.
 - Site text/headings should come from content files (front matter / site.yml). Avoid hardcoding strings in Go unless it's an inherently generated listing page.
 - Handlers are split by domain (blog/routes/feeds/site) — keep it that way; don't grow `handler.go` back into a monolith.
+- **Always use `paths` constants** for any website route, static-asset URL, or content-file path instead of hardcoding strings (e.g. `paths.Blog`, `paths.Avatar`, `paths.RoutesYAML`). Never hardcode a new `/blog`, `/routes`, `/public/...`, or `content/...` literal — add a constant in `paths/paths.go` and reference it, including inside `.templ` files.
 - Favicon currently the fish SVG (avatar PNG doesn't crop well as a favicon).

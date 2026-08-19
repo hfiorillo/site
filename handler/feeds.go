@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hfiorillo/site/internal/markdown"
+	"github.com/hfiorillo/site/paths"
 )
 
 type rssFeed struct {
@@ -49,10 +50,11 @@ func (p PageHandler) HandleFeed(w http.ResponseWriter, r *http.Request) error {
 
 	items := make([]rssItem, 0, len(posts))
 	for _, post := range posts {
+		link := p.SiteURL + paths.Blog + "/" + post.Filename
 		items = append(items, rssItem{
 			Title:       post.Title,
-			Link:        p.SiteURL + "/blog/" + post.Filename,
-			GUID:        p.SiteURL + "/blog/" + post.Filename,
+			Link:        link,
+			GUID:        link,
 			Description: post.Description,
 			PubDate:     post.Date.Format(time.RFC822),
 		})
@@ -67,7 +69,7 @@ func (p PageHandler) HandleFeed(w http.ResponseWriter, r *http.Request) error {
 			Description: siteMeta.Feed.Description,
 			Language:    "en",
 			AtomLink: rssAtom{
-				Href: p.SiteURL + "/feed.xml",
+				Href: p.SiteURL + paths.Feed,
 				Rel:  "self",
 				Type: "application/rss+xml",
 			},
@@ -104,22 +106,22 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 	}
 
 	now := time.Now().Format(dateFormat)
-	addURL(p.SiteURL+"/", now, "monthly", "1.0")
-	addURL(p.SiteURL+"/blog", now, "weekly", "0.8")
-	addURL(p.SiteURL+"/pictures", now, "monthly", "0.6")
-	addURL(p.SiteURL+"/work", now, "monthly", "0.6")
-	addURL(p.SiteURL+"/aboutme", now, "monthly", "0.6")
-	addURL(p.SiteURL+"/about-this-site", now, "monthly", "0.4")
+	addURL(p.SiteURL+paths.Root, now, "monthly", "1.0")
+	addURL(p.SiteURL+paths.Blog, now, "weekly", "0.8")
+	addURL(p.SiteURL+paths.Pictures, now, "monthly", "0.6")
+	addURL(p.SiteURL+paths.Work, now, "monthly", "0.6")
+	addURL(p.SiteURL+paths.AboutMe, now, "monthly", "0.6")
+	addURL(p.SiteURL+paths.AboutThisSite, now, "monthly", "0.4")
 
 	for _, post := range posts {
-		addURL(p.SiteURL+"/blog/"+post.Filename, post.Date.Format(dateFormat), "never", "0.6")
+		addURL(p.SiteURL+paths.Blog+"/"+post.Filename, post.Date.Format(dateFormat), "never", "0.6")
 	}
 
 	routesOnce.Do(loadRoutes)
 	if routesErr == nil {
-		addURL(p.SiteURL+"/routes", now, "monthly", "0.5")
+		addURL(p.SiteURL+paths.Routes, now, "monthly", "0.5")
 		for _, entry := range routesList {
-			addURL(p.SiteURL+"/routes/"+entry.Slug, now, "never", "0.5")
+			addURL(p.SiteURL+paths.Routes+"/"+entry.Slug, now, "never", "0.5")
 		}
 	}
 

@@ -5,6 +5,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/hfiorillo/site/paths"
 	"gopkg.in/yaml.v2"
 )
 
@@ -28,7 +29,7 @@ var (
 )
 
 func loadSiteMeta() {
-	raw, err := os.ReadFile("./content/site.yml")
+	raw, err := os.ReadFile(paths.SiteYAML)
 	if err != nil {
 		slog.Error("reading site.yml", "error", err)
 		return
@@ -44,5 +45,5 @@ func siteImage() string {
 	if siteMeta.Image != "" {
 		return siteMeta.Image
 	}
-	return "/public/images/harryfiorilloxyz-removebg-preview.png"
+	return paths.Avatar
 }

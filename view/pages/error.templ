@@ -2,6 +2,7 @@ package pages
 
 import (
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/layout"
 )
 
@@ -20,7 +21,7 @@ templ ErrorPage(errorString string) {
 					The page you are looking for might have been removed, its name changed, or is temporarily unavailable.
 				</p>
 				<div class="mt-6">
-					<a href="/" class="btn btn-primary">
+					<a href={ paths.Root } class="btn btn-primary">
 						Go Back Home
 					</a>
 				</div>

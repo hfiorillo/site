@@ -1,6 +1,7 @@
 package layout
 
 import (
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/components/icons"
 	navigation "github.com/hfiorillo/site/view/components/themeController"
 )
@@ -8,11 +9,11 @@ import (
 templ SideNav() {
 	<div class="flex flex-col gap-6 pt-12">
 		<div class="flex flex-col gap-2">
-			<a href="/" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Blog</a>
-			<a href="/pictures" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Pictures</a>
-			<a href="/work" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Work</a>
-			<a href="/routes" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Routes</a>
-			<a href="/aboutme" class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">About</a>
+			<a href={ paths.Root } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Blog</a>
+			<a href={ paths.Pictures } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Pictures</a>
+			<a href={ paths.Work } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Work</a>
+			<a href={ paths.Routes } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Routes</a>
+			<a href={ paths.AboutMe } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">About</a>
 		</div>
 
 		<div class="border-t border-dotted border-base-content/20 pt-4 flex flex-col gap-3">
@@ -45,7 +46,7 @@ templ SideNav() {
 		</div>
 
 		<div class="border-t border-dotted border-base-content/20 pt-4 text-sm text-base-content/30">
-			<p>Learn more about this <a href="/about-this-site" class="sidenav-link-tight text-base-content/50 hover:text-base-content no-underline">site 🌟</a>.</p>
+			<p>Learn more about this <a href={ paths.AboutThisSite } class="sidenav-link-tight text-base-content/50 hover:text-base-content no-underline">site 🌟</a>.</p>
 		</div>
 	</div>
 }

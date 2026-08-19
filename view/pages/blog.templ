@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/layout"
 )
 
@@ -16,7 +17,7 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 		}
 		if category != "" {
 			<h1 class="text-3xl font-bold mb-1">{ titleCase(category) }</h1>
-			<a href="/blog" class="text-base text-base-content/40 hover:text-primary no-underline">all posts</a>
+			<a href={ paths.Blog } class="text-base text-base-content/40 hover:text-primary no-underline">all posts</a>
 		}
 		if len(posts) == 0 {
 			<p class="text-base-content/40 mt-12">No posts yet.</p>
@@ -56,12 +57,12 @@ templ BlogCard(post *models.BlogPost) {
 		<p class="text-base text-base-content/60 font-semibold mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
 		<div class="flex gap-4">
 			if post.Metadata.PreviewImage != "" {
-				<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="flex-shrink-0 w-32 self-stretch no-underline">
+				<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="flex-shrink-0 w-32 self-stretch no-underline">
 					<img src={ post.Metadata.PreviewImage } alt="" class="w-full h-full object-cover border border-base-content/10" loading="lazy" decoding="async"/>
 				</a>
 			}
 			<div class="flex-1 min-w-0">
-				<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", post.Filename)) } class="no-underline" itemprop="url">
+				<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="no-underline" itemprop="url">
 					<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors" itemprop="headline">{ post.Title }</h2>
 				</a>
 				<p class="text-lg text-base-content/60 mt-1 leading-relaxed" itemprop="description">{ post.Description }</p>
@@ -92,19 +93,19 @@ templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPo
 			if len(post.Metadata.Tags) > 0 {
 				<div class="flex flex-wrap gap-3 mt-8 not-prose">
 					for _, tag := range post.Metadata.Tags {
-						<a href={ templ.SafeURL(fmt.Sprintf("/blog?tag=%s", tag)) } class="text-lg text-base-content/40 hover:text-primary no-underline">{ tag }</a>
+						<a href={ templ.SafeURL(paths.Blog + "?tag=" + tag) } class="text-lg text-base-content/40 hover:text-primary no-underline">{ tag }</a>
 					}
 				</div>
 			}
 			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
 			<div class="flex justify-between not-prose">
 				if prev != nil {
-					<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", prev.Filename)) } class="text-lg text-base-content/60 hover:text-primary no-underline">&larr; { prev.Title }</a>
+					<a href={ templ.SafeURL(paths.Blog + "/" + prev.Filename) } class="text-lg text-base-content/60 hover:text-primary no-underline">&larr; { prev.Title }</a>
 				} else {
 					<div></div>
 				}
 				if next != nil {
-					<a href={ templ.SafeURL(fmt.Sprintf("/blog/%s", next.Filename)) } class="text-lg text-base-content/60 hover:text-primary no-underline">{ next.Title } &rarr;</a>
+					<a href={ templ.SafeURL(paths.Blog + "/" + next.Filename) } class="text-lg text-base-content/60 hover:text-primary no-underline">{ next.Title } &rarr;</a>
 				}
 			</div>
 		</article>

@@ -1,8 +1,12 @@
 package layout
 
+import (
+	"github.com/hfiorillo/site/paths"
+)
+
 templ Brand() {
 	<div class="flex flex-col items-center justify-start min-h-screen gap-4 px-4 pt-44">
-		<a href="/"><img src="/public/images/harryfiorilloxyz-removebg-preview.png" alt=""
+		<a href={ paths.Root }><img src={ paths.Avatar } alt=""
 		     class="w-24 h-24 rounded-full object-cover bg-base-200 animate-spin-slow"/></a>
 		<div class="w-24 h-24 rounded-full bg-[#e74c3c] animate-hue"></div>
 		<div class="w-24 h-24 rounded-full bg-[#e67e22] animate-hue" style="animation-delay:0.75s;"></div>

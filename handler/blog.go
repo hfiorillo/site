@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/hfiorillo/site/internal/markdown"
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/pages"
 )
 
@@ -54,8 +55,8 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 	meta := models.PageMeta{
 		Title:          title,
 		Description:    siteMeta.Blog.Description,
-		URL:            p.SiteURL + "/blog",
-		Canonical:      p.SiteURL + "/blog",
+		URL:            p.SiteURL + paths.Blog,
+		Canonical:      p.SiteURL + paths.Blog,
 		Image:          p.SiteURL + siteImage(),
 		StructuredData: personJSON(p.SiteURL),
 	}
@@ -79,8 +80,9 @@ func (p PageHandler) HandleBlogPage(w http.ResponseWriter, r *http.Request) erro
 
 func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) error {
 	filename := chi.URLParam(r, "filename")
-	post, err := markdown.LoadMarkdownPost(r.Context(), fmt.Sprintf("/posts/%s", filename))
+	post, err := markdown.LoadMarkdownPost(r.Context(), paths.PostsMarkdownPrefix+filename)
 	if err != nil {
+		p.Logger.Warn("blog post not found", "filename", filename, "err", err, "path", r.URL.Path)
 		w.WriteHeader(http.StatusNotFound)
 		return pages.ErrorPage("This page does not exist.").Render(r.Context(), w)
 	}
@@ -114,7 +116,7 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 		image = p.SiteURL + post.Metadata.Image
 	}
 
-	blogURL := p.SiteURL + "/blog/" + post.Filename
+	blogURL := p.SiteURL + paths.Blog + "/" + post.Filename
 	sd := map[string]any{
 		"@context":       "https://schema.org",
 		"@type":          "BlogPosting",

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/layout"
 )
 
@@ -27,7 +28,7 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 					for _, r := range routes {
 						<tr class="border-b border-base-content/10 hover:bg-base-200 transition-colors">
 							<td class="py-3 pl-4 pr-6">
-								<a href={ templ.SafeURL(fmt.Sprintf("/routes/%s", r.Slug)) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
+								<a href={ templ.SafeURL(paths.Routes + "/" + r.Slug) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
 							</td>
 							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
@@ -88,7 +89,7 @@ templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 		<script>
 			var slug = document.getElementById('route-map').getAttribute('data-slug');
-			fetch('/api/routes/' + slug + '/coords')
+			fetch('{ paths.RouteCoordsPrefix }' + slug + '{ paths.RouteCoordsSuffix }')
 				.then(function(r) { return r.json(); })
 				.then(function(coords) {
 					var map = L.map('route-map').setView([55.94, -4.31], 8);

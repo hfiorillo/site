@@ -2,6 +2,7 @@ package layout
 
 import (
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 )
 
 templ Base(meta models.PageMeta) {
@@ -26,8 +27,8 @@ templ Base(meta models.PageMeta) {
 
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 			<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet"/>
-			<link rel="stylesheet" href="/public/styles.css"/>
-			<link rel="icon" type="image/svg+xml" href="/public/favicon.svg"/>
+			<link rel="stylesheet" href={ paths.Styles }/>
+			<link rel="icon" type="image/svg+xml" href={ paths.Favicon }/>
 			if meta.Canonical != "" {
 				<link rel="canonical" href={ meta.Canonical }/>
 			}

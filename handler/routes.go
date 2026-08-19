@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/hfiorillo/site/internal/gpx"
 	"github.com/hfiorillo/site/models"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/pages"
 	"gopkg.in/yaml.v2"
 )
@@ -37,7 +38,7 @@ var (
 )
 
 func loadRoutes() {
-	raw, err := os.ReadFile("./content/routes/routes.yml")
+	raw, err := os.ReadFile(paths.RoutesYAML)
 	if err != nil {
 		routesErr = fmt.Errorf("reading routes.yml: %w", err)
 		return
@@ -121,8 +122,8 @@ func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error 
 	meta := models.PageMeta{
 		Title:          siteMeta.Routes.Title + " | " + siteMeta.Title,
 		Description:    siteMeta.Routes.Description,
-		URL:            p.SiteURL + "/routes",
-		Canonical:      p.SiteURL + "/routes",
+		URL:            p.SiteURL + paths.Routes,
+		Canonical:      p.SiteURL + paths.Routes,
 		Image:          p.SiteURL + siteImage(),
 		StructuredData: personJSON(p.SiteURL),
 	}
@@ -148,8 +149,8 @@ func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 	meta := models.PageMeta{
 		Title:          route.Name + " | " + siteMeta.Title,
 		Description:    route.Location,
-		URL:            p.SiteURL + "/routes/" + slug,
-		Canonical:      p.SiteURL + "/routes/" + slug,
+		URL:            p.SiteURL + paths.Routes + "/" + slug,
+		Canonical:      p.SiteURL + paths.Routes + "/" + slug,
 		Image:          p.SiteURL + siteImage(),
 		StructuredData: personJSON(p.SiteURL),
 	}

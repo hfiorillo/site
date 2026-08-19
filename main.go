@@ -13,6 +13,7 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/hfiorillo/site/handler"
+	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/utils/logging"
 
 	"github.com/go-chi/chi/v5"
@@ -45,18 +46,18 @@ func main() {
 	router := chi.NewMux()
 	router.Use(chimiddleware.Logger, chimiddleware.Recoverer, chimiddleware.Timeout(30 * time.Second))
 	router.Handle("/*", public())
-	router.Get("/", handler.Make(pageHandler.HandleIndexPage))
-	router.Get("/blog", handler.Make(pageHandler.HandleBlogPage))
-	router.Get("/blog/{filename}", handler.Make(pageHandler.HandleBlogPostPage))
-	router.Get("/aboutme", handler.Make(pageHandler.HandleAboutMePage))
-	router.Get("/about-this-site", handler.Make(pageHandler.HandleAboutThisSite))
-	router.Get("/pictures", handler.Make(pageHandler.HandlePictures))
-	router.Get("/work", handler.Make(pageHandler.HandleWork))
-	router.Get("/feed.xml", handler.Make(pageHandler.HandleFeed))
-	router.Get("/sitemap.xml", handler.Make(pageHandler.HandleSitemap))
-	router.Get("/routes", handler.Make(pageHandler.HandleRoutes))
-	router.Get("/routes/{slug}", handler.Make(pageHandler.HandleRoute))
-	router.Get("/api/routes/{slug}/coords", handler.Make(pageHandler.HandleRouteCoords))
+	router.Get(paths.Root, handler.Make(pageHandler.HandleIndexPage))
+	router.Get(paths.Blog, handler.Make(pageHandler.HandleBlogPage))
+	router.Get(paths.BlogPost, handler.Make(pageHandler.HandleBlogPostPage))
+	router.Get(paths.AboutMe, handler.Make(pageHandler.HandleAboutMePage))
+	router.Get(paths.AboutThisSite, handler.Make(pageHandler.HandleAboutThisSite))
+	router.Get(paths.Pictures, handler.Make(pageHandler.HandlePictures))
+	router.Get(paths.Work, handler.Make(pageHandler.HandleWork))
+	router.Get(paths.Feed, handler.Make(pageHandler.HandleFeed))
+	router.Get(paths.Sitemap, handler.Make(pageHandler.HandleSitemap))
+	router.Get(paths.Routes, handler.Make(pageHandler.HandleRoutes))
+	router.Get(paths.RouteDetail, handler.Make(pageHandler.HandleRoute))
+	router.Get(paths.RouteCoords, handler.Make(pageHandler.HandleRouteCoords))
 
 	server := &http.Server{
 		Addr:         cfg.Port,
