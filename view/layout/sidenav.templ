@@ -7,8 +7,12 @@ import (
 )
 
 templ SideNav() {
-	<div class="flex flex-col gap-6 pt-12">
-		<div class="flex flex-col gap-2">
+	<div class="navigation-inner">
+		<div class="site-identity">
+			<a href={ paths.Root }>Harry Fiorillo-Hughes</a>
+			<p>Manchester, UK</p>
+		</div>
+		<div class="navigation-links">
 			<a href={ paths.Root } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Blog</a>
 			<a href={ paths.Pictures } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Pictures</a>
 			<a href={ paths.Work } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">Work</a>
@@ -16,7 +20,7 @@ templ SideNav() {
 			<a href={ paths.AboutMe } class="sidenav-link text-lg text-base-content/50 hover:text-base-content transition-colors no-underline">About</a>
 		</div>
 
-		<div class="border-t border-dotted border-base-content/20 pt-4 flex flex-col gap-3">
+		<div class="navigation-socials">
 			<a href="https://www.github.com/hfiorillo" target="_blank" rel="noopener noreferrer" class="sidenav-link flex items-center gap-2 text-base text-base-content/50 hover:text-base-content transition-colors no-underline">
 				<span class="w-4 h-4 text-[#333]">@icons.GitHub()</span>
 				GitHub
@@ -35,17 +39,12 @@ templ SideNav() {
 			</a>
 		</div>
 
-		<div class="border-t border-dotted border-base-content/20 pt-4 text-sm text-base-content/30 flex items-start gap-2">
-			<div class="opacity-30 hover:opacity-60 transition-opacity mt-0.5 flex-shrink-0">
-				@navigation.ThemeController()
-			</div>
-			<div>
-				<p>Harry Fiorillo-Hughes</p>
-				<p><a href="https://maps.google.com/?q=Manchester+UK" target="_blank" rel="noopener noreferrer" class="sidenav-link hover:text-base-content/60 no-underline">Manchester, UK 📍</a></p>
-			</div>
+		<div class="navigation-theme">
+			@navigation.ThemeController()
+			<a href={ paths.Feed } class="sidenav-link-tight">RSS feed ↗</a>
 		</div>
 
-		<div class="border-t border-dotted border-base-content/20 pt-4 text-sm text-base-content/30">
+		<div class="navigation-colophon">
 			<p>Learn more about this <a href={ paths.AboutThisSite } class="sidenav-link-tight text-base-content/50 hover:text-base-content no-underline">site 🌟</a>.</p>
 		</div>
 	</div>

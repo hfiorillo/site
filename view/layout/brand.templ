@@ -1,20 +1,10 @@
 package layout
 
-import (
-	"github.com/hfiorillo/site/paths"
-)
+import "github.com/hfiorillo/site/paths"
 
 templ Brand() {
-	<div class="flex flex-col items-center justify-start min-h-screen gap-4 px-4 pt-44">
-		<a href={ paths.Root }><img src={ paths.Avatar } alt=""
-		     class="w-24 h-24 rounded-full object-cover bg-base-200 animate-spin-slow"/></a>
-		<div class="w-24 h-24 rounded-full bg-[#e74c3c] animate-hue"></div>
-		<div class="w-24 h-24 rounded-full bg-[#e67e22] animate-hue" style="animation-delay:0.75s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#f39c12] animate-hue" style="animation-delay:1.5s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#2ecc71] animate-hue" style="animation-delay:2.25s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#1abc9c] animate-hue" style="animation-delay:3s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#3498db] animate-hue" style="animation-delay:3.75s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#9b59b6] animate-hue" style="animation-delay:4.5s;"></div>
-		<div class="w-24 h-24 rounded-full bg-[#e74c3c] animate-hue" style="animation-delay:5.25s;"></div>
+	<div class="brand-mark">
+		<a href={ paths.Root } aria-label="Home" class="brand-avatar"><img src={ paths.Avatar } alt="" width="96" height="96"/></a>
+		<div class="brand-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
 	</div>
 }

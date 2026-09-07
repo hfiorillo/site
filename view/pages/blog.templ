@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"strings"
+	"net/url"
 	"time"
 
 	"github.com/hfiorillo/site/models"
@@ -16,7 +17,7 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 			<h1 class="text-3xl font-bold mb-6">Blog</h1>
 		}
 		if category != "" {
-			<h1 class="text-3xl font-bold mb-1">{ titleCase(category) }</h1>
+			<h1 class="text-3xl font-bold mb-6">{ titleCase(category) }</h1>
 			<a href={ paths.Blog } class="text-base text-base-content/40 hover:text-primary no-underline">all posts</a>
 		}
 		if len(posts) == 0 {
@@ -29,14 +30,11 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 				@BlogCard(post)
 			}
 			if len(old) > 0 {
-				<div class="mt-8 pt-4" x-data="{ open: false }">
-					<hr class="border-0 border-t border-dotted border-base-content/20 mb-4"/>
-					<button @click="open = !open" class="text-lg text-base-content/40 hover:text-primary transition-colors cursor-pointer">
-						<span x-show="!open">▶</span>
-						<span x-show="open">▼</span>
+				<details class="archive">
+					<summary>
 						{ fmt.Sprintf("Older posts (%d)", len(old)) }
-					</button>
-					<div x-show="open" class="mt-4">
+					</summary>
+					<div class="mt-4">
 						for i, post := range old {
 							if i > 0 {
 								<hr class="border-0 border-t border-dotted border-base-content/20"/>
@@ -44,30 +42,31 @@ templ Blog(posts []*models.BlogPost, category string, meta models.PageMeta, rece
 							@BlogCard(post)
 						}
 					</div>
-				</div>
+				</details>
 			}
 		}
 	}
 }
 
 templ BlogCard(post *models.BlogPost) {
-	<article class="py-6" itemscope itemtype="https://schema.org/BlogPosting">
-		<meta itemprop="datePublished" content={ post.Date.Format("2006-01-02") }/>
+	<article class="journal-entry" itemscope itemtype="https://schema.org/BlogPosting">
 		<meta itemprop="author" content="Harry Fiorillo"/>
-		<p class="text-base text-base-content/60 font-semibold mb-2">posted { timeAgo(post.Date) } by Harry Fiorillo</p>
-		<div class="flex gap-4">
-			if post.Metadata.PreviewImage != "" {
-				<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="flex-shrink-0 w-32 self-stretch no-underline">
-					<img src={ post.Metadata.PreviewImage } alt="" class="w-full h-full object-cover border border-base-content/10" loading="lazy" decoding="async"/>
-				</a>
-			}
-			<div class="flex-1 min-w-0">
-				<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="no-underline" itemprop="url">
-					<h2 class="text-2xl font-semibold text-base-content hover:text-primary transition-colors" itemprop="headline">{ post.Title }</h2>
-				</a>
-				<p class="text-lg text-base-content/60 mt-1 leading-relaxed" itemprop="description">{ post.Description }</p>
-			</div>
+		<div class="entry-meta">
+			<time datetime={ post.Date.Format("2006-01-02") } title={ post.Date.Format("02 January 2006") } itemprop="datePublished">posted { timeAgo(post.Date) }</time>
+			<span>by Harry Fiorillo</span>
 		</div>
+		<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="entry-title-link" itemprop="url">
+			<h2 class="entry-title" itemprop="headline">{ post.Title }</h2>
+		</a>
+		<p class="entry-description" itemprop="description">{ post.Description }</p>
+		if post.Metadata.PreviewImage != "" {
+			<a href={ templ.SafeURL(paths.Blog + "/" + post.Filename) } class="entry-image" tabindex="-1" aria-hidden="true">
+				<img src={ post.Metadata.PreviewImage } alt="" loading="lazy" decoding="async"/>
+			</a>
+		}
+		if len(post.Metadata.Categories) > 0 {
+			<a class="entry-category" href={ templ.SafeURL(paths.Blog + "?" + paths.BlogQueryCat + "=" + url.QueryEscape(post.Metadata.Categories[0])) }>{ post.Metadata.Categories[0] }</a>
+		}
 	</article>
 }
 
@@ -79,26 +78,28 @@ templ BlogPage(post *models.BlogPost, prev *models.BlogPost, next *models.BlogPo
 		<article itemscope itemtype="https://schema.org/BlogPosting">
 			<meta itemprop="datePublished" content={ post.Date.Format("2006-01-02") }/>
 			<meta itemprop="author" content="Harry Fiorillo"/>
-			<h1 class="text-3xl font-bold leading-snug" itemprop="headline">{ post.Title }</h1>
-			<p class="text-base text-base-content/60 font-semibold mt-3">
-				posted { timeAgo(post.Date) } by <span class="text-base-content/40">Harry Fiorillo</span>
+			<h1 class="post-title" itemprop="headline">{ post.Title }</h1>
+			<p class="entry-meta post-meta">
+				<time datetime={ post.Date.Format("2006-01-02") }>{ post.Date.Format("02 January 2006") }</time>
+				<span aria-hidden="true"> / </span>
+				{ fmt.Sprintf("%d min read", post.ReadTimeMinutes) }
 			</p>
 			if post.Description != "" {
-				<p class="text-lg text-base-content/70 mt-1" itemprop="description">{ post.Description }</p>
+				<p class="post-deck" itemprop="description">{ post.Description }</p>
 			}
 			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
-			<div class="prose prose-lg max-w-none text-justify leading-relaxed" itemprop="articleBody">
+			<div class="prose prose-lg reading-text" itemprop="articleBody">
 				@templ.Raw(post.Content)
 			</div>
 			if len(post.Metadata.Tags) > 0 {
 				<div class="flex flex-wrap gap-3 mt-8 not-prose">
 					for _, tag := range post.Metadata.Tags {
-						<a href={ templ.SafeURL(paths.Blog + "?tag=" + tag) } class="text-lg text-base-content/40 hover:text-primary no-underline">{ tag }</a>
+						<a href={ templ.SafeURL(paths.Blog + "?" + paths.BlogQueryTag + "=" + url.QueryEscape(tag)) } class="text-lg text-base-content/40 hover:text-primary no-underline">{ tag }</a>
 					}
 				</div>
 			}
 			<hr class="border-0 border-t border-dotted border-base-content/20 my-8"/>
-			<div class="flex justify-between not-prose">
+			<div class="post-pagination not-prose">
 				if prev != nil {
 					<a href={ templ.SafeURL(paths.Blog + "/" + prev.Filename) } class="text-lg text-base-content/60 hover:text-primary no-underline">&larr; { prev.Title }</a>
 				} else {
@@ -125,7 +126,7 @@ func timeAgo(t time.Time) string {
 		h := int(d.Hours())
 		if h == 1 { return "1 hour ago" }
 		return fmt.Sprintf("%d hours ago", h)
-	case d < 7*24*time.Hour:
+	case d < 30*24*time.Hour:
 		days := int(d.Hours() / 24)
 		if days == 1 { return "1 day ago" }
 		return fmt.Sprintf("%d days ago", days)
