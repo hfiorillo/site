@@ -25,8 +25,8 @@ const (
 	PostsMarkdownPrefix   = "/posts/"
 
 	// URL query parameters.
-	BlogQueryTag  = "tag"
-	BlogQueryCat  = "category"
+	BlogQueryTag = "tag"
+	BlogQueryCat = "category"
 
 	// Static asset paths (served from the embedded /public tree).
 	Styles  = "/public/styles.css"
@@ -34,10 +34,14 @@ const (
 	Avatar  = "/public/images/harryfiorilloxyz-removebg-preview.png"
 
 	// Content file paths (read from disk at runtime).
-	SiteYAML  = "./content/site.yml"
+	SiteYAML   = "./content/site.yml"
 	RoutesYAML = "./content/routes/routes.yml"
 
 	// Route coords API request segments.
 	RouteCoordsPrefix = "/api/routes/"
 	RouteCoordsSuffix = "/coords"
 )
+
+// StylesURL is set from the embedded stylesheet before the HTTP server starts.
+// Its content hash keeps browsers and CDNs from reusing CSS from an older build.
+var StylesURL = Styles

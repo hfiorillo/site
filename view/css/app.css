@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Explicit inputs: production builds CSS before generating Go templates. */
+@source "../**/*.templ";
+@source "../../content/**/*.md";
 @plugin "daisyui";
 @plugin "@tailwindcss/typography";
 

@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"embed"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -32,6 +35,13 @@ type config struct {
 func main() {
 	logger := logging.NewJsonLogger()
 
+	stylesURL, err := stylesheetURL(publicFS)
+	if err != nil {
+		logger.Error("loading stylesheet", "error", err)
+		os.Exit(1)
+	}
+	paths.StylesURL = stylesURL
+
 	if err := godotenv.Load(); err != nil {
 		slog.Info("no .env file found.")
 	}
@@ -44,7 +54,7 @@ func main() {
 	pageHandler := handler.NewPageHandler(logger, cfg.SiteURL)
 
 	router := chi.NewMux()
-	router.Use(chimiddleware.Logger, chimiddleware.Recoverer, chimiddleware.Timeout(30 * time.Second))
+	router.Use(chimiddleware.Logger, chimiddleware.Recoverer, chimiddleware.Timeout(30*time.Second))
 	router.Handle("/*", public())
 	router.Get(paths.Root, handler.Make(pageHandler.HandleIndexPage))
 	router.Get(paths.Blog, handler.Make(pageHandler.HandleBlogPage))
@@ -91,4 +101,14 @@ func main() {
 
 func public() http.Handler {
 	return http.FileServerFS(publicFS)
+}
+
+// stylesheetURL fingerprints the bytes served by this binary, not files on disk.
+func stylesheetURL(assets fs.FS) (string, error) {
+	css, err := fs.ReadFile(assets, strings.TrimPrefix(paths.Styles, "/"))
+	if err != nil {
+		return "", fmt.Errorf("reading embedded stylesheet: %w", err)
+	}
+	hash := sha256.Sum256(css)
+	return fmt.Sprintf("%s?v=%x", paths.Styles, hash[:12]), nil
 }
