@@ -12,9 +12,9 @@ import (
 )
 
 type rssFeed struct {
-	XMLName xml.Name  `xml:"rss"`
-	Version string    `xml:"version,attr"`
-	Atom    string    `xml:"xmlns:atom,attr"`
+	XMLName xml.Name   `xml:"rss"`
+	Version string     `xml:"version,attr"`
+	Atom    string     `xml:"xmlns:atom,attr"`
 	Channel rssChannel `xml:"channel"`
 }
 
@@ -120,9 +120,6 @@ func (p PageHandler) HandleSitemap(w http.ResponseWriter, r *http.Request) error
 	routesOnce.Do(loadRoutes)
 	if routesErr == nil {
 		addURL(p.SiteURL+paths.Routes, now, "monthly", "0.5")
-		for _, entry := range routesList {
-			addURL(p.SiteURL+paths.Routes+"/"+entry.Slug, now, "never", "0.5")
-		}
 	}
 
 	buf.WriteString("</urlset>\n")

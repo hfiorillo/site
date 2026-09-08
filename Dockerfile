@@ -32,6 +32,5 @@ USER nonroot:nonroot
 
 COPY --from=build --chown=nonroot:nonroot /app /app
 COPY --chown=nonroot:nonroot ./content /content
-COPY --from=build --chown=nonroot:nonroot /src/public /public
 
 ENTRYPOINT ["./app"]

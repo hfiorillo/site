@@ -10,7 +10,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
+	"sync"
 	"testing"
 	"testing/fstest"
 
@@ -127,46 +129,115 @@ func TestRouteUpdates(t *testing.T) {
 	router := chi.NewRouter()
 	router.Get(paths.Routes, handler.Make(page.HandleRoutes))
 	router.Get(paths.RouteDetail, handler.Make(page.HandleRoute))
-	router.Get(paths.RouteCoords, handler.Make(page.HandleRouteCoords))
-	for _, tc := range []struct {
-		name, path   string
-		status       int
-		want, absent string
-	}{
-		{"listing", paths.Routes, 200, "126 km", "Jan 0001"},
-		{"Ireland details", paths.Routes + "/west-coast-of-ireland", 200, "779 km", "Badger_divide_reverse.gpx"},
-		{"Bilbao without GPX", paths.Routes + "/bilbao-to-san-sebastian", 200, "126 km", "Download GPX"},
-		{"Bilbao coordinates unavailable", paths.RouteCoordsPrefix + "bilbao-to-san-sebastian" + paths.RouteCoordsSuffix, 404, "404", ""},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest("GET", paths.Routes, nil))
+	body := response.Body.String()
+	for _, wanted := range []string{"126 km", "779 km", "348 km", "https://www.komoot.com/tour/2765576526", "https://www.komoot.com/tour/3262934167", "https://www.komoot.com/tour/3268174732"} {
+		if !strings.Contains(body, wanted) {
+			t.Errorf("missing %q", wanted)
+		}
+	}
+	for _, old := range []string{".gpx", "leaflet", "route-map", "Download"} {
+		if strings.Contains(body, old) {
+			t.Errorf("retired route feature %q", old)
+		}
+	}
+	for _, slug := range []string{"badger-divide", "west-coast-of-ireland", "bilbao-to-san-sebastian"} {
+		t.Run(slug, func(t *testing.T) {
 			response := httptest.NewRecorder()
-			router.ServeHTTP(response, httptest.NewRequest("GET", tc.path, nil))
-			if response.Code != tc.status {
-				t.Fatalf("status %d", response.Code)
-			}
-			body := response.Body.String()
-			if !strings.Contains(body, tc.want) {
-				t.Errorf("missing %q", tc.want)
-			}
-			if tc.absent != "" && strings.Contains(body, tc.absent) {
-				t.Errorf("unexpected %q", tc.absent)
+			router.ServeHTTP(response, httptest.NewRequest("GET", paths.Routes+"/"+slug, nil))
+			if response.Code != http.StatusTemporaryRedirect || !strings.HasPrefix(response.Header().Get("Location"), "https://www.komoot.com/tour/") {
+				t.Fatal("missing Komoot redirect")
 			}
 		})
 	}
-	response := httptest.NewRecorder()
-	router.ServeHTTP(response, httptest.NewRequest("GET", paths.RouteCoordsPrefix+"west-coast-of-ireland"+paths.RouteCoordsSuffix, nil))
-	var coords []struct {
-		Lat float64 `json:"lat"`
-		Lon float64 `json:"lon"`
-	}
-	if err := json.Unmarshal(response.Body.Bytes(), &coords); err != nil {
+}
+
+func TestPicturesGallery(t *testing.T) {
+	data, err := os.ReadFile(paths.GalleryManifest)
+	if err != nil {
 		t.Fatal(err)
 	}
-	if len(coords) < 100 {
-		t.Fatal("missing Ireland track")
+	var years []models.GalleryYear
+	if err := json.Unmarshal(data, &years); err != nil {
+		t.Fatal(err)
 	}
-	first, last := coords[0], coords[len(coords)-1]
-	if first.Lat < 51 || first.Lat > 52 || last.Lat < 54 || last.Lat > 56 || first.Lon > -8 || last.Lon > -7 {
-		t.Fatal("track is not Cork to Derry")
+	if len(years) == 0 {
+		t.Fatal("empty gallery")
 	}
+	page := handler.NewPageHandler(slog.Default(), "https://example.com")
+	response := httptest.NewRecorder()
+	if err := page.HandlePictures(response, httptest.NewRequest("GET", paths.Pictures, nil)); err != nil {
+		t.Fatal(err)
+	}
+	body := response.Body.String()
+	seen := map[string]bool{}
+	for i, year := range years {
+		if i > 0 && year.Year > years[i-1].Year {
+			t.Fatal("years are not newest first")
+		}
+		for _, photo := range year.Photos {
+			if seen[photo.Original] {
+				t.Fatal("duplicate photo")
+			}
+			seen[photo.Original] = true
+			if photo.Width <= 0 || photo.Height <= 0 {
+				t.Fatal("missing layout dimensions")
+			}
+			if !strings.Contains(body, photo.Preview) || !strings.Contains(body, photo.PostURL) {
+				t.Fatal("photo or source link missing")
+			}
+			if strings.Contains(body, `src="`+photo.Original+`"`) {
+				t.Fatal("gallery eagerly references full-size photo")
+			}
+			for _, src := range []string{photo.Preview} {
+				if _, err := fs.Stat(publicFS, strings.TrimPrefix(src, "/")); err != nil {
+					t.Fatal(err)
+				}
+			}
+		}
+	}
+	entries, err := fs.ReadDir(publicFS, strings.TrimSuffix(strings.TrimPrefix(paths.GalleryAssets, "/"), "/"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != len(seen) {
+		t.Fatalf("expected one preview per photo, got %d files for %d photos", len(entries), len(seen))
+	}
+	photo := years[0].Photos[0]
+	cached := httptest.NewRecorder()
+	public().ServeHTTP(cached, httptest.NewRequest("GET", photo.Preview, nil))
+	if cached.Code != 200 || cached.Header().Get("Cache-Control") != "public, max-age=31536000, immutable" {
+		t.Fatal("preview not cached immutably")
+	}
+	missing := httptest.NewRecorder()
+	public().ServeHTTP(missing, httptest.NewRequest("GET", paths.GalleryAssets+"missing.webp", nil))
+	if missing.Code != 404 || missing.Header().Get("Cache-Control") != "" {
+		t.Fatal("missing preview cached")
+	}
+	if strings.Count(body, `loading="lazy"`) < len(seen) {
+		t.Fatal("gallery photos must lazy-load")
+	}
+}
+
+func TestConcurrentKomootRoutes(t *testing.T) {
+	page := handler.NewPageHandler(slog.Default(), "https://example.com")
+	router := chi.NewRouter()
+	router.Get(paths.Routes, handler.Make(page.HandleRoutes))
+	router.Get(paths.RouteDetail, handler.Make(page.HandleRoute))
+	var wg sync.WaitGroup
+	for i := 0; i < 24; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for _, path := range []string{paths.Routes, paths.Routes + "/badger-divide"} {
+				response := httptest.NewRecorder()
+				router.ServeHTTP(response, httptest.NewRequest("GET", path, nil))
+				if response.Code != 200 && response.Code != 307 {
+					t.Errorf("unexpected route status: %d", response.Code)
+				}
+			}
+		}()
+	}
+	wg.Wait()
 }

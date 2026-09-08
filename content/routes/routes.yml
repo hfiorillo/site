@@ -2,7 +2,7 @@
   slug: badger-divide
   location: Scotland - Glasgow to Inverness
   date: 2026-04-01
-  gpx: /public/routes/Badger_divide_reverse.gpx
+  route_url: https://www.komoot.com/tour/2765576526?share_token=aeEF5Pl2JatZTdo7S5zQg1a9UiltknUT1i2OaxChKqmmW1rW9B
   packlist: https://lighterpack.com/r/tjgsqt
   distance_km: 348
   elevation_gain: 5330
@@ -10,7 +10,7 @@
   slug: west-coast-of-ireland
   location: Ireland - Cork to Derry
   date: 2026-07-26
-  gpx: /public/routes/west-coast-of-ireland.gpx
+  route_url: https://www.komoot.com/tour/3262934167?share_token=amNZ4LP79seBtYu33xsaTN23Krns8sCsGNRwiwQtLUKFDT9QsU
   packlist: https://lighterpack.com/r/552vh6
   distance_km: 779
   elevation_gain: 6104
@@ -22,4 +22,3 @@
   elevation_gain: 3519
   packlist: https://lighterpack.com/r/1mcfue
   route_url: https://www.komoot.com/tour/3268174732?share_token=aC5OW4RQH7SmieelsVhGpsBYuZisWKUTsfo4A7LAch4WoFaWd5
-  embed_url: https://www.komoot.com/tour/3268174732/embed?share_token=aC5OW4RQH7SmieelsVhGpsBYuZisWKUTsfo4A7LAch4WoFaWd5&layout=classic&profile=1

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hfiorillo/site/models"
-	"github.com/hfiorillo/site/paths"
+
 	"github.com/hfiorillo/site/view/layout"
 )
 
@@ -21,14 +21,14 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 						<th class="pb-2 pr-6 font-medium text-right">Elevation</th>
 						<th class="pb-2 pr-6 font-medium">Date</th>
 						<th class="pb-2 pr-6 font-medium">Packlist</th>
-						<th class="pb-2 font-medium">Download</th>
+						<th class="pb-2 font-medium">Route link</th>
 					</tr>
 				</thead>
 				<tbody>
 					for _, r := range routes {
 						<tr class="border-b border-base-content/10 hover:bg-base-200 transition-colors">
 							<td class="py-3 pl-4 pr-6">
-								<a href={ templ.SafeURL(paths.Routes + "/" + r.Slug) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
+								<a href={ templ.SafeURL(r.RouteURL) } class="text-primary font-semibold no-underline hover:opacity-80">{ r.Name }</a>
 							</td>
 							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
@@ -52,9 +52,7 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 								}
 							</td>
 							<td class="py-3 pr-4">
-								if r.GPXFile != "" {
-									<a href={ templ.SafeURL(r.GPXFile) } download class="text-sm text-primary no-underline hover:opacity-80">Download</a>
-								}
+
 								if r.RouteURL != "" {
 									<div><a href={ templ.SafeURL(r.RouteURL) } target="_blank" rel="noopener noreferrer" class="text-sm text-primary">View on Komoot ↗</a></div>
 								}
@@ -64,87 +62,5 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 				</tbody>
 			</table>
 		</div>
-	}
-}
-
-templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
-	@layout.Base(meta) {
-		<div>
-			<div class="not-prose">
-				<h1 class="text-3xl font-bold">{ r.Name }</h1>
-				<p class="text-sm text-base-content/50 mt-1">{ r.Location }</p>
-			</div>
-			<div class="flex gap-6 mt-4 not-prose text-sm">
-				<div>
-					<span class="text-base-content/50">Distance</span>
-					<p class="font-semibold">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</p>
-				</div>
-				<div>
-					<span class="text-base-content/50">Elevation gain</span>
-					<p class="font-semibold">
-						if r.ElevationGain > 0 {
-							{ fmt.Sprintf("%.0f m", r.ElevationGain) }
-						} else {
-							<span aria-label="Not recorded">—</span>
-						}
-					</p>
-				</div>
-				if r.GPXFile != "" {
-					<div>
-						<span class="text-base-content/50">Min / Max</span>
-						<p class="font-semibold">{ fmt.Sprintf("%.0f / %.0f m", r.ElevationMin, r.ElevationMax) }</p>
-					</div>
-				}
-				<div>
-					<span class="text-base-content/50">Date</span>
-					<p class="font-semibold">
-						if !r.Date.IsZero() {
-							{ r.Date.Format("Jan 2006") }
-						} else {
-							<span aria-label="Not recorded">—</span>
-						}
-					</p>
-				</div>
-				if r.GPXFile != "" {
-					<div>
-						<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
-					</div>
-				}
-				if r.RouteURL != "" {
-					<div><a href={ templ.SafeURL(r.RouteURL) } target="_blank" rel="noopener noreferrer" class="text-primary">View on Komoot ↗</a></div>
-				}
-				if r.Packlist != "" {
-					<div>
-						<a href={ templ.SafeURL(r.Packlist) } target="_blank" rel="noopener noreferrer" class="text-primary no-underline hover:opacity-80 font-semibold">Packlist</a>
-					</div>
-				}
-			</div>
-			if r.GPXFile != "" {
-				<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;" data-coords-url={ paths.RouteCoordsPrefix + slug + paths.RouteCoordsSuffix }></div>
-			} else if r.EmbedURL != "" {
-				<iframe src={ templ.SafeURL(r.EmbedURL) } title={ r.Name + " route map" } width="100%" height="700" class="mt-4" style="border:0" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
-			} else {
-				<p class="mt-4 text-sm text-base-content/60">Map and GPX coming soon.</p>
-			}
-		</div>
-		if r.GPXFile != "" {
-			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-			<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-			<script>
-			var coordsURL = document.getElementById('route-map').getAttribute('data-coords-url');
-			fetch(coordsURL)
-				.then(function(r) { return r.json(); })
-				.then(function(coords) {
-					var map = L.map('route-map').setView([55.94, -4.31], 8);
-					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-						maxZoom: 18
-					}).addTo(map);
-					var pts = coords.map(function(c) { return [c.lat, c.lon]; });
-					var poly = L.polyline(pts, { color: '#e74c3c', weight: 3 }).addTo(map);
-					map.fitBounds(poly.getBounds());
-				});
-		</script>
-		}
 	}
 }

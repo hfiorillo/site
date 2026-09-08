@@ -13,7 +13,6 @@ const (
 	Work          = "/work"
 	Routes        = "/routes"
 	RouteDetail   = Routes + "/{slug}"
-	RouteCoords   = "/api/routes/{slug}/coords"
 	Feed          = "/feed.xml"
 	Sitemap       = "/sitemap.xml"
 
@@ -36,12 +35,18 @@ const (
 	// Content file paths (read from disk at runtime).
 	SiteYAML   = "./content/site.yml"
 	RoutesYAML = "./content/routes/routes.yml"
-
-	// Route coords API request segments.
-	RouteCoordsPrefix = "/api/routes/"
-	RouteCoordsSuffix = "/coords"
 )
 
 // StylesURL is set from the embedded stylesheet before the HTTP server starts.
 // Its content hash keeps browsers and CDNs from reusing CSS from an older build.
 var StylesURL = Styles
+
+const (
+	// GalleryManifest contains the precomputed, published-post gallery.
+	GalleryManifest = "./content/pictures/gallery.json"
+	// GalleryAssets is reserved for content-hashed, immutable WebP previews.
+	GalleryAssets = "/public/gallery/"
+	// PostImages and PostImagesDirectory identify local post photo folders.
+	PostImages          = "/public/images/posts/"
+	PostImagesDirectory = "./public/images/posts"
+)

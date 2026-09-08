@@ -25,7 +25,6 @@ Personal blog/portfolio site deployed at blog.fiorillo.xyz (domain: fiorillo.xyz
   - `site.go` — `content/site.yml` site metadata loader
 - `internal/` — non-HTTP libraries:
   - `internal/markdown/` — goldmark setup, front matter parsing, post loading, header/TOC parsing
-  - `internal/gpx/` — GPX parsing (Haversine distance, elevation gain)
 - `models/models.go` — shared structs (BlogPost, Route, PageMeta, Headers, etc.)
 - `paths/paths.go` — single source of truth for website route & static-asset path constants (used by main.go, handlers, feeds, and templates). Content-file and asset paths live here too.
 - `view/` — all templ templates:
@@ -33,7 +32,7 @@ Personal blog/portfolio site deployed at blog.fiorillo.xyz (domain: fiorillo.xyz
   - `pages/` — one template file per page type
   - `components/icons/` — SVG icons (GitHub, Instagram, Komoot, Strava)
 - `content/` — ALL content & metadata (Markdown + YAML), not code
-- `public/` — static assets (images, GPX, CSS output, favicon, robots.txt), embedded at compile time
+- `public/` — static assets (images, CSS output, favicon, robots.txt), embedded at compile time
 - `scripts/` — `newpost.sh`, `images.sh`
 - `Taskfile.yml` — task runner (e.g. `task new-post`, `task images`)
 - `.github/workflows/google.yml`, `Dockerfile` — CI/CD
@@ -44,7 +43,7 @@ Everything a user would want to change lives in `content/`, NOT in Go or templat
 
 - `content/site.yml` — global site metadata (title, description, OG image, per-section titles/descriptions). Handlers read this via `loadSiteMeta()`.
 - `content/posts/{year}/*.md` — blog posts, one file per post, organized into year subdirectories. Front matter includes `title`, `date`, `categories`, `tags`, `published`, `description`, and optional `preview-image` (shown on the blog listing).
-- `content/routes/routes.yml` — route list (name, slug, location, date, gpx path, distance_km, elevation_gain, packlist). Distance/elevation come from YAML; GPX is only parsed for the map.
+- `content/routes/routes.yml` — route list (name, slug, location, date, route_url, distance_km, elevation_gain, packlist). Route links go directly to Komoot; old detail URLs redirect there.
 - `content/aboutme/`, `content/about-this-site/` — standalone markdown pages loaded the same way as posts.
 - `content/projects/` — projects content.
 

@@ -65,12 +65,23 @@ type Route struct {
 	Location      string
 	DistanceKm    float64
 	ElevationGain float64
-	ElevationMax  float64
-	ElevationMin  float64
 	Date          time.Time
-	CoordsJSON    string
 	RouteURL      string
-	EmbedURL      string
-	GPXFile       string
 	Packlist      string
+}
+
+// GalleryYear groups photos by their source post's year.
+type GalleryYear struct {
+	Year   int            `json:"year"`
+	Photos []GalleryPhoto `json:"photos"`
+}
+
+// GalleryPhoto links prebuilt previews to a full-size photo and its post.
+type GalleryPhoto struct {
+	Preview  string `json:"preview"`
+	Original string `json:"original"`
+	Width    int    `json:"width"`
+	Height   int    `json:"height"`
+	Title    string `json:"title"`
+	PostURL  string `json:"post_url"`
 }

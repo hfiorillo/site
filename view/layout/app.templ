@@ -36,8 +36,8 @@ templ Base(meta models.PageMeta) {
 		<body
 			class="bg-base-100 min-h-screen"
 			@keydown.escape.window="lb = null"
-			x-data="{ lb: null }"
-			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) lb = $event.target.src"
+			x-data="{ lb: null, lbTitle: '', lbPost: '' }"
+			@click="if ($event.target.tagName === 'IMG' && $event.target.closest('.prose')) { lbTitle = ''; lbPost = ''; lb = $event.target.src; }"
 		>
 			<a class="skip-link" href="#main-content">Skip to content</a>
 			<div class="site-shell">
@@ -55,8 +55,12 @@ templ Base(meta models.PageMeta) {
 				x-init="window.addEventListener('scroll', () => { const s = window.scrollY, d = document.documentElement.scrollHeight - window.innerHeight; progress = d > 0 ? Math.min((s / d) * 100, 100) : 0 })"
 				:style="`width: ${progress}%`"
 			></div>
-			<div x-show="lb" @click="lb = null" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" style="display: none;">
-				<img :src="lb" class="max-w-full max-h-full object-contain rounded-lg cursor-default" @click.stop alt=""/>
+			<div x-show="lb" @click="lb = null" class="photo-lightbox" style="display: none;" role="dialog" aria-modal="true" aria-label="Selected photo">
+				<button type="button" class="photo-lightbox-close" @click="lb = null" aria-label="Close photo">×</button>
+				<figure @click.stop>
+					<img :src="lb" :alt="lbTitle"/>
+					<figcaption x-show="lbTitle"><a :href="lbPost" x-text="lbTitle"></a></figcaption>
+				</figure>
 			</div>
 		</body>
 	</html>

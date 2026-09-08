@@ -236,3 +236,26 @@ a, button, summary, input { -webkit-tap-highlight-color: transparent; }
 
 .entry-category { display: inline-block; font-size: 12px; line-height: 1.5; color: var(--journal-muted); border: 1px solid var(--journal-rule); border-radius: 3px; padding: 4px 8px; margin-top: 16px; text-transform: uppercase; }
 .entry-category:hover { color: var(--color-primary); border-color: var(--color-primary); }
+
+/* A photo notebook: natural proportions, quiet captions, and year markers. */
+.gallery-intro { color: var(--journal-muted); font-size: 15px; line-height: 1.6; max-width: 48ch; }
+.gallery-intro p + p { margin-top: .5rem; }
+.gallery-year { margin-top: 36px; }
+.gallery-year-heading { display: flex; align-items: baseline; justify-content: space-between; border-top: 1px dashed var(--journal-rule); padding-top: 16px; margin-bottom: 22px; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+.gallery-year-heading span { font-size: 13px; font-weight: 400; color: var(--journal-muted); letter-spacing: 0; }
+.photo-gallery { columns: 2; column-gap: 16px; }
+.gallery-photo { break-inside: avoid; margin: 0 0 16px; }
+.gallery-photo-link { display: block; background: var(--color-base-200); }
+.gallery-photo img { display: block; width: 100%; height: auto; transition: opacity .15s; }
+.gallery-photo-link:hover img { opacity: .88; }
+@media (max-width: 480px) {
+ .photo-gallery { column-gap: 10px; }
+ .gallery-photo { margin-bottom: 10px; }
+}
+
+.photo-lightbox { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 48px 20px 24px; background: rgba(0,0,0,.94); color: white; }
+.photo-lightbox figure { margin: 0; max-width: 100%; }
+.photo-lightbox img { display: block; max-width: 100%; max-height: calc(100dvh - 150px); width: auto; height: auto; margin: auto; object-fit: contain; }
+.photo-lightbox figcaption { max-width: 60ch; margin: 16px auto 0; font-size: 15px; text-align: center; line-height: 1.5; }
+.photo-lightbox figcaption a { text-decoration: underline; text-underline-offset: 4px; }
+.photo-lightbox-close { position: absolute; right: 16px; top: 8px; width: 44px; height: 44px; font-size: 32px; cursor: pointer; }

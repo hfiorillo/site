@@ -67,7 +67,6 @@ func main() {
 	router.Get(paths.Sitemap, handler.Make(pageHandler.HandleSitemap))
 	router.Get(paths.Routes, handler.Make(pageHandler.HandleRoutes))
 	router.Get(paths.RouteDetail, handler.Make(pageHandler.HandleRoute))
-	router.Get(paths.RouteCoords, handler.Make(pageHandler.HandleRouteCoords))
 
 	server := &http.Server{
 		Addr:         cfg.Port,
@@ -100,7 +99,16 @@ func main() {
 }
 
 func public() http.Handler {
-	return http.FileServerFS(publicFS)
+	files := http.FileServerFS(publicFS)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, paths.GalleryAssets) {
+			// Only successful responses for generated, hashed assets are immutable.
+			if info, err := fs.Stat(publicFS, strings.TrimPrefix(r.URL.Path, "/")); err == nil && !info.IsDir() {
+				w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			}
+		}
+		files.ServeHTTP(w, r)
+	})
 }
 
 // stylesheetURL fingerprints the bytes served by this binary, not files on disk.

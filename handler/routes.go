@@ -1,16 +1,14 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/hfiorillo/site/internal/gpx"
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/pages"
@@ -19,170 +17,76 @@ import (
 
 type routeEntry struct {
 	RouteURL      string  `yaml:"route_url"`
-	EmbedURL      string  `yaml:"embed_url"`
 	Name          string  `yaml:"name"`
 	Slug          string  `yaml:"slug"`
 	Location      string  `yaml:"location"`
 	Date          string  `yaml:"date"`
-	GPXFile       string  `yaml:"gpx"`
 	Packlist      string  `yaml:"packlist"`
 	DistanceKm    float64 `yaml:"distance_km"`
 	ElevationGain float64 `yaml:"elevation_gain"`
 }
 
 var (
-	routesOnce   sync.Once
-	routesList   []routeEntry
-	routesCache  = map[string]*models.Route{}
-	routesCoords = map[string]*gpx.RouteData{}
-	routesErr    error
-	routesMu     sync.RWMutex
+	routesOnce  sync.Once
+	routesList  []routeEntry
+	routesCache = map[string]*models.Route{}
+	routesErr   error
 )
 
+// Load once and never mutate the routes after publishing the cache.
 func loadRoutes() {
 	raw, err := os.ReadFile(paths.RoutesYAML)
 	if err != nil {
-		routesErr = fmt.Errorf("reading routes.yml: %w", err)
+		routesErr = err
 		return
 	}
 	if err := yaml.Unmarshal(raw, &routesList); err != nil {
-		routesErr = fmt.Errorf("parsing routes.yml: %w", err)
+		routesErr = err
 		return
 	}
-	for i := range routesList {
-		r := &routesList[i]
-		var date time.Time
-		var parseErr error
-		if r.Date != "" {
-			date, parseErr = time.Parse("2006-01-02", r.Date)
-		}
-		if parseErr != nil {
-			routesErr = fmt.Errorf("parsing date for %s: %w", r.Name, parseErr)
+	for _, r := range routesList {
+		target, err := url.Parse(r.RouteURL)
+		if err != nil || target.Scheme != "https" || (target.Host != "www.komoot.com" && target.Host != "komoot.com") {
+			routesErr = fmt.Errorf("invalid Komoot URL for %s", r.Name)
 			return
 		}
-		routesCache[r.Slug] = &models.Route{
-			RouteURL:      r.RouteURL,
-			EmbedURL:      r.EmbedURL,
-			Slug:          r.Slug,
-			Name:          r.Name,
-			Location:      r.Location,
-			Date:          date,
-			GPXFile:       r.GPXFile,
-			Packlist:      r.Packlist,
-			DistanceKm:    r.DistanceKm,
-			ElevationGain: r.ElevationGain,
+		var date time.Time
+		if r.Date != "" {
+			date, err = time.Parse("2006-01-02", r.Date)
+			if err != nil {
+				routesErr = err
+				return
+			}
 		}
+		routesCache[r.Slug] = &models.Route{RouteURL: r.RouteURL, Slug: r.Slug, Name: r.Name, Location: r.Location, Date: date, Packlist: r.Packlist, DistanceKm: r.DistanceKm, ElevationGain: r.ElevationGain}
 	}
-}
-
-func ensureRouteData(slug string) (*models.Route, *gpx.RouteData, error) {
-	routesMu.RLock()
-	route := routesCache[slug]
-	rd := routesCoords[slug]
-	routesMu.RUnlock()
-	if route == nil {
-		return nil, nil, fmt.Errorf("route not found: %s", slug)
-	}
-	if rd != nil || route.GPXFile == "" {
-		return route, rd, nil
-	}
-
-	rd, err := gpx.Parse("." + route.GPXFile)
-	if err != nil {
-		return nil, nil, fmt.Errorf("parsing gpx for %s: %w", slug, err)
-	}
-	cj, _ := gpx.CoordsToJSON(rd.Coords)
-
-	routesMu.Lock()
-	if route.DistanceKm == 0 {
-		route.DistanceKm = math.Round(rd.DistanceKm)
-	}
-	if route.ElevationGain == 0 {
-		route.ElevationGain = math.Round(rd.ElevationGain)
-	}
-	route.ElevationMax = math.Round(rd.ElevationMax)
-	route.ElevationMin = math.Round(rd.ElevationMin)
-	route.CoordsJSON = cj
-	routesCoords[slug] = rd
-	routesMu.Unlock()
-
-	return route, rd, nil
 }
 
 func (p PageHandler) HandleRoutes(w http.ResponseWriter, r *http.Request) error {
 	routesOnce.Do(loadRoutes)
-	siteOnce.Do(loadSiteMeta)
 	if routesErr != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return pages.ErrorPage("Could not load routes.").Render(r.Context(), w)
+		return routesErr
 	}
-
-	var list []*models.Route
+	siteOnce.Do(loadSiteMeta)
+	list := make([]*models.Route, 0, len(routesList))
 	for _, entry := range routesList {
-		routesMu.RLock()
-		route := routesCache[entry.Slug]
-		routesMu.RUnlock()
-		if route != nil {
-			list = append(list, route)
-		}
+		list = append(list, routesCache[entry.Slug])
 	}
-
-	meta := models.PageMeta{
-		Title:          siteMeta.Routes.Title + " | " + siteMeta.Title,
-		Description:    siteMeta.Routes.Description,
-		URL:            p.SiteURL + paths.Routes,
-		Canonical:      p.SiteURL + paths.Routes,
-		Image:          p.SiteURL + siteImage(),
-		StructuredData: personJSON(p.SiteURL),
-	}
+	meta := models.PageMeta{Title: siteMeta.Routes.Title + " | " + siteMeta.Title, Description: siteMeta.Routes.Description, URL: p.SiteURL + paths.Routes, Canonical: p.SiteURL + paths.Routes, Image: p.SiteURL + siteImage(), StructuredData: personJSON(p.SiteURL)}
 	return pages.Routes(list, meta).Render(r.Context(), w)
 }
 
+// Preserve existing bookmarks while the listing links directly to Komoot.
 func (p PageHandler) HandleRoute(w http.ResponseWriter, r *http.Request) error {
 	routesOnce.Do(loadRoutes)
 	if routesErr != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return pages.ErrorPage("Could not load route.").Render(r.Context(), w)
+		return routesErr
 	}
-
-	slug := chi.URLParam(r, "slug")
-	route, rd, err := ensureRouteData(slug)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
-	}
-	_ = rd
-
-	siteOnce.Do(loadSiteMeta)
-	meta := models.PageMeta{
-		Title:          route.Name + " | " + siteMeta.Title,
-		Description:    route.Location,
-		URL:            p.SiteURL + paths.Routes + "/" + slug,
-		Canonical:      p.SiteURL + paths.Routes + "/" + slug,
-		Image:          p.SiteURL + siteImage(),
-		StructuredData: personJSON(p.SiteURL),
-	}
-	return pages.RoutePage(route, slug, meta).Render(r.Context(), w)
-}
-
-func (p PageHandler) HandleRouteCoords(w http.ResponseWriter, r *http.Request) error {
-	routesOnce.Do(loadRoutes)
-	if routesErr != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return pages.ErrorPage("Could not load route.").Render(r.Context(), w)
-	}
-
-	slug := chi.URLParam(r, "slug")
-	_, rd, err := ensureRouteData(slug)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
-	}
-
-	if rd == nil {
+	route := routesCache[chi.URLParam(r, "slug")]
+	if route == nil {
 		http.NotFound(w, r)
 		return nil
 	}
-	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(rd.Coords)
+	http.Redirect(w, r, route.RouteURL, http.StatusTemporaryRedirect)
+	return nil
 }

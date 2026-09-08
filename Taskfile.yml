@@ -30,3 +30,8 @@ tasks:
     desc: "Convert all .HEIC images in public/images/ to .jpg"
     cmds:
     - scripts/images.sh
+    - task: gallery
+  gallery:
+    desc: "Build cached WebP gallery previews (requires cwebp; brew install webp)"
+    cmds:
+    - go run ./cmd/gallery

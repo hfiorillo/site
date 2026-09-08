@@ -8,7 +8,6 @@ import (
 	"html/template"
 	"io/fs"
 	"math"
-	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -33,8 +32,8 @@ const (
 )
 
 var (
-	parserInst   goldmark.Markdown
-	imgAttrRegex = regexp.MustCompile(`<img\s`)
+	parserInst goldmark.Markdown
+
 	postsCache   []*models.BlogPost
 	postsMu      sync.RWMutex
 	postsCacheAt time.Time
@@ -86,10 +85,10 @@ func findPostPath(targetBase string) (string, error) {
 		return path, nil
 	}
 
-	postsPathMu.Lock()
 	buildPathMap()
+	postsPathMu.RLock()
 	path = postsPathMap[targetBase]
-	postsPathMu.Unlock()
+	postsPathMu.RUnlock()
 	if path == "" {
 		return "", fmt.Errorf("post '%s' not found", targetBase)
 	}
@@ -116,17 +115,7 @@ func LoadMarkdownPost(ctx context.Context, fileName string) (*models.BlogPost, e
 		return nil, ctx.Err()
 	}
 
-	content, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("reading %s: %w", path, err)
-	}
-
-	post, err := ParseMarkdown(content, targetBase)
-	if err != nil {
-		return nil, fmt.Errorf("parsing %s: %w", fileName, err)
-	}
-
-	return post, nil
+	return loadParsedPost(ctx, path, targetBase)
 }
 
 func LoadMarkdownPosts(ctx context.Context) ([]*models.BlogPost, error) {
@@ -173,14 +162,8 @@ func loadPostsUncached(ctx context.Context) ([]*models.BlogPost, error) {
 			return ctx.Err()
 		}
 
-		content, err := os.ReadFile(path)
-		if err != nil {
-			fmt.Printf("Warning: could not read file %s: %v\n", path, err)
-			return nil
-		}
-
 		filenameWithoutExt := strings.TrimSuffix(d.Name(), markdownExtension)
-		post, err := ParseMarkdown(content, filenameWithoutExt)
+		post, err := loadParsedPost(ctx, path, filenameWithoutExt)
 		if err != nil {
 			fmt.Printf("Warning: could not parse markdown for file %s: %v\n", d.Name(), err)
 			return nil
@@ -307,8 +290,21 @@ func toStringSlice(v interface{}) []string {
 	}
 }
 
+var imageTags = regexp.MustCompile(`(?is)<img\b(?:[^>"']|"[^"]*"|'[^']*')*>`)
+var imageLoading = regexp.MustCompile(`(?i)\sloading\s*=`)
+var imageDecoding = regexp.MustCompile(`(?i)\sdecoding\s*=`)
+
 func addImgAttrs(html string) string {
-	return imgAttrRegex.ReplaceAllString(html, `<img loading="lazy" decoding="async" `)
+	return imageTags.ReplaceAllStringFunc(html, func(tag string) string {
+		attrs := ""
+		if !imageLoading.MatchString(tag) {
+			attrs += ` loading="lazy"`
+		}
+		if !imageDecoding.MatchString(tag) {
+			attrs += ` decoding="async"`
+		}
+		return tag[:4] + attrs + tag[4:]
+	})
 }
 
 func Slugify(text string) string {
