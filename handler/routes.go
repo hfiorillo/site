@@ -18,13 +18,15 @@ import (
 )
 
 type routeEntry struct {
-	Name         string  `yaml:"name"`
-	Slug         string  `yaml:"slug"`
-	Location     string  `yaml:"location"`
-	Date         string  `yaml:"date"`
-	GPXFile      string  `yaml:"gpx"`
-	Packlist     string  `yaml:"packlist"`
-	DistanceKm   float64 `yaml:"distance_km"`
+	RouteURL      string  `yaml:"route_url"`
+	EmbedURL      string  `yaml:"embed_url"`
+	Name          string  `yaml:"name"`
+	Slug          string  `yaml:"slug"`
+	Location      string  `yaml:"location"`
+	Date          string  `yaml:"date"`
+	GPXFile       string  `yaml:"gpx"`
+	Packlist      string  `yaml:"packlist"`
+	DistanceKm    float64 `yaml:"distance_km"`
 	ElevationGain float64 `yaml:"elevation_gain"`
 }
 
@@ -49,12 +51,18 @@ func loadRoutes() {
 	}
 	for i := range routesList {
 		r := &routesList[i]
-		date, parseErr := time.Parse("2006-01-02", r.Date)
+		var date time.Time
+		var parseErr error
+		if r.Date != "" {
+			date, parseErr = time.Parse("2006-01-02", r.Date)
+		}
 		if parseErr != nil {
 			routesErr = fmt.Errorf("parsing date for %s: %w", r.Name, parseErr)
 			return
 		}
 		routesCache[r.Slug] = &models.Route{
+			RouteURL:      r.RouteURL,
+			EmbedURL:      r.EmbedURL,
 			Slug:          r.Slug,
 			Name:          r.Name,
 			Location:      r.Location,
@@ -75,7 +83,7 @@ func ensureRouteData(slug string) (*models.Route, *gpx.RouteData, error) {
 	if route == nil {
 		return nil, nil, fmt.Errorf("route not found: %s", slug)
 	}
-	if rd != nil {
+	if rd != nil || route.GPXFile == "" {
 		return route, rd, nil
 	}
 
@@ -171,6 +179,10 @@ func (p PageHandler) HandleRouteCoords(w http.ResponseWriter, r *http.Request) e
 		return pages.ErrorPage("Route not found.").Render(r.Context(), w)
 	}
 
+	if rd == nil {
+		http.NotFound(w, r)
+		return nil
+	}
 	w.Header().Set("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(rd.Coords)
 }

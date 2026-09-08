@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"io/fs"
 	"log/slog"
@@ -13,6 +14,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/hfiorillo/site/handler"
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/paths"
@@ -117,5 +119,54 @@ func TestWorkPostListings(t *testing.T) {
 				t.Error("unpublished draft exposed")
 			}
 		})
+	}
+}
+
+func TestRouteUpdates(t *testing.T) {
+	page := handler.NewPageHandler(slog.Default(), "https://example.com")
+	router := chi.NewRouter()
+	router.Get(paths.Routes, handler.Make(page.HandleRoutes))
+	router.Get(paths.RouteDetail, handler.Make(page.HandleRoute))
+	router.Get(paths.RouteCoords, handler.Make(page.HandleRouteCoords))
+	for _, tc := range []struct {
+		name, path   string
+		status       int
+		want, absent string
+	}{
+		{"listing", paths.Routes, 200, "126 km", "Jan 0001"},
+		{"Ireland details", paths.Routes + "/west-coast-of-ireland", 200, "779 km", "Badger_divide_reverse.gpx"},
+		{"Bilbao without GPX", paths.Routes + "/bilbao-to-san-sebastian", 200, "126 km", "Download GPX"},
+		{"Bilbao coordinates unavailable", paths.RouteCoordsPrefix + "bilbao-to-san-sebastian" + paths.RouteCoordsSuffix, 404, "404", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			response := httptest.NewRecorder()
+			router.ServeHTTP(response, httptest.NewRequest("GET", tc.path, nil))
+			if response.Code != tc.status {
+				t.Fatalf("status %d", response.Code)
+			}
+			body := response.Body.String()
+			if !strings.Contains(body, tc.want) {
+				t.Errorf("missing %q", tc.want)
+			}
+			if tc.absent != "" && strings.Contains(body, tc.absent) {
+				t.Errorf("unexpected %q", tc.absent)
+			}
+		})
+	}
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest("GET", paths.RouteCoordsPrefix+"west-coast-of-ireland"+paths.RouteCoordsSuffix, nil))
+	var coords []struct {
+		Lat float64 `json:"lat"`
+		Lon float64 `json:"lon"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &coords); err != nil {
+		t.Fatal(err)
+	}
+	if len(coords) < 100 {
+		t.Fatal("missing Ireland track")
+	}
+	first, last := coords[0], coords[len(coords)-1]
+	if first.Lat < 51 || first.Lat > 52 || last.Lat < 54 || last.Lat > 56 || first.Lon > -8 || last.Lon > -7 {
+		t.Fatal("track is not Cork to Derry")
 	}
 }

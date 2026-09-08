@@ -20,6 +20,10 @@ preview-image: /public/images/posts/bilbao-to-san-sebastian/main-photo.jpg
 
 Earlier this year, me and 2 friends decided that we were going to run from Bilbao to San Sebastian. Eating and drinking our way across the North of Spain taking enough stuff to sleep in BnBs along the way. The total distance was around 126km with around 3000m of elevation.
 
+## The route
+
+<iframe src="https://www.komoot.com/tour/3268174732/embed?share_token=aC5OW4RQH7SmieelsVhGpsBYuZisWKUTsfo4A7LAch4WoFaWd5&amp;layout=classic&amp;profile=1" title="Camino del Norte: Bilbao to San Sebastián route" width="100%" height="700" frameborder="0" scrolling="no" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+
 ## Leg 1: Bilbao to Guernica (30km, 958m)
 
 In hindsight this was probably the easiest day. The weather was BRILLIANT. The start was a bit of a grind though — steep tarmac roads and endless stairs out of Bilbao before we finally hit the trail and things got fun.
@@ -47,7 +51,6 @@ So we spent the day wondering about this rope, questioning when it would come an
 
 Anyways, we were very happy to see the sea for the first time. We jumped and cheered but still had 15km to go so plodded on. When we got around 2km out there had been a landslide taking out a huge section of the route which forced us to back track on ourselves - not fun. But.. we were only 2km away. The feeling of relief when we arrived was something that can only be described as bliss. After doing a victory lap of Deba (nice place) we checked into our cosy 3 man hotel room, showered and head out. Finally getting our hands on a Txuleta.
 
-
 ## Leg 3: Deba to San Sebastián (45km, 1500m)
 
 Our final day. What a day it was — the sun came out and remained out.
@@ -63,3 +66,9 @@ The last leg of the journey consisted of a stop in Orio, followed by the biggest
 Spirits boosted, we ploughed on. We could now see San Sebastián way off in the distance. This part of the route was particularly enjoyable, with varied terrain and great views. The next few hours flew by. Before we knew it, we were looking down at San Sebastián as the next town to descend into. A few tears of relief were shed. After a fast descent and a sprint finish down the promenade into the old town, where we were greeted by our mates, we got in the sea and enjoyed a few small beers.
 
 We were done. 🏁🏁🏁
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0;">
+  <img src="/public/images/posts/bilbao-to-san-sebastian/IMG_0347.jpg" alt="Circle wood loch ness" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
+  <img src="/public/images/posts/bilbao-to-san-sebastian/IMG_0330.jpg" alt="Descent loch ness through forest tracks" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
+  <img src="/public/images/posts/bilbao-to-san-sebastian/IMG_0317.jpg" alt="View of loch ness up top" style="width:30%; max-width:280px; height:auto" loading="lazy" decoding="async">
+</div>

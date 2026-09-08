@@ -6,11 +6,20 @@
   packlist: https://lighterpack.com/r/tjgsqt
   distance_km: 348
   elevation_gain: 5330
-- name: West Coast of Ireland
+- name: West Coast of Ireland (Wild Atlantic Way)
   slug: west-coast-of-ireland
-  location: Cork to Derry
-  date: 2026-07-24
-  gpx: /public/routes/Badger_divide_reverse.gpx
+  location: Ireland - Cork to Derry
+  date: 2026-07-26
+  gpx: /public/routes/west-coast-of-ireland.gpx
   packlist: https://lighterpack.com/r/552vh6
-  distance: ~850km
-  elevation_gain: 8000
+  distance_km: 779
+  elevation_gain: 6104
+- name: Camino del Norte - Bilbao to San Sebastián
+  slug: bilbao-to-san-sebastian
+  date: 2026-03-01 # Month only; the route pages display March 2026.
+  location: Basque Country, Spain - Bilbao to San Sebastián
+  distance_km: 126.339
+  elevation_gain: 3519
+  packlist: https://lighterpack.com/r/1mcfue
+  route_url: https://www.komoot.com/tour/3268174732?share_token=aC5OW4RQH7SmieelsVhGpsBYuZisWKUTsfo4A7LAch4WoFaWd5
+  embed_url: https://www.komoot.com/tour/3268174732/embed?share_token=aC5OW4RQH7SmieelsVhGpsBYuZisWKUTsfo4A7LAch4WoFaWd5&layout=classic&profile=1

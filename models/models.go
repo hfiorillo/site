@@ -69,6 +69,8 @@ type Route struct {
 	ElevationMin  float64
 	Date          time.Time
 	CoordsJSON    string
+	RouteURL      string
+	EmbedURL      string
 	GPXFile       string
 	Packlist      string
 }

@@ -21,7 +21,7 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 						<th class="pb-2 pr-6 font-medium text-right">Elevation</th>
 						<th class="pb-2 pr-6 font-medium">Date</th>
 						<th class="pb-2 pr-6 font-medium">Packlist</th>
-						<th class="pb-2 font-medium">GPX</th>
+						<th class="pb-2 font-medium">Download</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -32,15 +32,32 @@ templ Routes(routes []*models.Route, meta models.PageMeta) {
 							</td>
 							<td class="py-3 pr-6 text-sm text-base-content/60">{ r.Location }</td>
 							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f km", r.DistanceKm) }</td>
-							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">{ fmt.Sprintf("%.0f m", r.ElevationGain) }</td>
-							<td class="py-3 pr-6 text-sm">{ r.Date.Format("Jan 2006") }</td>
+							<td class="py-3 pr-6 text-right text-sm whitespace-nowrap">
+								if r.ElevationGain > 0 {
+									{ fmt.Sprintf("%.0f m", r.ElevationGain) }
+								} else {
+									<span aria-label="Not recorded">—</span>
+								}
+							</td>
+							<td class="py-3 pr-6 text-sm">
+								if !r.Date.IsZero() {
+									{ r.Date.Format("Jan 2006") }
+								} else {
+									<span aria-label="Not recorded">—</span>
+								}
+							</td>
 							<td class="py-3 pr-6">
 								if r.Packlist != "" {
 									<a href={ templ.SafeURL(r.Packlist) } target="_blank" rel="noopener noreferrer" class="text-sm text-primary no-underline hover:opacity-80">View</a>
 								}
 							</td>
 							<td class="py-3 pr-4">
-								<a href={ templ.SafeURL(r.GPXFile) } download class="text-sm text-primary no-underline hover:opacity-80">Download</a>
+								if r.GPXFile != "" {
+									<a href={ templ.SafeURL(r.GPXFile) } download class="text-sm text-primary no-underline hover:opacity-80">Download</a>
+								}
+								if r.RouteURL != "" {
+									<div><a href={ templ.SafeURL(r.RouteURL) } target="_blank" rel="noopener noreferrer" class="text-sm text-primary">View on Komoot ↗</a></div>
+								}
 							</td>
 						</tr>
 					}
@@ -64,32 +81,58 @@ templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 				</div>
 				<div>
 					<span class="text-base-content/50">Elevation gain</span>
-					<p class="font-semibold">{ fmt.Sprintf("%.0f m", r.ElevationGain) }</p>
+					<p class="font-semibold">
+						if r.ElevationGain > 0 {
+							{ fmt.Sprintf("%.0f m", r.ElevationGain) }
+						} else {
+							<span aria-label="Not recorded">—</span>
+						}
+					</p>
 				</div>
+				if r.GPXFile != "" {
+					<div>
+						<span class="text-base-content/50">Min / Max</span>
+						<p class="font-semibold">{ fmt.Sprintf("%.0f / %.0f m", r.ElevationMin, r.ElevationMax) }</p>
+					</div>
+				}
 				<div>
-					<span class="text-base-content/50">Min / Max</span>
-					<p class="font-semibold">{ fmt.Sprintf("%.0f / %.0f m", r.ElevationMin, r.ElevationMax) }</p>
+					<span class="text-base-content/50">Date</span>
+					<p class="font-semibold">
+						if !r.Date.IsZero() {
+							{ r.Date.Format("Jan 2006") }
+						} else {
+							<span aria-label="Not recorded">—</span>
+						}
+					</p>
 				</div>
-				<div>
-					<span class="text-base-content/50">Completed</span>
-					<p class="font-semibold">{ r.Date.Format("Jan 2006") }</p>
-				</div>
-				<div>
-					<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
-				</div>
+				if r.GPXFile != "" {
+					<div>
+						<a href={ templ.SafeURL(r.GPXFile) } download class="text-primary no-underline hover:opacity-80 font-semibold">Download GPX</a>
+					</div>
+				}
+				if r.RouteURL != "" {
+					<div><a href={ templ.SafeURL(r.RouteURL) } target="_blank" rel="noopener noreferrer" class="text-primary">View on Komoot ↗</a></div>
+				}
 				if r.Packlist != "" {
 					<div>
 						<a href={ templ.SafeURL(r.Packlist) } target="_blank" rel="noopener noreferrer" class="text-primary no-underline hover:opacity-80 font-semibold">Packlist</a>
 					</div>
 				}
 			</div>
-			<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;" data-slug={ slug }></div>
+			if r.GPXFile != "" {
+				<div id="route-map" class="w-full rounded-lg overflow-hidden not-prose mt-4" style="height: 500px;" data-coords-url={ paths.RouteCoordsPrefix + slug + paths.RouteCoordsSuffix }></div>
+			} else if r.EmbedURL != "" {
+				<iframe src={ templ.SafeURL(r.EmbedURL) } title={ r.Name + " route map" } width="100%" height="700" class="mt-4" style="border:0" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+			} else {
+				<p class="mt-4 text-sm text-base-content/60">Map and GPX coming soon.</p>
+			}
 		</div>
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-		<script>
-			var slug = document.getElementById('route-map').getAttribute('data-slug');
-			fetch('{ paths.RouteCoordsPrefix }' + slug + '{ paths.RouteCoordsSuffix }')
+		if r.GPXFile != "" {
+			<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+			<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+			<script>
+			var coordsURL = document.getElementById('route-map').getAttribute('data-coords-url');
+			fetch(coordsURL)
 				.then(function(r) { return r.json(); })
 				.then(function(coords) {
 					var map = L.map('route-map').setView([55.94, -4.31], 8);
@@ -102,5 +145,6 @@ templ RoutePage(r *models.Route, slug string, meta models.PageMeta) {
 					map.fitBounds(poly.getBounds());
 				});
 		</script>
+		}
 	}
 }
