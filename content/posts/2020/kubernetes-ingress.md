@@ -4,11 +4,13 @@ date: 2020-01-19
 categories:
 - raspberrypi
 tags:
+- work
 - cluster
 - raspberry pi
 - kubernetes
 - ingress
 published: true
+section: work
 description: A brief explanation of Kubernetes Ingress and demo on k3s.
 ---
 

@@ -18,10 +18,10 @@ import (
 
 	"github.com/hfiorillo/site/models"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
 const (
@@ -33,14 +33,14 @@ const (
 )
 
 var (
-	parserInst    goldmark.Markdown
-	imgAttrRegex  = regexp.MustCompile(`<img\s`)
-	postsCache    []*models.BlogPost
-	postsMu       sync.RWMutex
-	postsCacheAt  time.Time
-	cacheTTL      = 60 * time.Second
-	postsPathMu   sync.RWMutex
-	postsPathMap  map[string]string
+	parserInst   goldmark.Markdown
+	imgAttrRegex = regexp.MustCompile(`<img\s`)
+	postsCache   []*models.BlogPost
+	postsMu      sync.RWMutex
+	postsCacheAt time.Time
+	cacheTTL     = 60 * time.Second
+	postsPathMu  sync.RWMutex
+	postsPathMap map[string]string
 )
 
 func init() {
@@ -248,6 +248,9 @@ func ParseMarkdown(fileContent []byte, filename string) (*models.BlogPost, error
 
 func mapMetaToMetadata(metaData map[string]interface{}) models.Metadata {
 	var m models.Metadata
+	if v, ok := metaData["section"]; ok {
+		m.Section = toString(v)
+	}
 	if v, ok := metaData["title"]; ok {
 		m.Title = toString(v)
 	}

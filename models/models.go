@@ -17,7 +17,11 @@ type BlogPost struct {
 	ReadTimeMinutes int
 }
 
+// WorkSection identifies posts listed on the Work page.
+const WorkSection = "work"
+
 type Metadata struct {
+	Section      string   `yaml:"section"`
 	Title        string   `yaml:"title"`
 	Date         string   `yaml:"date"`
 	Categories   []string `yaml:"categories"`

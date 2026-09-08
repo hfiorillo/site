@@ -4,11 +4,13 @@ date: 2020-01-16
 categories: 
 - raspberrypi
 tags:
+- work
 - cluster
 - raspberrypi
 - kubernetes
 - automation
 published: true
+section: work
 description: A how-to on deploying Kubernetes using k3s and Ansible to a Raspberry Pi cluster.
 ---
 

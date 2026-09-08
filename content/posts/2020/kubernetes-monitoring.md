@@ -4,6 +4,7 @@ date: 2020-01-24
 categories: 
 - raspberrypi
 tags:
+- work
 - cluster
 - raspberry pi
 - kubernetes
@@ -12,6 +13,7 @@ tags:
 - EFK
 - Prometheus
 published: true
+section: work
 description: Discussion of monitoring in Kubernetes clusters, best practices and tooling choices.
 ---
 

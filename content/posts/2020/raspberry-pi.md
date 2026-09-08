@@ -4,10 +4,12 @@ date: 2020-01-09
 categories: 
 - raspberrypi
 tags:
+- work
 - compute
 - raspberrypi
 - single-board computers
 published: true
+section: work
 description: A brief introduction to the Raspberry Pi Foundation and their latest single board computer.
 ---
 

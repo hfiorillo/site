@@ -115,30 +115,6 @@ func (p PageHandler) HandlePictures(w http.ResponseWriter, r *http.Request) erro
 	return pages.Pictures(pictures, meta).Render(r.Context(), w)
 }
 
-func (p PageHandler) HandleWork(w http.ResponseWriter, r *http.Request) error {
-	siteOnce.Do(loadSiteMeta)
-	work, err := markdown.LoadMarkdownPost(r.Context(), paths.WorkMarkdown)
-	if err != nil {
-		p.Logger.Error("failed to load work", "err", err, "path", r.URL.Path)
-		return pages.ErrorPage(fmt.Sprintf("%v", err)).Render(r.Context(), w)
-	}
-
-	image := p.SiteURL + siteImage()
-	if work.Metadata.Image != "" {
-		image = p.SiteURL + work.Metadata.Image
-	}
-
-	meta := models.PageMeta{
-		Title:          work.Title + " | Harry Fiorillo-Hughes",
-		Description:    work.Description,
-		URL:            p.SiteURL + paths.Work,
-		Canonical:      p.SiteURL + paths.Work,
-		Image:          image,
-		StructuredData: personJSON(p.SiteURL),
-	}
-	return pages.Work(work, meta).Render(r.Context(), w)
-}
-
 func toTitle(s string) string {
 	if s == "" {
 		return ""

@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -12,6 +13,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	"github.com/hfiorillo/site/handler"
 	"github.com/hfiorillo/site/models"
 	"github.com/hfiorillo/site/paths"
 	"github.com/hfiorillo/site/view/layout"
@@ -81,5 +83,39 @@ func TestVersionedStylesheetRenderedAndServed(t *testing.T) {
 	}
 	if response.Code != http.StatusOK || !bytes.Equal(response.Body.Bytes(), expected) {
 		t.Fatal("versioned URL did not serve embedded stylesheet")
+	}
+}
+
+func TestWorkPostListings(t *testing.T) {
+	page := handler.NewPageHandler(slog.Default(), "https://example.com")
+	engineering := []string{"FirstRestApiAzure", "kubernetes-ingress", "kubernetes-pi", "raspberry-pi", "kubernetes-monitoring"}
+	for _, tc := range []struct {
+		name, path                  string
+		handle                      func(http.ResponseWriter, *http.Request) error
+		wantEngineering, wantTravel bool
+	}{
+		{"work", paths.Work, page.HandleWork, true, false},
+		{"home", paths.Root, page.HandleIndexPage, true, true},
+		{"blog", paths.Blog, page.HandleBlogPage, true, true},
+		{"feed", paths.Feed, page.HandleFeed, true, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			response := httptest.NewRecorder()
+			if err := tc.handle(response, httptest.NewRequest(http.MethodGet, tc.path, nil)); err != nil {
+				t.Fatal(err)
+			}
+			body := response.Body.String()
+			for _, slug := range engineering {
+				if strings.Contains(body, paths.Blog+"/"+slug) != tc.wantEngineering {
+					t.Errorf("unexpected listing for %s", slug)
+				}
+			}
+			if strings.Contains(body, paths.Blog+"/west-coast-ireland") != tc.wantTravel {
+				t.Error("unexpected travel post listing")
+			}
+			if strings.Contains(body, paths.Blog+"/building-blog-pt1") {
+				t.Error("unpublished draft exposed")
+			}
+		})
 	}
 }

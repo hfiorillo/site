@@ -118,13 +118,13 @@ func (p PageHandler) HandleBlogPostPage(w http.ResponseWriter, r *http.Request) 
 
 	blogURL := p.SiteURL + paths.Blog + "/" + post.Filename
 	sd := map[string]any{
-		"@context":       "https://schema.org",
-		"@type":          "BlogPosting",
-		"headline":       post.Title,
-		"datePublished":  post.Date.Format("2006-01-02"),
-		"dateModified":   post.Date.Format("2006-01-02"),
-		"author":         map[string]string{"@type": "Person", "name": "Harry Fiorillo"},
-		"description":    post.Description,
+		"@context":         "https://schema.org",
+		"@type":            "BlogPosting",
+		"headline":         post.Title,
+		"datePublished":    post.Date.Format("2006-01-02"),
+		"dateModified":     post.Date.Format("2006-01-02"),
+		"author":           map[string]string{"@type": "Person", "name": "Harry Fiorillo"},
+		"description":      post.Description,
 		"mainEntityOfPage": map[string]string{"@type": "WebPage", "@id": blogURL},
 	}
 	sdJSON, _ := json.Marshal(sd)

@@ -4,12 +4,14 @@ date: 2020-06-10
 categories: 
 - azure
 tags:
+- work
 - azure
 - public cloud
 - REST APIs
 - devops
 - scripts
 published: true
+section: work
 description: An introduction to Azure's REST API and a walkthrough demo.
 ---
 
