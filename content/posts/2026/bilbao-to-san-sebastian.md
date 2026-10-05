@@ -1,6 +1,6 @@
 ---
 title: Bilbao to San Sebastian (Camino Del Norte)
-date: 2026-09-08
+date: 2026-03-30
 author: Harry Fiorillo
 categories:
 - running
